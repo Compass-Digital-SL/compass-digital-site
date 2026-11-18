@@ -44,8 +44,9 @@ class Compass_Core_CLI {
 
 		$this->seed_work();
 		$this->seed_testimonials();
+		$this->seed_service_pages();
 
-		WP_CLI::success( 'Seeded placeholder Work and Testimonials. Remove with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
+		WP_CLI::success( 'Seeded Work, Testimonials and Service pages. Remove placeholders with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
 	}
 
 	/**
@@ -250,6 +251,78 @@ class Compass_Core_CLI {
 
 			WP_CLI::log( 'Testimonial: ' . $item['title'] );
 		}
+	}
+
+	/**
+	 * Create the Services hub and the six service pages (idempotent).
+	 *
+	 * The hub (slug `services`) uses page-services.php via the template hierarchy;
+	 * each service page is a child at /services/<slug>/ assigned the shared
+	 * `page-service.php` template. Copy is driven by the theme, so the pages hold
+	 * no body content — only the right slug, parent and template.
+	 */
+	private function seed_service_pages() {
+		if ( ! function_exists( 'compass_services_data' ) || ! function_exists( 'compass_services_order' ) ) {
+			WP_CLI::warning( 'Service content not found (is the Compass theme active?). Skipped service pages.' );
+			return;
+		}
+
+		$hub_id = $this->ensure_page( 'services', __( 'Services', 'compass-core' ), 0, '' );
+		if ( ! $hub_id ) {
+			WP_CLI::warning( 'Could not create the Services hub page.' );
+			return;
+		}
+		WP_CLI::log( 'Page: Services (hub)' );
+
+		$services = compass_services_data();
+		foreach ( compass_services_order() as $slug ) {
+			if ( empty( $services[ $slug ] ) ) {
+				continue;
+			}
+			$title = wp_strip_all_tags( $services[ $slug ]['eyebrow'] );
+			$id    = $this->ensure_page( $slug, $title, $hub_id, 'page-service.php' );
+			if ( $id ) {
+				WP_CLI::log( 'Page: Services / ' . $title );
+			}
+		}
+	}
+
+	/**
+	 * Ensure a published page exists at the given slug and parent, with the
+	 * given template. Returns the page ID.
+	 *
+	 * @param string $slug      Page slug.
+	 * @param string $title     Page title (used only when creating).
+	 * @param int    $parent_id Parent page ID (0 for top level).
+	 * @param string $template  Page template file, or '' for the default.
+	 * @return int
+	 */
+	private function ensure_page( $slug, $title, $parent_id, $template ) {
+		$existing = get_page_by_path( $parent_id ? get_post_field( 'post_name', $parent_id ) . '/' . $slug : $slug );
+		$id       = $existing ? (int) $existing->ID : 0;
+
+		if ( ! $id ) {
+			$id = wp_insert_post(
+				array(
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => $title,
+					'post_name'    => $slug,
+					'post_parent'  => $parent_id,
+					'post_content' => '',
+				)
+			);
+		}
+
+		if ( ! $id || is_wp_error( $id ) ) {
+			return 0;
+		}
+
+		if ( $template ) {
+			update_post_meta( $id, '_wp_page_template', $template );
+		}
+
+		return (int) $id;
 	}
 }
 
