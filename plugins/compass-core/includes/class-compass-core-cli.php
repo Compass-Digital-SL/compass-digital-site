@@ -375,8 +375,16 @@ class Compass_Core_CLI {
 		}
 
 		// Posts live at /insights/<slug>/ (matches docs/SEO.md).
-		if ( '/insights/%postname%/' !== get_option( 'permalink_structure' ) ) {
-			update_option( 'permalink_structure', '/insights/%postname%/' );
+		// Go through WP_Rewrite, not a bare update_option(): in a single WP-CLI
+		// process the rewrite engine is bootstrapped with the previous structure
+		// (setup.sh sets /%postname%/), and update_option() does not refresh it.
+		// The seed()-level flush would then emit rules for the old structure, so
+		// /insights/ (the posts page) still resolves but /insights/<slug>/ 404s.
+		// set_permalink_structure() keeps the option and the in-memory engine in
+		// sync so the flush regenerates the correct /insights/%postname%/ rules.
+		global $wp_rewrite;
+		if ( '/insights/%postname%/' !== $wp_rewrite->permalink_structure ) {
+			$wp_rewrite->set_permalink_structure( '/insights/%postname%/' );
 		}
 
 		// Topic categories.
