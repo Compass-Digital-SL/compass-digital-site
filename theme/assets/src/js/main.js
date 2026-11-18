@@ -37,11 +37,20 @@ function initWork() {
   import("./work-filter.js").then((m) => m.initWorkFilter());
 }
 
+function initInsights() {
+  if (
+    !document.querySelector("[data-insights-filter],[data-insight-toc],[data-copy-link]")
+  )
+    return;
+  import("./insights.js").then((m) => m.initInsights());
+}
+
 function boot() {
   initNavigation();
   initUI();
   initMotion();
   initWork();
+  initInsights();
 }
 
 if (document.readyState !== "loading") {

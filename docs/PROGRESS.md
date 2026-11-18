@@ -14,7 +14,7 @@
 - [x] 11 Service pages
 - [x] 12 Industry pages
 - [x] 13 Work portfolio
-- [ ] 14 About/Process/FAQ/Insights
+- [x] 14 About/Process/FAQ/Insights
 - [ ] 15 Quote flow
 - [ ] 16 Technical SEO
 - [ ] 17 Local SEO and analytics
@@ -26,6 +26,53 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 14 — About / Process / FAQ / Insights (2026-11-18)
+**Done**
+- **About** (`theme/page-about.php`, `Template Name: About`, slug `about`): honest origin
+  story, mission + vision, the four brand values, and **team placeholders** the owner swaps
+  for real people. Emits **AboutPage** + BreadcrumbList JSON-LD.
+- **Process** (`theme/page-process.php`, `Template Name: Process`): the four steps (Listen,
+  Plan, Build, Support) **in depth**, **what we need from the client** at each, and **timelines
+  in ranges** (per step + a summary band). Emits **HowTo** + BreadcrumbList JSON-LD.
+- **FAQ** (`theme/page-faq.php`, `Template Name: FAQ`): global FAQ in **grouped, accessible
+  accordions** (reuses the `.accordion` component + `ui.js`). Answers are in the DOM without
+  JS, so **FAQPage** JSON-LD matches visible content.
+- **Insights blog**: index at **`/insights/`** (`theme/home.php`, the static Posts page) with
+  **category filter chips** — real links to the category archives (work with JS off, shareable),
+  enhanced by `insights.js` to filter cards in place via the History API. Secondary category/tag
+  archives reuse `theme/archive.php`. Posts live at **`/insights/<slug>/`**.
+- **Single post** (`theme/single.php`): **reading time**, a **table of contents** built from the
+  post's own h2/h3 (anchor ids injected server-side; `insights.js` adds scroll-spy), **author box**,
+  **related posts** by category, **share links** (plain WhatsApp / Facebook / LinkedIn / X / email
+  URLs — no third-party scripts — plus a JS copy-link button), and a **soft quote CTA**. Emits
+  **BlogPosting** + BreadcrumbList JSON-LD.
+- **Content source** `theme/inc/company.php` (About/Process/FAQ copy + titles/metas + schema
+  helpers) and `theme/inc/insights.php` (reading time, TOC, related, share, Article schema,
+  blog titles/metas). Shared **post card** `theme/template-parts/post-card.php` (index + archives).
+- **Three starter articles** (1000+ words each, in brand voice, with money-page links), seeded via
+  `wp compass seed`: *How much does a website cost in Sri Lanka?* (→ Website), *How to get your
+  business found on Google in Sri Lanka* (→ SEO), *Choosing a POS system for a Sri Lankan shop*
+  (→ POS). Top three of the SEO content list.
+- **Nav/footer** already linked About + Insights (Task 7), so no orphans.
+- **Tests**: `/about/`, `/process/`, `/faq/`, `/insights/` and a single post added to the Playwright
+  smoke list — **28/28 pass** (no console errors, no critical/serious axe violations). CSS build
+  **56.5KB raw / 10.3KB gz** (budget 40KB gz); `insights.js` is a **1.0KB gz** lazy chunk. Stylelint,
+  ESLint and Vite build clean; PHPCS clean on all new files (local CRLF sniff excluded, as before).
+
+**Decisions**
+- The Insights section uses a **static Posts page** (`show_on_front=page`, a `home` page →
+  `front-page.php`, an `insights` page → `page_for_posts`) plus permalink `/insights/%postname%/`,
+  all set idempotently by the seeder — so `/insights/` is the index and posts sit under it, matching
+  `docs/SEO.md`. Front-page behaviour is unchanged (still `front-page.php`).
+- Share links are **plain URLs**, not an SDK, to keep the JS budget and privacy intact; only the
+  copy-link button is enhanced.
+- Followed the services/work pattern: one theme-driven copy source per section, JSON-LD generated
+  from the same copy, templates hold no body content. Title/meta/schema stays scoped here and
+  unhooks when **Task 16** generalises it site-wide.
+
+**Next**
+- Task 15: Quote flow.
 
 ### Task 13 — Work portfolio (2026-11-18)
 **Done**

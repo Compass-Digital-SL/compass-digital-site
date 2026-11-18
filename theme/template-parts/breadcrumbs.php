@@ -35,6 +35,20 @@ if ( is_page() ) {
 		'label' => get_the_title(),
 		'url'   => '',
 	);
+} elseif ( is_home() ) {
+	$crumbs[] = array(
+		'label' => __( 'Insights', 'compass-digital' ),
+		'url'   => '',
+	);
+} elseif ( is_category() || is_tag() || ( is_archive() && ! is_post_type_archive() && ! is_author() && ! is_date() ) ) {
+	$crumbs[] = array(
+		'label' => __( 'Insights', 'compass-digital' ),
+		'url'   => home_url( '/insights/' ),
+	);
+	$crumbs[] = array(
+		'label' => wp_strip_all_tags( get_the_archive_title() ),
+		'url'   => '',
+	);
 } elseif ( is_singular( 'post' ) ) {
 	$crumbs[] = array(
 		'label' => __( 'Insights', 'compass-digital' ),
