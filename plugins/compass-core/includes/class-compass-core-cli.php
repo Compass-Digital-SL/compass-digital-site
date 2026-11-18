@@ -45,8 +45,9 @@ class Compass_Core_CLI {
 		$this->seed_work();
 		$this->seed_testimonials();
 		$this->seed_service_pages();
+		$this->seed_industry_pages();
 
-		WP_CLI::success( 'Seeded Work, Testimonials and Service pages. Remove placeholders with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
+		WP_CLI::success( 'Seeded Work, Testimonials, Service and Industry pages. Remove placeholders with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
 	}
 
 	/**
@@ -283,6 +284,40 @@ class Compass_Core_CLI {
 			$id    = $this->ensure_page( $slug, $title, $hub_id, 'page-service.php' );
 			if ( $id ) {
 				WP_CLI::log( 'Page: Services / ' . $title );
+			}
+		}
+	}
+
+	/**
+	 * Create the Industries hub and the five industry pages (idempotent).
+	 *
+	 * The hub (slug `industries`) uses page-industries.php via the template
+	 * hierarchy; each industry page is a child at /industries/<slug>/ assigned
+	 * the shared `page-industry.php` template. Copy is driven by the theme, so
+	 * the pages hold no body content — only the right slug, parent and template.
+	 */
+	private function seed_industry_pages() {
+		if ( ! function_exists( 'compass_industries_data' ) || ! function_exists( 'compass_industries_order' ) ) {
+			WP_CLI::warning( 'Industry content not found (is the Compass theme active?). Skipped industry pages.' );
+			return;
+		}
+
+		$hub_id = $this->ensure_page( 'industries', __( 'Industries', 'compass-core' ), 0, '' );
+		if ( ! $hub_id ) {
+			WP_CLI::warning( 'Could not create the Industries hub page.' );
+			return;
+		}
+		WP_CLI::log( 'Page: Industries (hub)' );
+
+		$industries = compass_industries_data();
+		foreach ( compass_industries_order() as $slug ) {
+			if ( empty( $industries[ $slug ] ) ) {
+				continue;
+			}
+			$title = wp_strip_all_tags( $industries[ $slug ]['eyebrow'] );
+			$id    = $this->ensure_page( $slug, $title, $hub_id, 'page-industry.php' );
+			if ( $id ) {
+				WP_CLI::log( 'Page: Industries / ' . $title );
 			}
 		}
 	}

@@ -12,7 +12,7 @@
 - [x] 9 Post types and settings
 - [x] 10 Home page
 - [x] 11 Service pages
-- [ ] 12 Industry pages
+- [x] 12 Industry pages
 - [ ] 13 Work portfolio
 - [ ] 14 About/Process/FAQ/Insights
 - [ ] 15 Quote flow
@@ -26,6 +26,49 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 12 — Industry pages (2026-11-18)
+**Done**
+- **Industries hub** (`theme/page-industries.php`, slug `industries`) + **one shared
+  template** (`theme/page-industry.php`, `Template Name: Industry`) used by all five
+  industry pages: Retail shops, Restaurants & cafes, Travel & tourism, Ecommerce brands,
+  Corporates & SMEs.
+- **Single content source** `theme/inc/industries-content.php` (`compass_industries_data()`),
+  keyed by slug. Each page: outcome-led headline + lede, intro prose (industry-specific
+  pains in customer language from `SEO.md`), a "Sounds like you if…" signs aside, pains →
+  fixes, **"Services that fit"** cards that cross-link to the matching `/services/<slug>/`
+  pages with *how* each one helps, relevant work (queried by the `industry` taxonomy term),
+  5 FAQs, a related-services strip (+ back to the hub), and a quote CTA. **500+ words of
+  unique copy per page** (Travel renders ~1,900 words incl. nav/footer). Travel covers
+  **booking enquiry flows, multilingual readiness, mobile-first, Google Maps & reviews,
+  and WhatsApp enquiries** as required.
+- **Schema** (`theme/inc/industries.php` for titles/meta; FAQ/Breadcrumb helpers reused
+  from `inc/services.php`): each industry page emits `FAQPage` + `BreadcrumbList` JSON-LD
+  from the same copy; hub emits `BreadcrumbList`. Per-page keyword-map `<title>` + meta
+  description via `pre_get_document_title` + `wp_head`, scoped to these pages.
+- **CTA pre-fill**: reuses `compass_quote_url()` (`?service=<industry>`), matching the
+  quote form field.
+- **CSS**: reuses the Task 11 `.service-*` classes; added a small `.industry-fit` block to
+  `services.css`. Built CSS **43.2KB raw / 8.68KB gzip** (budget 40KB gzip). No new JS —
+  FAQ reuses `.accordion`/`ui.js`, reveals reuse `[data-reveal]`.
+- **Pages seeded**: `seed_industry_pages()` added to the WP-CLI seeder (idempotent) creates
+  the hub + 5 child pages at `/industries/<slug>/` with the template assigned.
+- **Tests**: `/industries/` and `/industries/travel-and-tourism/` added to the Playwright
+  smoke list and Lighthouse config. Verified locally — all pages 200, titles/meta/single
+  H1/schema correct, cross-links to services present, 4/4 smoke+axe pass, Stylelint + ESLint
+  + Vite build clean; PHPCS clean on all new/changed files.
+
+**Decisions**
+- Mirrors Task 11 exactly: one shared `Template Name` template selected by page slug, one
+  data source driving both copy and structured data, child slugs = industry slugs.
+- Related work uses the existing `industry` taxonomy (term names match `work_term`); only 3
+  seeded samples have industries, so Ecommerce/Corporates pages simply omit the work section
+  until real case studies land (Task 13).
+- Reused the service-page CSS wholesale rather than a new stylesheet, keeping the gzip
+  budget comfortable.
+
+**Next**
+- Task 13: Work portfolio.
 
 ### Task 11 — Service pages (2026-11-18)
 **Done**

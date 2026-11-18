@@ -14,7 +14,7 @@ define( 'COMPASS_URI', get_template_directory_uri() );
 /**
  * Load an include file from inc/.
  */
-foreach ( array( 'setup', 'cleanup', 'assets', 'fonts', 'nav', 'styleguide', 'services-content', 'services' ) as $compass_inc ) {
+foreach ( array( 'setup', 'cleanup', 'assets', 'fonts', 'nav', 'styleguide', 'services-content', 'services', 'industries-content', 'industries' ) as $compass_inc ) {
 	require COMPASS_DIR . "/inc/{$compass_inc}.php";
 }
 unset( $compass_inc );

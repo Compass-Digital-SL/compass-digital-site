@@ -5,7 +5,9 @@
         "http://localhost:8888/",
         "http://localhost:8888/get-a-quote/",
         "http://localhost:8888/services/",
-        "http://localhost:8888/services/seo/"
+        "http://localhost:8888/services/seo/",
+        "http://localhost:8888/industries/",
+        "http://localhost:8888/industries/travel-and-tourism/"
       ],
       "numberOfRuns": 3,
       "settings": {
