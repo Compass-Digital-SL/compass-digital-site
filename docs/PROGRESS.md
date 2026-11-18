@@ -5,7 +5,7 @@
 - [x] 2 Local WP env
 - [x] 3 Theme and build
 - [x] 4 CI
-- [ ] 5 SEO strategy
+- [x] 5 SEO strategy
 - [x] 6 Design system
 - [x] 7 Navigation
 - [x] 8 Hero and motion
@@ -298,3 +298,22 @@
 
 **Next**
 - Task 5: SEO strategy.
+
+### Task 5 — SEO strategy (2026-11-18)
+**Done**
+- Rewrote `docs/SEO.md` into the full strategy (docs only, no code): audience + 18 pain
+  points in customers' words; URL structure; keyword map (1 primary + 3–5 secondary),
+  search intent, and under-limit title/meta for all 15 pages (home, 6 services, 5 industries,
+  Work, About, Contact); internal-linking rules; schema plan (Organization, WebSite,
+  LocalBusiness, Service, FAQPage, BreadcrumbList, Article, CreativeWork); 20 prioritised
+  blog topics; E-E-A-T plan; 90-day content calendar.
+
+**Decisions**
+- Base city Colombo; service area all Sri Lanka (city pushes: Colombo, Kandy, Galle, Jaffna) —
+  per owner. Local keyword sets use service + Sri Lanka, service + city, industry + service.
+- Quote CTA URL is `/get-a-quote/` (matches the page created in Task 2), not the stub's
+  `/request-a-quote/`.
+- Implementation deferred: schema/titles/metas land in Task 16, local SEO + analytics in Task 17.
+
+**Next**
+- Task 6: Design system.
