@@ -3,7 +3,7 @@
 ## Tasks
 - [x] 1 Scaffolding
 - [x] 2 Local WP env
-- [ ] 3 Theme and build
+- [x] 3 Theme and build
 - [ ] 4 CI
 - [ ] 5 SEO strategy
 - [ ] 6 Design system
@@ -68,3 +68,34 @@
 
 **Next**
 - Task 3: Theme and build.
+
+### Task 3 — Theme and build (2026-11-18)
+**Done**
+- Classic theme `compass-digital` in `theme/`: `style.css` (theme header), `functions.php`
+  (loads `inc/setup|cleanup|assets|fonts`), `theme.json` (palette, fluid type/spacing tokens),
+  templates `header/footer/front-page/page/single/archive/404/index` + `template-parts/`.
+- Semantic HTML: `lang` via `language_attributes()`, skip link to `#main`, one `<h1>` per
+  template, landmark roles (banner/main/contentinfo), accessible mobile-nav toggle (no jQuery).
+- Vite build (`theme/vite.config.js`, `theme/package.json`): root `assets/src`, output
+  `assets/dist` with hashed filenames + `.vite/manifest.json`. PHP reads the manifest and
+  enqueues the entry JS as a module + its CSS. Dev server writes `assets/dist/hot`; PHP then
+  loads `@vite/client` + entry from the dev server for live reload. Root scripts: `npm run
+  build`, `npm run dev`, `npm run theme:install`.
+- Front-end bloat stripped (`inc/cleanup.php`): emojis, oEmbed discovery, `wp-block-library` /
+  `classic-theme-styles` / `global-styles` CSS, jQuery, generator/RSD/WLW/shortlink/extra-feed
+  head links, REST `<head>` link + Link header, X-Pingback, s.w.org dns-prefetch.
+- Self-hosted fonts (`assets/fonts/`): Inter (sans) + Fraunces (serif display) variable woff2,
+  Latin subset from Google Fonts, served as a static un-hashed `fonts.css`, preloaded in
+  `inc/fonts.php`, `font-display: swap`, metric-adjusted `size-adjust` fallbacks to cut CLS.
+
+**Decisions**
+- Fonts kept out of the Vite graph and served at stable URLs so `<link rel=preload>` hrefs
+  match the `@font-face` src (Vite would otherwise fingerprint them, breaking the preload).
+- `theme.json` is the token source of truth for the editor; runtime tokens live in
+  `assets/src/css/tokens.css` because `global-styles` is dequeued on the front end.
+- Built `assets/dist/` is git-ignored (CI builds it in Task 4); `package-lock.json` tracked.
+- Branched `task/03` on top of `task/02` (not `main`) so the wp-env setup is present; Task 2's
+  PR is not merged yet.
+
+**Next**
+- Task 4: CI (lint, build, PHP checks).
