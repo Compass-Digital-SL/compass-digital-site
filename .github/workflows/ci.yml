@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "24"
   PHP_VERSION: "8.3"
   SITE_URL: "http://localhost:8888"
 
