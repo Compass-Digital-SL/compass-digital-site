@@ -57,7 +57,7 @@
 		}
 	},
 	"styles": {
-		"color": { "background": "#F6F2EA", "text": "#1B1F24" },
+		"color": { "background": "#0F2A43", "text": "#F6F2EA" },
 		"typography": { "fontFamily": "var(--wp--preset--font-family--sans)", "lineHeight": "1.6" }
 	}
 }

@@ -1,9 +1,12 @@
 /* Compass Digital — front-end entry stylesheet.
-   Full design system arrives in Task 6; this is the base layer. */
+   Dark-first base layer + design-system components (see docs/DESIGN.md). */
 
 /* Fonts are served as a static, un-hashed stylesheet (see assets/fonts/fonts.css)
    so preload hrefs stay stable. Only tokens + app CSS go through Vite. */
 @import url("./tokens.css");
+@import url("./components.css");
+@import url("./nav.css");
+@import url("./hero.css");
 
 *,
 *::before,
@@ -22,22 +25,27 @@ body {
   color: var(--text);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
-  line-height: 1.6;
+  line-height: var(--lh-base);
   -webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--font-serif);
-  line-height: 1.15;
+  line-height: var(--lh-tight);
   font-weight: 600;
+  letter-spacing: -0.01em;
   margin: 0 0 var(--space-4);
 }
 
 h1 { font-size: var(--fs-2xl); }
 h2 { font-size: var(--fs-xl); }
 h3 { font-size: var(--fs-lg); }
+h4 { font-size: var(--fs-base); }
+
+p { margin: 0 0 var(--space-4); }
 
 a {
   color: var(--link);
@@ -56,20 +64,21 @@ img {
   top: -3rem;
   z-index: 100;
   padding: var(--space-2) var(--space-4);
-  background: var(--surface-dark);
-  color: var(--text-on-dark);
+  background: var(--accent);
+  color: var(--accent-text);
   border-radius: var(--radius);
-  transition: top 120ms ease;
+  transition: top var(--dur-fast) var(--ease);
 }
 
 .skip-link:focus {
   top: var(--space-2);
 }
 
-/* Visible focus for keyboard users */
+/* Visible focus for keyboard users — brass ring */
 :focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .screen-reader-text {
@@ -84,13 +93,24 @@ img {
   border: 0;
 }
 
-/* Layout containers */
+/* --- Layout primitives --- */
+.container,
 .site-header__inner,
 .site-footer__inner,
 .site-main > * {
   max-width: var(--wide-width);
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: var(--content-width);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
 }
 
 .site-header__inner {
@@ -101,31 +121,17 @@ img {
   padding-block: var(--space-4);
 }
 
-/* Minimal button — design system refines in Task 6 */
-.button {
-  display: inline-block;
-  padding: var(--space-3) var(--space-6);
-  border-radius: var(--radius);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.button--primary {
-  background: var(--accent);
-  color: var(--color-navy);
-}
-
 .hero {
   padding-block: var(--space-16);
 }
 
 .site-footer {
   margin-top: var(--space-16);
-  background: var(--surface-dark);
-  color: var(--text-on-dark);
+  background: var(--surface-sunken);
+  color: var(--text);
   padding-block: var(--space-8);
 }
-.site-footer a { color: var(--color-brass); }
+.site-footer a { color: var(--link); }
 
 @media (prefers-reduced-motion: reduce) {
   * {
