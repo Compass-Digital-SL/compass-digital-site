@@ -1,0 +1,411 @@
+/* Compass Digital — Services hub + service pages (Task 11).
+   Tokens only, dark-first, no hard-coded colours (see docs/DESIGN.md).
+   Reuses .card, .tag, .section-header, .service-card and .industry-chip from
+   components.css / home.css. Motion animates transform/opacity only. */
+
+/* Let the page manage its own width instead of inheriting .site-main > *
+   (which would double the gutter against the inner .container). */
+.service-page,
+.services-hub {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* -------------------------------------------------------------- Hero --- */
+.service-hero {
+  padding-block: var(--space-16) var(--space-12);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.service-hero__inner {
+  max-width: 54rem;
+  margin-top: var(--space-6);
+}
+
+.service-hero__eyebrow {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.service-hero__title {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.service-hero__lede {
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  max-width: 40ch;
+}
+
+.service-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------------------- Body --- */
+.service-body {
+  padding-block: var(--space-16);
+}
+
+.service-section {
+  padding-block: var(--space-12);
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 5rem;
+}
+
+.service-section:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.service-section__foot {
+  margin-top: var(--space-8);
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------ Intro + who it's for --- */
+.service-intro {
+  display: grid;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (width >= 52rem) {
+  .service-intro {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: var(--space-12);
+  }
+}
+
+.service-prose {
+  max-width: 68ch;
+}
+
+.service-prose p {
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.service-prose p:first-child {
+  color: var(--text);
+  font-size: var(--fs-lg);
+}
+
+.service-who {
+  padding: var(--space-6);
+}
+
+.service-who__title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-4);
+}
+
+.service-who__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.service-who__list li {
+  position: relative;
+  padding-left: var(--space-6);
+  color: var(--text-muted);
+}
+
+.service-who__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+/* ---------------------------------------------------- Pains we solve --- */
+.service-pains__list,
+.service-included__grid,
+.service-work__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-6);
+}
+
+@media (width >= 40rem) {
+  .service-pains__list,
+  .service-included__grid,
+  .service-work__grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+}
+
+.service-pain {
+  padding: var(--space-6);
+}
+
+.service-pain__quote {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  color: var(--text);
+  margin-bottom: var(--space-3);
+}
+
+.service-pain__fix {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------- What's included --- */
+.service-feature {
+  padding: var(--space-6);
+}
+
+.service-feature__title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-2);
+}
+
+.service-feature__text {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* ----------------------------------------------------------- Process --- */
+.service-process__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-6);
+  counter-reset: step;
+}
+
+@media (width >= 48rem) {
+  .service-process__steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.service-step {
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--border-strong);
+}
+
+.service-step__num {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.service-step__title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-2);
+}
+
+.service-step__text {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* ----------------------------------------------- Tech & deliverables --- */
+.service-tech__grid {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (width >= 44rem) {
+  .service-tech__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+  }
+}
+
+.service-tech__subtitle {
+  font-size: var(--fs-base);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.service-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.service-deliverables {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.service-deliverables li {
+  position: relative;
+  padding-left: var(--space-6);
+  color: var(--text-muted);
+}
+
+.service-deliverables li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 0.7rem;
+  height: 0.4rem;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
+/* ----------------------------------------------------------- Pricing --- */
+.service-pricing {
+  padding: var(--space-8);
+}
+
+.service-pricing__inner {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+@media (width >= 48rem) {
+  .service-pricing__inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-12);
+  }
+}
+
+.service-pricing__title {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-3);
+}
+
+.service-pricing__lede {
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.service-pricing__factors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.service-pricing__factors li {
+  position: relative;
+  padding-left: var(--space-6);
+  color: var(--text-muted);
+}
+
+.service-pricing__factors li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.service-pricing__cta {
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------- Related industries --- */
+.service-industries__strip {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------- Related work --- */
+.service-work-card a {
+  display: block;
+  padding: var(--space-6);
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+}
+
+.service-work-card__client {
+  display: block;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.service-work-card__title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-2);
+}
+
+.service-work-card__text {
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.service-work-card__more {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.service-work-card a:hover .service-work-card__more {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------- CTA --- */
+.service-cta {
+  text-align: center;
+}
+
+.service-cta__inner {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.service-cta__inner h2 {
+  font-size: var(--fs-xl);
+}
+
+.service-cta__inner p {
+  color: var(--text-muted);
+}
+
+.service-cta__inner .btn {
+  margin-top: var(--space-2);
+}
+
+/* -------------------------------------------------------- Hub grid --- */
+.services-hub__grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
