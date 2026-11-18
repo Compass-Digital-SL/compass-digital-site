@@ -1,0 +1,17 @@
+/*
+Theme Name: Compass Digital
+Theme URI: https://compassdigital.lk/
+Author: Compass Digital
+Author URI: https://compassdigital.lk/
+Description: Classic WordPress theme for Compass Digital — websites, SEO and POS systems. Built with Vite, no page builders, no jQuery on the front end.
+Version: 0.1.0
+Requires at least: 6.4
+Tested up to: 7.1
+Requires PHP: 8.1
+License: UNLICENSED
+Text Domain: compass-digital
+Tags: custom-theme, marketing
+*/
+
+/* Runtime styles are built by Vite and enqueued from assets/dist.
+   This file exists for the WordPress theme header only. */

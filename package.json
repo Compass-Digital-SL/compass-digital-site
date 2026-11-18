@@ -8,7 +8,10 @@
     "wp:start": "node scripts/wp-env.js start",
     "wp:stop": "node scripts/wp-env.js stop",
     "wp:reset": "node scripts/wp-env.js clean all && npm run wp:seed",
-    "wp:seed": "bash scripts/setup.sh"
+    "wp:seed": "bash scripts/setup.sh",
+    "theme:install": "npm --prefix theme install",
+    "dev": "npm --prefix theme run dev",
+    "build": "npm --prefix theme run build"
   },
   "devDependencies": {
     "@wordpress/env": "^10.10.0"
