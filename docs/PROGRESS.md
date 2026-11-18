@@ -6,7 +6,7 @@
 - [x] 3 Theme and build
 - [ ] 4 CI
 - [ ] 5 SEO strategy
-- [ ] 6 Design system
+- [x] 6 Design system
 - [ ] 7 Navigation
 - [ ] 8 Hero and motion
 - [ ] 9 Post types and settings
@@ -26,6 +26,39 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 6 — Design system (2026-11-18)
+**Done**
+- Wrote `docs/DESIGN.md`: dark-first spec — tokens, type/spacing/radii/elevation,
+  focus ring, motion, glass rules, component inventory, measured AA contrast table.
+- Expanded `assets/src/css/tokens.css`: semantic dark-base tokens (surface/text/accent/
+  border), derived `--color-navy-700`, `--color-teal-300` (AA link on dark), glass tokens
+  (≤12px blur, 5% fill, 10% border), radii, 3 elevation steps, motion (150/300/600ms, one
+  easing family), brass focus ring.
+- New `assets/src/css/components.css`: buttons (primary/ghost), links, cards (+glass hover),
+  tags, badges, form fields, accordion, tabs, section header; light-section overrides.
+- `main.css` flipped to dark base (navy surface, ivory text) + layout primitives
+  (`.container`, `.grid`); `theme.json` styles background→navy, text→ivory.
+- New `assets/src/js/ui.js`: accordion + WAI-ARIA tabs (roving tabindex, arrow keys),
+  no jQuery, progressive enhancement; wired into `main.js`.
+- Hidden `/styleguide/` page: template `page-styleguide.php` (renders all tokens +
+  components, styleguide-only CSS inlined so it never ships to real pages) + `inc/styleguide.php`
+  (noindex,nofollow via `wp_robots`, excluded from core sitemap). WP page created (ID 26).
+
+**Decisions**
+- **Direction change:** site is now **dark-first** (brief's premium editorial look), reversing
+  Task 3's ivory default. Ivory kept as `--surface-light` / `.section--light` for rare light blocks.
+- Base teal (`#2F7F86`) is 3.1:1 on navy — **fails AA for text**; links/body on dark use
+  brightened `--color-teal-300` (#5FB5BD, 6.2:1). Brass fails as small text on ivory, so the
+  light-section eyebrow uses dark-brass `#7A5E1F` (5.5:1) and light links dark-teal `#1F6168`.
+- Glass is restrained: header, hover cards, command menu only; documented "≤3 per viewport".
+- Styleguide layout CSS inlined in the template (not the bundle) to protect the perf budget.
+- Verified at 375px and laptop width in-browser; tabs/accordion interactive; CSS 8.85KB
+  (2.52KB gzip), JS 1.39KB (0.58KB gzip) — well under budget.
+
+**Next**
+- Task 7: Navigation. (Header logo is currently black-on-navy — fix header/branding for the
+  dark base there.)
 
 ### Task 1 — Scaffolding (2026-11-18)
 **Done**
