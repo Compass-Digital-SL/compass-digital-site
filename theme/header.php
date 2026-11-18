@@ -19,11 +19,23 @@ defined( 'ABSPATH' ) || exit;
 
 <a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'compass-digital' ); ?></a>
 
-<header class="site-header" role="banner">
+<header class="site-header" role="banner" data-site-header>
 	<div class="site-header__inner">
 		<?php get_template_part( 'template-parts/header/branding' ); ?>
 		<?php get_template_part( 'template-parts/header/nav' ); ?>
 	</div>
 </header>
 
+<?php
+get_template_part( 'template-parts/command-menu' );
+get_template_part( 'template-parts/mobile-bar' );
+get_template_part( 'template-parts/scroll-rail' );
+get_template_part( 'template-parts/contact-chip' );
+?>
+
 <main id="main" class="site-main" tabindex="-1">
+<?php
+if ( ! is_front_page() ) {
+	get_template_part( 'template-parts/breadcrumbs' );
+}
+?>

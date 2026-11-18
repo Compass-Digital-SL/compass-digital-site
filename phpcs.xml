@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Compass Digital">
+	<description>WordPress coding standards for the Compass Digital theme.</description>
+
+	<!-- Scan the theme and the Compass Core plugin. -->
+	<file>theme</file>
+	<file>plugins</file>
+
+	<!-- Never scan build output, vendors or deps. -->
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>theme/assets/dist/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/><!-- show sniff codes and progress -->
+	<arg name="parallel" value="4"/>
+
+	<!-- Warnings are advisory; only errors fail CI. -->
+	<config name="ignore_warnings_on_exit" value="1"/>
+
+	<!-- WordPress standard (code style, security, best practices). -->
+	<rule ref="WordPress"/>
+
+	<!-- Text domain used across the theme. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="compass-digital"/>
+				<element value="compass-core"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		The Vite integration deliberately prints native <script type="module">
+		tags (dev server + ESM entry) that cannot go through wp_enqueue_script,
+		and passes null versions because built filenames are content-hashed.
+		Scope those sniffs off for that one file; the rest of the theme stays strict.
+	-->
+	<rule ref="WordPress.WP.EnqueuedResources.NonEnqueuedScript">
+		<exclude-pattern>theme/inc/assets.php</exclude-pattern>
+	</rule>
+
+	<!-- Minimum supported PHP (matches .wp-env.json). -->
+	<config name="testVersion" value="8.3-"/>
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>

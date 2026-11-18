@@ -1,0 +1,165 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "24"
+  PHP_VERSION: "8.3"
+  SITE_URL: "http://localhost:8888"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Linting + static checks: PHPCS (WordPress), ESLint, Stylelint, PHP -l.
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint & static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            theme/package-lock.json
+
+      - name: Cache Composer packages
+        uses: actions/cache@v6
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.json') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install npm dependencies (root)
+        run: npm ci
+
+      - name: Install npm dependencies (theme)
+        run: npm ci --prefix theme
+
+      - name: PHP syntax check (php -l)
+        run: find theme -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+
+      - name: PHP CodeSniffer (WordPress standard)
+        run: composer run lint:php
+
+      - name: ESLint
+        run: npm run lint:js
+
+      - name: Stylelint
+        run: npm run lint:css
+
+  # ---------------------------------------------------------------------------
+  # Vite build. Uploads dist so the e2e job reuses the exact same assets.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build theme (Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            theme/package-lock.json
+
+      - name: Install npm dependencies (theme)
+        run: npm ci --prefix theme
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload built assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: theme-dist
+          path: theme/assets/dist
+          retention-days: 1
+
+  # ---------------------------------------------------------------------------
+  # End-to-end: boot wp-env, run Playwright smoke + axe, then Lighthouse CI.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: E2E, a11y & Lighthouse
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            theme/package-lock.json
+
+      - name: Install npm dependencies (root)
+        run: npm ci
+
+      - name: Install npm dependencies (theme)
+        run: npm ci --prefix theme
+
+      - name: Download built assets
+        uses: actions/download-artifact@v8
+        with:
+          name: theme-dist
+          path: theme/assets/dist
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start WordPress (wp-env)
+        run: npx wp-env start
+
+      - name: Seed content
+        run: npm run wp:seed
+
+      - name: Wait for the site to answer
+        run: npx wait-on --timeout 60000 ${{ env.SITE_URL }}
+
+      - name: Playwright smoke + axe
+        run: npm run test:e2e
+
+      - name: Lighthouse CI (budgets)
+        run: npm run lhci
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+      - name: Stop WordPress
+        if: always()
+        run: npx wp-env stop || true

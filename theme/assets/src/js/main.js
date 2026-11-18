@@ -2,22 +2,37 @@
 // No jQuery. Progressive enhancement only; the site works without JS.
 
 import "../css/main.css";
+import { initUI } from "./ui.js";
+import { initNavigation } from "./command-menu.js";
 
-/** Mobile nav toggle. */
-function initNavToggle() {
-  const toggle = document.querySelector(".primary-nav__toggle");
-  const menu = document.getElementById("primary-menu");
-  if (!toggle || !menu) return;
+// Lazy-load motion so its bundle is fetched only on pages that use it, and the
+// heavier hero module only on the home page.
+function initMotion() {
+  if (document.querySelector("[data-hero]")) {
+    import("./hero.js").then((m) => m.initHero());
+    return;
+  }
+  const needsMotion = document.querySelector(
+    "[data-reveal],[data-counter],[data-magnetic],[data-parallax]"
+  );
+  if (needsMotion) {
+    import("./motion.js").then((m) => {
+      m.initScrollReveal();
+      m.initCounters();
+      m.initMagnetic();
+      m.initParallax();
+    });
+  }
+}
 
-  toggle.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    menu.classList.toggle("is-open", !open);
-  });
+function boot() {
+  initNavigation();
+  initUI();
+  initMotion();
 }
 
 if (document.readyState !== "loading") {
-  initNavToggle();
+  boot();
 } else {
-  document.addEventListener("DOMContentLoaded", initNavToggle);
+  document.addEventListener("DOMContentLoaded", boot);
 }

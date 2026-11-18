@@ -16,6 +16,19 @@ wp() {
 echo "==> Checking WordPress is up..."
 wp core is-installed
 
+echo "==> Activate the Compass Digital theme"
+# wp-env mounts ./theme into wp-content/themes/ (folder basename = "theme") but
+# does not reliably activate it, so without this the default theme renders and
+# pages lack #main / the theme's landmarks. Resolve the slug from the theme's
+# style.css "Theme Name" so this survives a folder rename, then activate it.
+THEME_SLUG="$(wp theme list --field=name --format=csv 2>/dev/null | grep -ix -e theme -e compass-digital | head -n1 || true)"
+if [ -z "$THEME_SLUG" ]; then
+  echo "!! Could not find the Compass Digital theme among installed themes:" >&2
+  wp theme list --fields=name,title,status >&2 || true
+  exit 1
+fi
+wp theme activate "$THEME_SLUG"
+
 echo "==> Permalinks -> /%postname%/"
 wp rewrite structure '/%postname%/' --hard
 wp rewrite flush --hard
@@ -65,6 +78,12 @@ echo "==> Set Home as the static front page"
 wp option update show_on_front 'page'
 wp option update page_on_front "$HOME_ID"
 wp option update page_for_posts 0
+
+echo "==> Activate the Compass Core plugin (post types + settings)"
+wp plugin activate compass-core 2>/dev/null || echo "!! compass-core not found — check .wp-env.json mappings" >&2
+
+echo "==> Seed placeholder Work + Testimonials"
+wp compass seed || true
 
 echo ""
 echo "Done. WordPress is seeded at http://localhost:8888"

@@ -1,36 +1,57 @@
 /* Design tokens — single source of truth for runtime CSS.
-   Mirrors docs/BRAND.md and theme.json. Expanded in Task 6. */
+   Dark-first design system (see docs/DESIGN.md). Mirrors docs/BRAND.md + theme.json. */
 
 :root {
-  /* Brand palette */
+  /* --- Brand palette --- */
   --color-navy: #0f2a43;
   --color-brass: #c9a24b;
   --color-ivory: #f6f2ea;
   --color-teal: #2f7f86;
   --color-ink: #1b1f24;
 
-  /* Semantic (provisional; finalised in Task 6) */
-  --surface: var(--color-ivory);
-  --surface-dark: var(--color-navy);
-  --text: var(--color-ink);
-  --text-on-dark: var(--color-ivory);
+  /* --- Derived --- */
+  --color-navy-700: #0b2033; /* darker navy — header / card base */
+  --color-teal-300: #5fb5bd; /* brightened teal — links/text on dark (AA) */
+
+  /* --- Semantic (dark base) --- */
+  --surface: var(--color-navy);
+  --surface-2: var(--color-navy-700);
+  --surface-sunken: var(--color-ink);
+  --surface-light: var(--color-ivory);
+
+  --text: var(--color-ivory);
+  --text-muted: #b9c2cc;
+  --text-on-light: var(--color-ink);
+
   --accent: var(--color-brass);
-  --link: var(--color-teal);
-  --focus: var(--color-teal);
-  --border: color-mix(in srgb, var(--color-ink) 14%, transparent);
+  --accent-text: var(--color-navy); /* text on a brass fill */
+  --secondary: var(--color-teal-300);
+  --link: var(--color-teal-300);
+  --focus: var(--color-brass);
 
-  /* Type families */
-  --font-sans: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: "Fraunces", "Fraunces Fallback", Georgia, Cambria, "Times New Roman", serif;
+  --border: color-mix(in srgb, var(--color-ivory) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--color-ivory) 24%, transparent);
 
-  /* Fluid type scale */
+  /* --- Glass (restrained: header, hover cards, command menu; ≤3 per viewport) --- */
+  --glass-bg: color-mix(in srgb, #fff 5%, transparent);
+  --glass-border: color-mix(in srgb, #fff 10%, transparent);
+  --glass-blur: 12px;
+
+  /* --- Type families (generic keywords lowercased for Stylelint) --- */
+  --font-sans: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
+  --font-serif: "Fraunces", "Fraunces Fallback", georgia, cambria, "Times New Roman", serif;
+
+  /* --- Fluid type scale --- */
   --fs-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
   --fs-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
   --fs-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --fs-xl: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
   --fs-2xl: clamp(2.25rem, 1.8rem + 2.25vw, 3.75rem);
 
-  /* Spacing (4px base) */
+  --lh-tight: 1.15;
+  --lh-base: 1.6;
+
+  /* --- Spacing (4px base) --- */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -39,11 +60,29 @@
   --space-8: 2rem;
   --space-12: 3rem;
   --space-16: 4rem;
+  --space-24: 6rem;
 
-  /* Layout */
+  /* --- Layout --- */
   --content-width: 720px;
   --wide-width: 1120px;
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
 
-  --radius: 0.5rem;
+  /* --- Radii --- */
+  --radius-sm: 0.375rem;
+  --radius: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-pill: 999px;
+
+  /* --- Elevation (soft, cool) --- */
+  --shadow-1: 0 1px 2px rgba(5, 12, 20, 0.4);
+  --shadow-2: 0 8px 24px -8px rgba(5, 12, 20, 0.55);
+  --shadow-3: 0 20px 48px -12px rgba(5, 12, 20, 0.6);
+
+  /* --- Motion --- */
+  --dur-fast: 150ms;
+  --dur-mid: 300ms;
+  --dur-slow: 600ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }

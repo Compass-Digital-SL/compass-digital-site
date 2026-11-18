@@ -11,9 +11,21 @@
     "wp:seed": "bash scripts/setup.sh",
     "theme:install": "npm --prefix theme install",
     "dev": "npm --prefix theme run dev",
-    "build": "npm --prefix theme run build"
+    "build": "npm --prefix theme run build",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"theme/assets/src/**/*.css\"",
+    "test:e2e": "playwright test",
+    "lhci": "lhci autorun"
   },
   "devDependencies": {
-    "@wordpress/env": "^10.10.0"
+    "@axe-core/playwright": "^4.10.0",
+    "@eslint/js": "^9.15.0",
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "^1.49.0",
+    "@wordpress/env": "^10.10.0",
+    "eslint": "^9.15.0",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
+    "wait-on": "^8.0.1"
   }
 }

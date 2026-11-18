@@ -4,12 +4,12 @@
 - [x] 1 Scaffolding
 - [x] 2 Local WP env
 - [x] 3 Theme and build
-- [ ] 4 CI
+- [x] 4 CI
 - [x] 5 SEO strategy
-- [ ] 6 Design system
-- [ ] 7 Navigation
-- [ ] 8 Hero and motion
-- [ ] 9 Post types and settings
+- [x] 6 Design system
+- [x] 7 Navigation
+- [x] 8 Hero and motion
+- [x] 9 Post types and settings
 - [ ] 10 Home page
 - [ ] 11 Service pages
 - [ ] 12 Industry pages
@@ -26,6 +26,174 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 9 — Post types and settings (2026-11-18)
+**Done**
+- New **Compass Core** plugin (`plugins/compass-core/`, maps to
+  `wp-content/plugins/compass-core`) — all content lives in a plugin, not the theme, so it
+  survives a theme change. Modular `includes/` files, prefix `compass_core_`, text domain
+  `compass-core`.
+- **Post types**: `work` (public case studies: single + `/work/` archive), `testimonial`
+  (ui-only, not public), `quote_request` (**private** — `public=false`,
+  `publicly_queryable=false`, `rewrite=false`, no REST; enquiries never reach the front end).
+- **Taxonomies**: `industry` and `service`, hierarchical, attached to Work, `show_in_rest`.
+- **Native meta boxes** (no ACF, `includes/meta-boxes.php`): one field-def map drives rendering
+  + a nonce'd, per-type sanitised save. Work: client, year, live URL, tech, problem, solution,
+  results, gallery, featured. Testimonial: author name, role, rating, URL, featured. Quote
+  request: name, email, phone, company, service, budget, message, source, **status**. Meta keys
+  `_compass_*`, registered via `register_post_meta()` (REST for all but quote requests).
+  Gallery uses the core `wp.media` picker (admin jQuery only; front end stays jQuery-free).
+- **Quote Requests admin** (`includes/quote-requests.php`): custom columns (name/email/phone/
+  service/status pill), a **status filter** dropdown, and **CSV export** (`admin-post.php`,
+  nonce + `edit_others_posts`, respects the active filter), newest first.
+- **Site Settings** page (Settings → Site Settings, `includes/settings.php`): phone, WhatsApp,
+  email, address, service area, registration number, opening hours, social links — one
+  sanitised option array via the Settings API. The theme reads them: the plugin overlays them
+  onto the theme's existing `compass_contact_details` filter (header/footer/command-menu/
+  WhatsApp update with no theme edit), plus `compass_get_setting()` for direct reads.
+- **Seeding**: WP-CLI `wp compass seed [--fresh]` (`includes/class-compass-core-cli.php`),
+  wired into `scripts/setup.sh` after plugin activation. Creates 3 Work + 3 testimonials,
+  each clearly marked placeholder (`[Sample]` title + `_compass_placeholder` meta), idempotent.
+- PHPCS now also scans `plugins/` (text domain `compass-core` registered); `.wp-env.json`
+  remapped to `wp-content/plugins/compass-core → ./plugins/compass-core`.
+
+**Decisions**
+- Quote requests are a locked-down private CPT rather than a DB table: native admin UI,
+  trash/restore and capability checks for free, with zero front-end surface.
+- Theme reads settings through the **existing** `compass_contact_details` filter so Task 7's
+  nav/footer light up automatically; no theme files changed this task.
+- Gallery stored as a CSV of attachment IDs in one meta row (simple, no repeater library).
+
+**Checks**
+- PHPCS (theme + plugin) 0 errors; `php -l` clean on all plugin files; Vite build green
+  (CSS 6.61KB gzip, home JS 2.93KB gzip — budgets intact; plugin ships no front-end JS/CSS).
+
+**Owner action**
+- Fill **Settings → Site Settings** with real contact/registration/social details.
+- Replace or delete the `[Sample]` Work and Testimonials before launch (`wp compass seed --fresh`
+  removes them).
+
+**Next**
+- Task 10: Home page (sections should carry the Task 8 bearing ids; can read featured Work/
+  testimonials from these post types).
+
+### Task 8 — Hero and motion (2026-11-18)
+**Done**
+- **"The Expedition" hero** (`front-page.php`): full-screen dark scene, inline-SVG brass
+  compass (ring, 72 ticks, cardinals, needle) ringed by 6 bearings (Be found / Look better /
+  Sell smarter / Get an app / Sell online / Welcome travellers). Headline "Find your way
+  forward." is real text (LCP), per-word spans; sub-line + Request-a-quote/Explore CTAs.
+  Hero exposes `data-waypoint` so the scroll rail lights up.
+- **Reusable motion system** (`assets/src/js/motion.js`): scroll-reveal (IntersectionObserver,
+  unobserve on reveal), letter reveal (keeps accessible text via `aria-label`), number
+  counters, magnetic buttons, cursor glow, ≤3-layer parallax. All no-op under
+  prefers-reduced-motion; pointer effects gated to `(pointer: fine)`.
+- **Hero behaviour** (`assets/src/js/hero.js`): needle follows pointer via rAF lerp; nearest
+  bearing (±30° arc) glows; touch devices get a slow autonomous drift; **device-motion tilt
+  is opt-in** behind an "Enable motion" tap (iOS `requestPermission` gesture). Bearing/Explore
+  clicks smooth-scroll + focus-handoff to the target id (Task 10 sections).
+- **CSS** (`assets/src/css/hero.css`): tokens only; compass geometry, bearings placed with
+  container-query units (`cqmin`) on desktop and a 2-col list on mobile; glow states; reveal/
+  parallax/glow base + full static reduced-motion equivalent. SVG gradient stops driven by
+  `color-mix` (no hard-coded hex).
+- **Lazy-loading** (`main.js`): hero.js imported only when `[data-hero]` exists; motion.js only
+  when reveal/counter/magnetic/parallax hooks exist — so inner pages never parse hero JS.
+
+**Decisions**
+- No GSAP: CSS + WAAPI + rAF cover everything, keeping the budget tiny.
+- Bearings link to on-page ids (`#seo`, `#websites`, `#pos`, `#app`, `#ecommerce`, `#travel`);
+  Task 10's tailored sections must carry those ids (scroll falls back to native jump until then).
+- Hero paints instantly: SVG is `aria-hidden`, headline is real text, no layout-shifting reveal.
+- Device tilt stays opt-in per the brief (touch button, off by default).
+
+**Checks**
+- Lint (CSS/JS/PHPCS), build and e2e all pass (6/6, axe clean on home, no console errors).
+- Budgets: hero JS = hero(1.38) + motion(1.41) ≈ **2.8KB gzip** (< 25KB); homepage JS
+  ≈ 5.7KB gzip (< 90KB); CSS **6.56KB gzip** (< 40KB). hero/motion are split, on-demand chunks.
+- Verified desktop + 375px in-browser: needle tracks pointer, active bearing glows, mobile
+  reflows to a clean list.
+
+**Next**
+- Task 9: Post types and settings. Task 10 home sections should expose the bearing ids above.
+
+### Task 7 — Navigation (2026-11-18)
+**Done**
+- One nav data source `inc/nav.php`: `compass_nav_map()` (6 services, 5 industries,
+  Work, Company), `compass_primary_links()`, filterable `compass_contact_details()` +
+  `compass_whatsapp_url()`. Header, command menu, mobile sheet and footer all read it.
+- **Desktop header** (`header.php`, `template-parts/header/nav.php`): logo left; Services +
+  Industries CSS-first dropdowns (real links, open on hover/focus, JS upgrades to click),
+  Work/About/Insights; right side ghost **Navigate (K)** + brass **Get a quote**. Sticky,
+  glass, shrinks on scroll (`.is-scrolled`).
+- **Command menu** (`template-parts/command-menu.php` + `assets/src/js/command-menu.js`):
+  full-screen glass overlay, server-rendered grouped list, K / button to open, type-to-filter,
+  Arrow/Enter/Esc, focus trap, `inert` background, `[hidden]` default.
+- **Mobile bottom bar** (<768px, `template-parts/mobile-bar.php`): Home, Services, Work,
+  WhatsApp, Quote; Services opens a bottom sheet (Services/Industries/Company); body gets
+  bottom padding so content clears the bar; safe-area insets.
+- **Scroll rail** (`template-parts/scroll-rail.php`, ≥1240px): JS builds compass ticks from
+  on-page `[data-waypoint][id]` sections, IntersectionObserver active state, click-to-jump;
+  stays hidden until a page opts in (none yet).
+- **Breadcrumbs** (`template-parts/breadcrumbs.php`): inner pages only, ancestor-aware,
+  `aria-current`; ready for BreadcrumbList schema in the SEO task.
+- **Footer** rebuilt into sitemap columns (Services/Industries/Company/Legal) + contact
+  (phone/WhatsApp/email/address), social (hidden until set), registration line.
+- **Desktop contact chip** (`template-parts/contact-chip.php`): one WhatsApp chip, desktop only.
+- New `assets/src/css/nav.css` (imported into bundle), tokens only. Verified desktop +
+  375px in-browser; command menu, dropdowns and sheet work; axe clean (6/6 e2e pass),
+  no console errors. Bundle: CSS 5.35KB gzip, JS 2.20KB gzip — within budget.
+
+**Decisions**
+- Everything is progressive enhancement over real `<a>` links: header, command-menu,
+  sheet and footer all work with JS disabled.
+- Services/industries lists are hard-coded from `docs/BRAND.md` (child pages arrive in
+  Tasks 11–12); URLs derived from section bases so they resolve once those pages exist.
+- Vendor-prefixed `-webkit-mask`/`-webkit-backdrop-filter` dropped to satisfy the project's
+  `property-no-vendor-prefix` lint rule; unprefixed `mask`/`backdrop-filter` are fine in
+  current browsers and match the existing glass in `components.css`.
+- Nav URL helpers return **raw** URLs; callers `esc_url()` at output (keeps PHPCS escaping
+  checks honest, no double-escaping).
+
+**Owner action**
+- Contact + registration are placeholders (`+94 11 000 0000`, `hello@compassdigital.lk`,
+  empty social/reg-no). Override via the `compass_contact_details` filter with real details.
+
+**Next**
+- Task 8: Hero and motion. (Hero section can expose `[data-waypoint]` anchors to light up
+  the scroll rail.)
+
+### Task 6 — Design system (2026-11-18)
+**Done**
+- Wrote `docs/DESIGN.md`: dark-first spec — tokens, type/spacing/radii/elevation,
+  focus ring, motion, glass rules, component inventory, measured AA contrast table.
+- Expanded `assets/src/css/tokens.css`: semantic dark-base tokens (surface/text/accent/
+  border), derived `--color-navy-700`, `--color-teal-300` (AA link on dark), glass tokens
+  (≤12px blur, 5% fill, 10% border), radii, 3 elevation steps, motion (150/300/600ms, one
+  easing family), brass focus ring.
+- New `assets/src/css/components.css`: buttons (primary/ghost), links, cards (+glass hover),
+  tags, badges, form fields, accordion, tabs, section header; light-section overrides.
+- `main.css` flipped to dark base (navy surface, ivory text) + layout primitives
+  (`.container`, `.grid`); `theme.json` styles background→navy, text→ivory.
+- New `assets/src/js/ui.js`: accordion + WAI-ARIA tabs (roving tabindex, arrow keys),
+  no jQuery, progressive enhancement; wired into `main.js`.
+- Hidden `/styleguide/` page: template `page-styleguide.php` (renders all tokens +
+  components, styleguide-only CSS inlined so it never ships to real pages) + `inc/styleguide.php`
+  (noindex,nofollow via `wp_robots`, excluded from core sitemap). WP page created (ID 26).
+
+**Decisions**
+- **Direction change:** site is now **dark-first** (brief's premium editorial look), reversing
+  Task 3's ivory default. Ivory kept as `--surface-light` / `.section--light` for rare light blocks.
+- Base teal (`#2F7F86`) is 3.1:1 on navy — **fails AA for text**; links/body on dark use
+  brightened `--color-teal-300` (#5FB5BD, 6.2:1). Brass fails as small text on ivory, so the
+  light-section eyebrow uses dark-brass `#7A5E1F` (5.5:1) and light links dark-teal `#1F6168`.
+- Glass is restrained: header, hover cards, command menu only; documented "≤3 per viewport".
+- Styleguide layout CSS inlined in the template (not the bundle) to protect the perf budget.
+- Verified at 375px and laptop width in-browser; tabs/accordion interactive; CSS 8.85KB
+  (2.52KB gzip), JS 1.39KB (0.58KB gzip) — well under budget.
+
+**Next**
+- Task 7: Navigation. (Header logo is currently black-on-navy — fix header/branding for the
+  dark base there.)
 
 ### Task 1 — Scaffolding (2026-11-18)
 **Done**
@@ -99,6 +267,37 @@
 
 **Next**
 - Task 4: CI (lint, build, PHP checks).
+
+### Task 4 — CI (2026-11-18)
+**Done**
+- `.github/workflows/ci.yml`: runs on every PR and push to `main`. Three jobs —
+  **lint** (PHPCS WordPress standard, ESLint, Stylelint, `php -l`), **build** (Vite,
+  uploads `theme-dist` artifact), **e2e** (boots wp-env, seeds, Playwright smoke + axe,
+  Lighthouse CI). npm + Composer caches; concurrency cancels superseded runs.
+- Tooling + config added so the jobs are real: root `composer.json` (squizlabs/php_codesniffer,
+  wp-coding-standards/wpcs, phpcompatibility-wp) + `phpcs.xml`; `eslint.config.js` (flat, ESLint 9)
+  + `.stylelintrc.json`; `playwright.config.js` + `tests/e2e/smoke.spec.js` (home `/`,
+  quote `/get-a-quote/`, 404 — status + no console/page errors + axe critical/serious);
+  `.lighthouserc.json` with CLAUDE.md rule-5 budgets. Root `package.json` scripts:
+  `lint:js`, `lint:css`, `test:e2e`, `lhci`, plus devDeps.
+- `.github/dependabot.yml`: weekly npm (root + theme), Composer, github-actions.
+- PR template extended with SEO / Speed / Accessibility / Mobile checklists.
+- README: CI section (what each job checks, run-locally commands) + donkey-level
+  "turn on branch protection" steps for GitHub.
+- `.gitignore`: Playwright report/results dirs.
+
+**Decisions**
+- INP has no Lighthouse lab metric, so the budget is enforced as Total Blocking Time < 200ms;
+  real INP comes from field data later (Task 18 performance).
+- Lighthouse asserts performance + accessibility ≥ 0.95 (error) and best-practices as warn;
+  SEO category is not asserted because the local wp-env sets `blog_public 0` (noindex), which
+  would fail SEO scoring. Real SEO checks live in Tasks 16–17.
+- Build artifact is shared from the **build** job to **e2e** so both exercise the same assets.
+- All config/YAML/JSON/XML validated locally; the lint/build/test runs themselves need
+  `composer install` + `npm ci` (network), so they first execute on the GitHub runner.
+
+**Next**
+- Task 5: SEO strategy.
 
 ### Task 5 — SEO strategy (2026-11-18)
 **Done**
