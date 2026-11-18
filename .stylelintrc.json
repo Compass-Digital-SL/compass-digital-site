@@ -11,6 +11,11 @@
     "declaration-empty-line-before": null,
     "no-descending-specificity": null,
     "alpha-value-notation": null,
-    "color-function-notation": null
+    "color-function-notation": null,
+    "selector-class-pattern": [
+      "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?:__[a-z0-9]+(?:-[a-z0-9]+)*)?(?:--[a-z0-9]+(?:-[a-z0-9]+)*)?$",
+      { "message": "Use lowercase BEM classes (block__element--modifier)" }
+    ],
+    "property-no-vendor-prefix": [true, { "ignoreProperties": ["text-size-adjust"] }]
   }
 }

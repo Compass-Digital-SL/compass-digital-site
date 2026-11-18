@@ -3,20 +3,32 @@ const { test, expect } = require("@playwright/test");
 const { AxeBuilder } = require("@axe-core/playwright");
 
 /**
- * Collect console errors and uncaught page errors while a page loads.
- * Returns an array of message strings (empty = clean).
+ * Watch a page for JS errors and failed network responses.
+ *
+ * `errors`  — console.error output and uncaught page errors (app bugs).
+ * `failed`  — any response with status >= 400, including the main document.
+ *             Browser "Failed to load resource" console noise is dropped here
+ *             because the same failures are captured (with URL + status) via the
+ *             response event, letting a route whitelist its own expected status
+ *             (e.g. the 404 page's own 404) without masking real sub-resource 404s.
  */
 function watchForErrors(page) {
   const errors = [];
+  const failed = [];
   page.on("console", (msg) => {
-    if (msg.type() === "error") {
+    if (msg.type() === "error" && !msg.text().startsWith("Failed to load resource")) {
       errors.push(`console.error: ${msg.text()}`);
     }
   });
   page.on("pageerror", (err) => {
     errors.push(`pageerror: ${err.message}`);
   });
-  return errors;
+  page.on("response", (res) => {
+    if (res.status() >= 400) {
+      failed.push({ url: res.url(), status: res.status() });
+    }
+  });
+  return { errors, failed };
 }
 
 const pages = [
@@ -28,7 +40,7 @@ const pages = [
 for (const p of pages) {
   test.describe(p.name, () => {
     test(`loads with no console errors (${p.name})`, async ({ page }) => {
-      const errors = watchForErrors(page);
+      const { errors, failed } = watchForErrors(page);
       const response = await page.goto(p.path, { waitUntil: "networkidle" });
 
       expect(response, "navigation produced a response").not.toBeNull();
@@ -40,7 +52,19 @@ for (const p of pages) {
         await expect(page.locator("h1").first()).toBeVisible();
       }
 
+      // The main document may carry the route's expected status (e.g. 404);
+      // any other failed request is a real broken resource.
+      const brokenResources = failed.filter(
+        (r) => !(r.url === response.url() && r.status === p.expectStatus)
+      );
+
       expect(errors, `console/page errors on ${p.name}:\n${errors.join("\n")}`).toEqual([]);
+      expect(
+        brokenResources,
+        `failed resource requests on ${p.name}:\n${brokenResources
+          .map((r) => `${r.status} ${r.url}`)
+          .join("\n")}`
+      ).toEqual([]);
     });
 
     test(`has no critical/serious axe violations (${p.name})`, async ({ page }) => {
