@@ -48,6 +48,12 @@ coverage/
 lighthouse-reports/
 .lighthouseci/
 
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
 # OS and editors
 .DS_Store
 Thumbs.db

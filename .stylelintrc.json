@@ -1,0 +1,16 @@
+{
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": [
+    "**/node_modules/**",
+    "theme/assets/dist/**",
+    "theme/assets/fonts/**",
+    "vendor/**"
+  ],
+  "rules": {
+    "custom-property-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "no-descending-specificity": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null
+  }
+}
