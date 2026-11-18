@@ -5,9 +5,9 @@
   "description": "Marketing website for Compass Digital — classic WordPress theme with a Vite build.",
   "license": "UNLICENSED",
   "scripts": {
-    "wp:start": "wp-env start",
-    "wp:stop": "wp-env stop",
-    "wp:reset": "wp-env clean all && npm run wp:seed",
+    "wp:start": "node scripts/wp-env.js start",
+    "wp:stop": "node scripts/wp-env.js stop",
+    "wp:reset": "node scripts/wp-env.js clean all && npm run wp:seed",
     "wp:seed": "bash scripts/setup.sh"
   },
   "devDependencies": {

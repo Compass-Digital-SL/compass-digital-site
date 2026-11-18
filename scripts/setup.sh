@@ -8,8 +8,9 @@
 set -euo pipefail
 
 # Run WP-CLI inside the wp-env "cli" container.
+# Go through scripts/wp-env.js so the dns connectivity-detection workaround applies here too.
 wp() {
-  npx --no-install wp-env run cli wp "$@"
+  node scripts/wp-env.js run cli wp "$@"
 }
 
 echo "==> Checking WordPress is up..."

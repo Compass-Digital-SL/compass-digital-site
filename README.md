@@ -70,8 +70,13 @@ npm run wp:seed
 > **Note:** this local site is set to discourage search engines and must never be
 > made public. It is for development only.
 
-> **WordPress version:** pinned to **7.1.4** in `.wp-env.json`. (Leaving `core`
-> unset makes wp-env query api.wordpress.org for the latest version, which fails
-> on some Windows setups with *"Could not find the current WordPress version in
-> the cache and the network is not available."* Pinning avoids that lookup.) To
-> move to a newer release, edit the `core` version and run `npm run wp:reset`.
+> **WordPress version:** pinned to **7.1.4** in `.wp-env.json`. To move to a newer
+> release, edit the `core` version and run `npm run wp:reset`.
+
+> **Connectivity workaround (Windows):** the `wp:*` scripts run wp-env through
+> `scripts/wp-env.js` instead of calling `wp-env` directly. wp-env detects whether
+> it is online with `dns.resolve()`, which fails on some Windows/VPN setups even
+> when the internet works (symptom: *"Could not find the current WordPress version
+> in the cache and the network is not available."*). The wrapper makes that check
+> fall back to the OS resolver. Nothing to configure — just use the `npm run wp:*`
+> commands. See the comment in `scripts/wp-env.js` for details.

@@ -4,9 +4,7 @@
 	"themes": [
 		"./theme"
 	],
-	"plugins": [
-		"seo-by-rank-math"
-	],
+	"plugins":  [ "https://downloads.wordpress.org/plugin/seo-by-rank-math.zip" ],
 	"mappings": {
 		"wp-content/plugins/compass-digital": "./plugins"
 	},
@@ -19,7 +17,7 @@
 	"env": {
 		"development": {
 			"plugins": [
-				"query-monitor"
+				"https://downloads.wordpress.org/plugin/query-monitor.zip"
 			]
 		}
 	}
