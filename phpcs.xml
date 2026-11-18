@@ -16,17 +16,29 @@
 	<arg value="sp"/><!-- show sniff codes and progress -->
 	<arg name="parallel" value="4"/>
 
+	<!-- Warnings are advisory; only errors fail CI. -->
+	<config name="ignore_warnings_on_exit" value="1"/>
+
 	<!-- WordPress standard (code style, security, best practices). -->
-	<rule ref="WordPress">
-		<!-- Theme prefix for globals/hooks. -->
-		<properties/>
-	</rule>
+	<rule ref="WordPress"/>
 
 	<!-- Text domain used across the theme. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="compass-digital"/>
+			<property name="text_domain" type="array">
+				<element value="compass-digital"/>
+			</property>
 		</properties>
+	</rule>
+
+	<!--
+		The Vite integration deliberately prints native <script type="module">
+		tags (dev server + ESM entry) that cannot go through wp_enqueue_script,
+		and passes null versions because built filenames are content-hashed.
+		Scope those sniffs off for that one file; the rest of the theme stays strict.
+	-->
+	<rule ref="WordPress.WP.EnqueuedResources.NonEnqueuedScript">
+		<exclude-pattern>theme/inc/assets.php</exclude-pattern>
 	</rule>
 
 	<!-- Minimum supported PHP (matches .wp-env.json). -->
