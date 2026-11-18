@@ -110,7 +110,7 @@
   width: 72%;
   height: 72%;
   overflow: visible;
-  filter: drop-shadow(0 20px 48px rgba(5, 12, 20, 0.6));
+  filter: drop-shadow(0 20px 48px rgb(5, 12, 20, 0.6));
 }
 
 .compass__face-stop--top {

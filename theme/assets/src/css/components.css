@@ -289,7 +289,7 @@ textarea.field__control {
 
 .section--light .btn--ghost {
   color: var(--text-on-light);
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: rgb(0, 0, 0, 0.2);
 }
 .section--light .link { color: #1f6168; } /* darkened teal — AA on ivory + white */
 
