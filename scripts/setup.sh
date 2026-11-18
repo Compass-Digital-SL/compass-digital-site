@@ -79,6 +79,12 @@ wp option update show_on_front 'page'
 wp option update page_on_front "$HOME_ID"
 wp option update page_for_posts 0
 
+echo "==> Activate the Compass Core plugin (post types + settings)"
+wp plugin activate compass-core 2>/dev/null || echo "!! compass-core not found — check .wp-env.json mappings" >&2
+
+echo "==> Seed placeholder Work + Testimonials"
+wp compass seed || true
+
 echo ""
 echo "Done. WordPress is seeded at http://localhost:8888"
 echo "Admin: http://localhost:8888/wp-admin  (user: admin / pass: password)"

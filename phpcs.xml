@@ -2,8 +2,9 @@
 <ruleset name="Compass Digital">
 	<description>WordPress coding standards for the Compass Digital theme.</description>
 
-	<!-- Scan the theme's PHP only. -->
+	<!-- Scan the theme and the Compass Core plugin. -->
 	<file>theme</file>
+	<file>plugins</file>
 
 	<!-- Never scan build output, vendors or deps. -->
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
@@ -27,6 +28,7 @@
 		<properties>
 			<property name="text_domain" type="array">
 				<element value="compass-digital"/>
+				<element value="compass-core"/>
 			</property>
 		</properties>
 	</rule>

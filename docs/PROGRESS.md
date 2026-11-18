@@ -9,7 +9,7 @@
 - [x] 6 Design system
 - [x] 7 Navigation
 - [x] 8 Hero and motion
-- [ ] 9 Post types and settings
+- [x] 9 Post types and settings
 - [ ] 10 Home page
 - [ ] 11 Service pages
 - [ ] 12 Industry pages
@@ -26,6 +26,56 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 9 — Post types and settings (2026-11-18)
+**Done**
+- New **Compass Core** plugin (`plugins/compass-core/`, maps to
+  `wp-content/plugins/compass-core`) — all content lives in a plugin, not the theme, so it
+  survives a theme change. Modular `includes/` files, prefix `compass_core_`, text domain
+  `compass-core`.
+- **Post types**: `work` (public case studies: single + `/work/` archive), `testimonial`
+  (ui-only, not public), `quote_request` (**private** — `public=false`,
+  `publicly_queryable=false`, `rewrite=false`, no REST; enquiries never reach the front end).
+- **Taxonomies**: `industry` and `service`, hierarchical, attached to Work, `show_in_rest`.
+- **Native meta boxes** (no ACF, `includes/meta-boxes.php`): one field-def map drives rendering
+  + a nonce'd, per-type sanitised save. Work: client, year, live URL, tech, problem, solution,
+  results, gallery, featured. Testimonial: author name, role, rating, URL, featured. Quote
+  request: name, email, phone, company, service, budget, message, source, **status**. Meta keys
+  `_compass_*`, registered via `register_post_meta()` (REST for all but quote requests).
+  Gallery uses the core `wp.media` picker (admin jQuery only; front end stays jQuery-free).
+- **Quote Requests admin** (`includes/quote-requests.php`): custom columns (name/email/phone/
+  service/status pill), a **status filter** dropdown, and **CSV export** (`admin-post.php`,
+  nonce + `edit_others_posts`, respects the active filter), newest first.
+- **Site Settings** page (Settings → Site Settings, `includes/settings.php`): phone, WhatsApp,
+  email, address, service area, registration number, opening hours, social links — one
+  sanitised option array via the Settings API. The theme reads them: the plugin overlays them
+  onto the theme's existing `compass_contact_details` filter (header/footer/command-menu/
+  WhatsApp update with no theme edit), plus `compass_get_setting()` for direct reads.
+- **Seeding**: WP-CLI `wp compass seed [--fresh]` (`includes/class-compass-core-cli.php`),
+  wired into `scripts/setup.sh` after plugin activation. Creates 3 Work + 3 testimonials,
+  each clearly marked placeholder (`[Sample]` title + `_compass_placeholder` meta), idempotent.
+- PHPCS now also scans `plugins/` (text domain `compass-core` registered); `.wp-env.json`
+  remapped to `wp-content/plugins/compass-core → ./plugins/compass-core`.
+
+**Decisions**
+- Quote requests are a locked-down private CPT rather than a DB table: native admin UI,
+  trash/restore and capability checks for free, with zero front-end surface.
+- Theme reads settings through the **existing** `compass_contact_details` filter so Task 7's
+  nav/footer light up automatically; no theme files changed this task.
+- Gallery stored as a CSV of attachment IDs in one meta row (simple, no repeater library).
+
+**Checks**
+- PHPCS (theme + plugin) 0 errors; `php -l` clean on all plugin files; Vite build green
+  (CSS 6.61KB gzip, home JS 2.93KB gzip — budgets intact; plugin ships no front-end JS/CSS).
+
+**Owner action**
+- Fill **Settings → Site Settings** with real contact/registration/social details.
+- Replace or delete the `[Sample]` Work and Testimonials before launch (`wp compass seed --fresh`
+  removes them).
+
+**Next**
+- Task 10: Home page (sections should carry the Task 8 bearing ids; can read featured Work/
+  testimonials from these post types).
 
 ### Task 8 — Hero and motion (2026-11-18)
 **Done**

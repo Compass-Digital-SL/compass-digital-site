@@ -6,7 +6,7 @@
 	],
 	"plugins":  [ "https://downloads.wordpress.org/plugin/seo-by-rank-math.zip" ],
 	"mappings": {
-		"wp-content/plugins/compass-digital": "./plugins"
+		"wp-content/plugins/compass-core": "./plugins/compass-core"
 	},
 	"config": {
 		"WP_DEBUG": true,
