@@ -45,14 +45,14 @@ get_header();
 		<div class="sg-swatches">
 			<?php
 			$swatches = array(
-				'Navy (surface)'   => 'var(--color-navy)',
-				'Navy 700'         => 'var(--color-navy-700)',
-				'Ink (sunken)'     => 'var(--color-ink)',
-				'Brass (accent)'   => 'var(--color-brass)',
-				'Teal'             => 'var(--color-teal)',
-				'Teal 300 (link)'  => 'var(--color-teal-300)',
-				'Ivory (text)'     => 'var(--color-ivory)',
-				'Muted text'       => 'var(--text-muted)',
+				'Navy (surface)'  => 'var(--color-navy)',
+				'Navy 700'        => 'var(--color-navy-700)',
+				'Ink (sunken)'    => 'var(--color-ink)',
+				'Brass (accent)'  => 'var(--color-brass)',
+				'Teal'            => 'var(--color-teal)',
+				'Teal 300 (link)' => 'var(--color-teal-300)',
+				'Ivory (text)'    => 'var(--color-ivory)',
+				'Muted text'      => 'var(--text-muted)',
 			);
 			foreach ( $swatches as $label => $value ) :
 				?>
@@ -85,10 +85,10 @@ get_header();
 			<h2 id="sg-scale">Spacing, radii &amp; elevation</h2>
 		</div>
 		<div class="sg-bars">
-			<?php foreach ( array( '2', '4', '6', '8', '12', '16' ) as $s ) : ?>
+			<?php foreach ( array( '2', '4', '6', '8', '12', '16' ) as $step ) : ?>
 				<div class="sg-bar">
-					<span class="sg-bar__fill" style="inline-size: var(--space-<?php echo esc_attr( $s ); ?>)"></span>
-					<code>space-<?php echo esc_html( $s ); ?></code>
+					<span class="sg-bar__fill" style="inline-size: var(--space-<?php echo esc_attr( $step ); ?>)"></span>
+					<code>space-<?php echo esc_html( $step ); ?></code>
 				</div>
 			<?php endforeach; ?>
 		</div>
@@ -219,9 +219,9 @@ get_header();
 				'Do you offer SEO?'             => 'Yes — technical SEO, on-page and local SEO for Sri Lankan businesses.',
 				'Can you build a POS system?'   => 'We build POS systems for retail shops, restaurants and cafes.',
 			);
-			$i = 0;
+			$i    = 0;
 			foreach ( $faqs as $q => $a ) :
-				$i++;
+				++$i;
 				$pid = 'sg-acc-panel-' . $i;
 				$tid = 'sg-acc-trigger-' . $i;
 				?>

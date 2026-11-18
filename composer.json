@@ -1,0 +1,21 @@
+{
+    "name": "compass-digital/site",
+    "description": "PHP tooling (CodeSniffer + WordPress Coding Standards) for the Compass Digital theme.",
+    "type": "project",
+    "license": "proprietary",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "scripts": {
+        "lint:php": "phpcs",
+        "fix:php": "phpcbf"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

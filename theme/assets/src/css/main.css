@@ -3,8 +3,8 @@
 
 /* Fonts are served as a static, un-hashed stylesheet (see assets/fonts/fonts.css)
    so preload hrefs stay stable. Only tokens + app CSS go through Vite. */
-@import "./tokens.css";
-@import "./components.css";
+@import url("./tokens.css");
+@import url("./components.css");
 
 *,
 *::before,
@@ -13,7 +13,7 @@
 }
 
 html {
-  -webkit-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; /* iOS Safari < 16 */
   text-size-adjust: 100%;
 }
 
@@ -67,6 +67,7 @@ img {
   border-radius: var(--radius);
   transition: top var(--dur-fast) var(--ease);
 }
+
 .skip-link:focus {
   top: var(--space-2);
 }

@@ -4,7 +4,7 @@
 - [x] 1 Scaffolding
 - [x] 2 Local WP env
 - [x] 3 Theme and build
-- [ ] 4 CI
+- [x] 4 CI
 - [ ] 5 SEO strategy
 - [x] 6 Design system
 - [ ] 7 Navigation
@@ -132,3 +132,34 @@
 
 **Next**
 - Task 4: CI (lint, build, PHP checks).
+
+### Task 4 — CI (2026-11-18)
+**Done**
+- `.github/workflows/ci.yml`: runs on every PR and push to `main`. Three jobs —
+  **lint** (PHPCS WordPress standard, ESLint, Stylelint, `php -l`), **build** (Vite,
+  uploads `theme-dist` artifact), **e2e** (boots wp-env, seeds, Playwright smoke + axe,
+  Lighthouse CI). npm + Composer caches; concurrency cancels superseded runs.
+- Tooling + config added so the jobs are real: root `composer.json` (squizlabs/php_codesniffer,
+  wp-coding-standards/wpcs, phpcompatibility-wp) + `phpcs.xml`; `eslint.config.js` (flat, ESLint 9)
+  + `.stylelintrc.json`; `playwright.config.js` + `tests/e2e/smoke.spec.js` (home `/`,
+  quote `/get-a-quote/`, 404 — status + no console/page errors + axe critical/serious);
+  `.lighthouserc.json` with CLAUDE.md rule-5 budgets. Root `package.json` scripts:
+  `lint:js`, `lint:css`, `test:e2e`, `lhci`, plus devDeps.
+- `.github/dependabot.yml`: weekly npm (root + theme), Composer, github-actions.
+- PR template extended with SEO / Speed / Accessibility / Mobile checklists.
+- README: CI section (what each job checks, run-locally commands) + donkey-level
+  "turn on branch protection" steps for GitHub.
+- `.gitignore`: Playwright report/results dirs.
+
+**Decisions**
+- INP has no Lighthouse lab metric, so the budget is enforced as Total Blocking Time < 200ms;
+  real INP comes from field data later (Task 18 performance).
+- Lighthouse asserts performance + accessibility ≥ 0.95 (error) and best-practices as warn;
+  SEO category is not asserted because the local wp-env sets `blog_public 0` (noindex), which
+  would fail SEO scoring. Real SEO checks live in Tasks 16–17.
+- Build artifact is shared from the **build** job to **e2e** so both exercise the same assets.
+- All config/YAML/JSON/XML validated locally; the lint/build/test runs themselves need
+  `composer install` + `npm ci` (network), so they first execute on the GitHub runner.
+
+**Next**
+- Task 5: SEO strategy.
