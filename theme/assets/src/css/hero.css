@@ -322,15 +322,18 @@
 
 /* -------------------------------------------------- Reusable motion base -- */
 
-/* Scroll reveal — hidden until .is-revealed. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(1.25rem);
-  transition:
-    opacity var(--dur-slow) var(--ease-out),
-    transform var(--dur-slow) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+/* Scroll reveal — hidden until .is-revealed. Gated on JS being enabled so that
+   with scripting off the content is simply shown (no reveal can ever fire). */
+@media (scripting: enabled) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
 }
 
 [data-reveal].is-revealed {
