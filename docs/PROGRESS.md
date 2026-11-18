@@ -11,7 +11,7 @@
 - [x] 8 Hero and motion
 - [x] 9 Post types and settings
 - [x] 10 Home page
-- [ ] 11 Service pages
+- [x] 11 Service pages
 - [ ] 12 Industry pages
 - [ ] 13 Work portfolio
 - [ ] 14 About/Process/FAQ/Insights
@@ -26,6 +26,52 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 11 — Service pages (2026-11-18)
+**Done**
+- **Services hub** (`theme/page-services.php`, slug `services`) + **one shared template**
+  (`theme/page-service.php`, `Template Name: Service`) used by all six service pages:
+  Website design & development, SEO, POS systems, Mobile app development, Ecommerce
+  websites, Custom software.
+- **Single content source** `theme/inc/services-content.php` (`compass_services_data()`),
+  keyed by slug. Each page: outcome-led headline, who-it's-for, pains-we-solve (customer
+  language from `SEO.md`), what's included, shared Listen→Plan→Build→Support process,
+  tech & deliverables, "quote on request" pricing note + what affects the price (**no
+  prices anywhere**), related industries (cross-links), related work (queried by `service`
+  taxonomy term), 5 FAQs, and a "Get a quote for this" CTA. **600+ words of unique copy
+  per page** (SEO page renders ~2,260 words), weaving each page's primary + secondary
+  keywords naturally in the BRAND.md voice.
+- **Schema** (`theme/inc/services.php`): each service page emits `Service`
+  (provider = Organization, areaServed Sri Lanka, hasOfferCatalog), `FAQPage` and
+  `BreadcrumbList` JSON-LD, generated from the same copy; hub emits `BreadcrumbList`.
+  Per-page keyword-map `<title>` and meta description via `pre_get_document_title` +
+  `wp_head` (scoped to these pages).
+- **CTA pre-fill**: `compass_quote_url()` appends `?service=<name>` to `/get-a-quote/`,
+  matching the existing `_compass_service` field for the quote form to read.
+- **CSS** `theme/assets/src/css/services.css` (tokens/components only, no hard-coded
+  hex), imported in `main.css`. Built CSS 42.9KB raw / **8.6KB gzip** (budget 40KB).
+  No new JS — FAQ reuses `.accordion`/`ui.js`, reveals reuse existing `[data-reveal]`.
+- **Pages seeded**: `seed_service_pages()` added to the WP-CLI seeder (idempotent) creates
+  the hub + 6 child pages at `/services/<slug>/` with the template assigned.
+- **Tests**: `/services/` and `/services/seo/` added to the Playwright smoke list and
+  Lighthouse config. Verified locally — all pages 200, titles/meta/H1/schema correct,
+  no prices, 4/4 smoke+axe pass, PHPCS + Stylelint + Vite build clean.
+
+**Decisions**
+- One shared `Template Name` template (assigned via `_wp_page_template`) selected by page
+  slug, rather than six `page-<slug>.php` files — keeps all copy in one data source and
+  the structured data mirroring the visible copy.
+- Child page slugs equal the full service slugs (e.g. `/services/website-design-and-development/`)
+  so breadcrumbs, URLs and the data keys all line up.
+- Titles/metas/`Service`/`FAQPage`/`BreadcrumbList` are emitted locally for these pages and
+  are easy to lift out; **Task 16** generalises titles, metas and schema (incl. global
+  Organization/LocalBusiness) site-wide, at which point `compass_services_head()` and the
+  title filter can be unhooked.
+- The front-end quote form isn't built yet (**Task 15**); the pre-fill is delivered as a
+  `?service=<name>` query param the form will read.
+
+**Next**
+- Task 12: Industry pages.
 
 ### Task 10 — Home page (2026-11-18)
 **Done**
