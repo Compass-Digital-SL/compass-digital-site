@@ -1,0 +1,278 @@
+/* Quote + Contact form.
+   Reuses .field / .btn / .card from components.css. The form works as one long
+   form without JS; .is-stepped (added by quote.js) switches to the 3-step view. */
+
+.quote-layout {
+  display: grid;
+  gap: var(--space-12);
+  grid-template-columns: 1fr;
+  padding-block: var(--space-12) var(--space-24);
+}
+
+@media (width >= 60rem) {
+  .quote-layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 1fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+}
+
+/* --- Form shell --- */
+.quote-form {
+  max-width: 44rem;
+}
+
+.quote-step {
+  border: 0;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  min-inline-size: 0; /* let fieldset shrink in grid */
+}
+
+.quote-step__legend {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: var(--space-4);
+}
+
+.quote-row {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (width >= 34rem) {
+  .quote-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field__req {
+  color: var(--accent);
+}
+
+/* --- Checkbox / radio groups --- */
+.quote-checks,
+.quote-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+
+.quote-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.quote-checks .quote-check,
+.quote-methods .quote-check {
+  flex: 1 1 10rem;
+}
+
+.quote-check:hover {
+  border-color: var(--accent);
+}
+
+.quote-check input {
+  margin-top: 0.15em;
+  accent-color: var(--accent);
+  min-width: 1.1rem;
+  min-height: 1.1rem;
+}
+
+.quote-check:has(input:checked) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-sunken));
+}
+
+.quote-check:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.quote-consent {
+  flex: 1 1 100%;
+  align-items: flex-start;
+}
+
+/* --- Honeypot: off-screen, never shown to people --- */
+.quote-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --- Error summary --- */
+.quote-errors {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-6);
+  border: 1px solid #e4867a;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, #e4867a 12%, var(--surface-sunken));
+}
+
+.quote-errors__title {
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.quote-errors ul {
+  margin: 0;
+  padding-left: var(--space-6);
+}
+
+.quote-errors a {
+  color: #f0a79c;
+}
+
+/* --- Progress (JS only) --- */
+.quote-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  list-style: none;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  counter-reset: step;
+}
+
+.quote-progress__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.quote-progress__num {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.quote-progress__step.is-current {
+  color: var(--text);
+}
+
+.quote-progress__step.is-current .quote-progress__num,
+.quote-progress__step.is-done .quote-progress__num {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+/* --- Stepped mode: show one step at a time --- */
+.quote-form.is-stepped .quote-step[hidden] {
+  display: none;
+}
+
+.quote-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.quote-reassure {
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* --- Aside --- */
+.quote-aside__card {
+  position: sticky;
+  top: var(--space-8);
+  padding: var(--space-8);
+}
+
+.quote-aside__title {
+  font-size: var(--fs-lg);
+}
+
+.quote-aside__steps {
+  margin: 0 0 var(--space-6);
+  padding-left: var(--space-6);
+  display: grid;
+  gap: var(--space-3);
+  color: var(--text-muted);
+}
+
+.quote-aside__promise {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.quote-aside__note {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* --- Contact details list --- */
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.contact-list__label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.contact-list__wa {
+  width: 100%;
+}
+
+/* --- Thank-you page --- */
+.thankyou-page {
+  padding-block: var(--space-24);
+}
+
+.thankyou-title {
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.thankyou-lede {
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+  margin-bottom: var(--space-12);
+}
+
+.thankyou-next {
+  margin-bottom: var(--space-12);
+}
+
+.thankyou-next ul {
+  padding-left: var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.thankyou-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

@@ -45,12 +45,18 @@ function initInsights() {
   import("./insights.js").then((m) => m.initInsights());
 }
 
+function initQuote() {
+  if (!document.querySelector("[data-quote-form]")) return;
+  import("./quote.js").then((m) => m.initQuote());
+}
+
 function boot() {
   initNavigation();
   initUI();
   initMotion();
   initWork();
   initInsights();
+  initQuote();
 }
 
 if (document.readyState !== "loading") {
