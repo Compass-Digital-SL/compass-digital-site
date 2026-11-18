@@ -27,7 +27,7 @@ In early setup. See [docs/PROGRESS.md](docs/PROGRESS.md) for the task list and w
 ## Local WordPress
 
 A full WordPress site runs on your machine with [`wp-env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
-(Docker). It serves PHP 8.3 + the latest WordPress at **http://localhost:8888**,
+(Docker). It serves PHP 8.3 + WordPress 7.1.4 at **http://localhost:8888**,
 with the theme loaded from `./theme` and custom plugins from `./plugins`.
 Rank Math SEO and Query Monitor (dev only) are installed for you.
 
@@ -69,3 +69,9 @@ npm run wp:seed
 
 > **Note:** this local site is set to discourage search engines and must never be
 > made public. It is for development only.
+
+> **WordPress version:** pinned to **7.1.4** in `.wp-env.json`. (Leaving `core`
+> unset makes wp-env query api.wordpress.org for the latest version, which fails
+> on some Windows setups with *"Could not find the current WordPress version in
+> the cache and the network is not available."* Pinning avoids that lookup.) To
+> move to a newer release, edit the `core` version and run `npm run wp:reset`.

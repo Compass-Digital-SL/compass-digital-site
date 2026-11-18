@@ -44,7 +44,7 @@
 
 ### Task 2 — Local WP env (2026-11-18)
 **Done**
-- Added `.wp-env.json`: PHP 8.3, latest WordPress, port 8888, theme mapped from `./theme`,
+- Added `.wp-env.json`: PHP 8.3, WordPress pinned to 7.1.4, port 8888, theme mapped from `./theme`,
   custom plugins mapped to `wp-content/plugins/compass-digital` from `./plugins`.
 - Plugins: Rank Math SEO (`seo-by-rank-math`) in all envs; Query Monitor (`query-monitor`)
   in development only.
@@ -61,6 +61,10 @@
 - `wp:reset` = `wp-env clean all` + re-seed (keeps containers, wipes the DB).
 - Query Monitor kept dev-only via `env.development.plugins`; Rank Math is site-wide.
 - `theme/` and `plugins/` tracked via `.gitkeep`; real code arrives in Task 3.
+- Pinned `core` to `WordPress/WordPress#7.1.4` instead of `null` (latest): `core: null`
+  makes wp-env fetch the latest version from api.wordpress.org, which fails on this
+  Windows machine ("Could not find the current WordPress version in the cache"). 7.1.4
+  is the current stable. Bump the version + `wp:reset` to upgrade.
 
 **Next**
 - Task 3: Theme and build.
