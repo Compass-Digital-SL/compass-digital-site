@@ -13,6 +13,7 @@
 
 .home-section {
   padding-block: var(--space-24);
+
   /* Clears the sticky header when an in-page anchor lands here. */
   scroll-margin-top: 5rem;
 }
@@ -220,6 +221,7 @@
   .service-card__more {
     transition: transform var(--dur-fast) var(--ease);
   }
+
   .service-card:hover .service-card__more {
     transform: translateX(4px);
   }
@@ -308,6 +310,7 @@
   .work-card__media img {
     transition: transform var(--dur-mid) var(--ease-out);
   }
+
   .work-card:hover .work-card__media img {
     transform: scale(1.04);
   }
@@ -397,11 +400,13 @@
   .process__line {
     transform: scaleY(0);
   }
+
   @media (width >= 52rem) {
     .process__line {
       transform: scaleX(0);
     }
   }
+
   .process__steps.is-revealed .process__line {
     transition: transform var(--dur-slow) var(--ease-out);
     transform: none;
