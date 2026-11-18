@@ -129,7 +129,7 @@ jobs:
         run: npm ci --prefix theme
 
       - name: Download built assets
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: theme-dist
           path: theme/assets/dist
