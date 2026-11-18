@@ -167,4 +167,33 @@ accessible, progressive enhancement (works without JS).
 `noindex,nofollow`, excluded from nav and sitemap, never linked publicly.
 
 ---
-Updated in Task 6. Hero / entrance motion detailed in Task 8.
+## Hero & entrance motion (Task 8)
+
+The home hero is **"The Expedition"**: a full-screen dark scene with an inline-SVG brass
+compass whose needle follows the pointer, ringed by six **bearings** that glow when the
+needle points at them and jump to the matching tailored section (Task 10).
+
+**Motion system** — small, reusable, dependency-free (`assets/src/js/motion.js`,
+`hero.js`; `assets/src/css/hero.css`):
+- `scroll-reveal` (`[data-reveal]`), staggered letter reveal (`[data-reveal-letters]`,
+  keeps accessible text), number counters (`[data-counter]`), magnetic buttons
+  (`[data-magnetic]`), cursor glow, and ≤3-layer parallax (`[data-parallax]`).
+- Driven by CSS + the Web Animations API + rAF — **no GSAP**.
+- Loaded on demand: hero.js runs only on pages with `[data-hero]`, motion.js only where a
+  motion hook exists, so inner pages stay lean.
+
+**Rules (enforced):**
+- Animate only `transform` / `opacity`; observers `unobserve` after work; parallax runs
+  only while on screen.
+- The hero paints instantly — the headline is real text (the LCP element), the SVG is
+  `aria-hidden`, and reveals never shift layout.
+- `prefers-reduced-motion` gets a fully static equivalent (no needle tracking, drift,
+  parallax or glow); pointer effects are gated to `(pointer: fine)`.
+- Device-motion tilt is **opt-in** on touch (an "Enable motion" tap; iOS permission gesture).
+- Budget: hero JS ≈ 2.8KB gzip (cap 25KB).
+
+Durations/easings come from the motion tokens above (`--dur-slow` = 600ms for large
+entrances).
+
+---
+Updated in Task 8 (hero + motion). Design-system tokens/components from Task 6.

@@ -8,7 +8,7 @@
 - [ ] 5 SEO strategy
 - [x] 6 Design system
 - [x] 7 Navigation
-- [ ] 8 Hero and motion
+- [x] 8 Hero and motion
 - [ ] 9 Post types and settings
 - [ ] 10 Home page
 - [ ] 11 Service pages
@@ -26,6 +26,45 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 8 — Hero and motion (2026-11-18)
+**Done**
+- **"The Expedition" hero** (`front-page.php`): full-screen dark scene, inline-SVG brass
+  compass (ring, 72 ticks, cardinals, needle) ringed by 6 bearings (Be found / Look better /
+  Sell smarter / Get an app / Sell online / Welcome travellers). Headline "Find your way
+  forward." is real text (LCP), per-word spans; sub-line + Request-a-quote/Explore CTAs.
+  Hero exposes `data-waypoint` so the scroll rail lights up.
+- **Reusable motion system** (`assets/src/js/motion.js`): scroll-reveal (IntersectionObserver,
+  unobserve on reveal), letter reveal (keeps accessible text via `aria-label`), number
+  counters, magnetic buttons, cursor glow, ≤3-layer parallax. All no-op under
+  prefers-reduced-motion; pointer effects gated to `(pointer: fine)`.
+- **Hero behaviour** (`assets/src/js/hero.js`): needle follows pointer via rAF lerp; nearest
+  bearing (±30° arc) glows; touch devices get a slow autonomous drift; **device-motion tilt
+  is opt-in** behind an "Enable motion" tap (iOS `requestPermission` gesture). Bearing/Explore
+  clicks smooth-scroll + focus-handoff to the target id (Task 10 sections).
+- **CSS** (`assets/src/css/hero.css`): tokens only; compass geometry, bearings placed with
+  container-query units (`cqmin`) on desktop and a 2-col list on mobile; glow states; reveal/
+  parallax/glow base + full static reduced-motion equivalent. SVG gradient stops driven by
+  `color-mix` (no hard-coded hex).
+- **Lazy-loading** (`main.js`): hero.js imported only when `[data-hero]` exists; motion.js only
+  when reveal/counter/magnetic/parallax hooks exist — so inner pages never parse hero JS.
+
+**Decisions**
+- No GSAP: CSS + WAAPI + rAF cover everything, keeping the budget tiny.
+- Bearings link to on-page ids (`#seo`, `#websites`, `#pos`, `#app`, `#ecommerce`, `#travel`);
+  Task 10's tailored sections must carry those ids (scroll falls back to native jump until then).
+- Hero paints instantly: SVG is `aria-hidden`, headline is real text, no layout-shifting reveal.
+- Device tilt stays opt-in per the brief (touch button, off by default).
+
+**Checks**
+- Lint (CSS/JS/PHPCS), build and e2e all pass (6/6, axe clean on home, no console errors).
+- Budgets: hero JS = hero(1.38) + motion(1.41) ≈ **2.8KB gzip** (< 25KB); homepage JS
+  ≈ 5.7KB gzip (< 90KB); CSS **6.56KB gzip** (< 40KB). hero/motion are split, on-demand chunks.
+- Verified desktop + 375px in-browser: needle tracks pointer, active bearing glows, mobile
+  reflows to a clean list.
+
+**Next**
+- Task 9: Post types and settings. Task 10 home sections should expose the bearing ids above.
 
 ### Task 7 — Navigation (2026-11-18)
 **Done**
