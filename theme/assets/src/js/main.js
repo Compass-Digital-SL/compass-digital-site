@@ -2,6 +2,7 @@
 // No jQuery. Progressive enhancement only; the site works without JS.
 
 import "../css/main.css";
+import { initUI } from "./ui.js";
 
 /** Mobile nav toggle. */
 function initNavToggle() {
@@ -16,8 +17,13 @@ function initNavToggle() {
   });
 }
 
-if (document.readyState !== "loading") {
+function boot() {
   initNavToggle();
+  initUI();
+}
+
+if (document.readyState !== "loading") {
+  boot();
 } else {
-  document.addEventListener("DOMContentLoaded", initNavToggle);
+  document.addEventListener("DOMContentLoaded", boot);
 }
