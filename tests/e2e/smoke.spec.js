@@ -40,6 +40,11 @@ const pages = [
   { name: "industry-travel", path: "/industries/travel-and-tourism/", expectStatus: 200, h1: true },
   { name: "work-archive", path: "/work/", expectStatus: 200, h1: true },
   { name: "work-filtered", path: "/work/?service=seo", expectStatus: 200, h1: true },
+  { name: "about", path: "/about/", expectStatus: 200, h1: true },
+  { name: "process", path: "/process/", expectStatus: 200, h1: true },
+  { name: "faq", path: "/faq/", expectStatus: 200, h1: true },
+  { name: "insights", path: "/insights/", expectStatus: 200, h1: true },
+  { name: "insight-post", path: "/insights/website-cost-sri-lanka/", expectStatus: 200, h1: true },
   { name: "404", path: "/this-page-does-not-exist/", expectStatus: 404, h1: false },
 ];
 

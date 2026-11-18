@@ -1,0 +1,402 @@
+/* Compass Digital — Insights blog: archive, post card, single post (Task 14).
+   Tokens only, dark-first, no hard-coded colours (see docs/DESIGN.md).
+   Reuses .service-hero, .service-body, .section-header, .card, .btn. */
+
+.insights-archive,
+.insight {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* ------------------------------------------------------------ Filter chips */
+.insights-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.insights-filter__label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: var(--space-2);
+}
+
+.post-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.post-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.post-chip.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+/* -------------------------------------------------------------- Post grid */
+.post-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+}
+
+.post-grid__empty {
+  color: var(--text-muted);
+  padding-block: var(--space-8);
+}
+
+/* -------------------------------------------------------------- Post card */
+.post-card {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+  transition:
+    transform var(--dur-mid) var(--ease-out),
+    border-color var(--dur-mid) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .post-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+  }
+}
+
+.post-card__link {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+  width: 100%;
+}
+
+.post-card__media {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background: var(--surface-sunken);
+  overflow: hidden;
+}
+
+.post-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+}
+
+.post-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.post-card__cat {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.post-card__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+  color: var(--text);
+}
+
+.post-card__excerpt {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.post-card__more {
+  margin-top: var(--space-2);
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.post-card__link:hover .post-card__more {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------- Single: hero meta */
+.insight-hero__cat {
+  color: var(--accent);
+  text-decoration: none;
+}
+.insight-hero__cat:hover { text-decoration: underline; }
+
+.insight-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-6);
+  margin-bottom: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.insight__cover {
+  margin-block: var(--space-8) 0;
+}
+
+.insight__cover img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+}
+
+/* --------------------------------------------------------- Single: layout */
+.insight-body {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: var(--space-12);
+  align-items: start;
+}
+
+@media (width >= 60rem) {
+  .insight-body {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--space-12);
+  }
+}
+
+/* ------------------------------------------------- Single: table of contents */
+.insight-toc {
+  padding: var(--space-6);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+@media (width >= 60rem) {
+  .insight-toc {
+    position: sticky;
+    top: 5rem;
+  }
+}
+
+.insight-toc__title {
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.insight-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.insight-toc__item--h3 {
+  padding-left: var(--space-4);
+}
+
+.insight-toc__list a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+
+.insight-toc__list a:hover,
+.insight-toc__list a.is-current {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------- Single: prose */
+.insight-main {
+  min-width: 0;
+}
+
+.insight-prose {
+  max-width: 68ch;
+}
+
+.insight-prose > p:first-child {
+  font-size: var(--fs-lg);
+  color: var(--text);
+}
+
+.insight-prose p,
+.insight-prose li {
+  color: var(--text-muted);
+}
+
+.insight-prose h2 {
+  font-size: var(--fs-xl);
+  margin-top: var(--space-12);
+  scroll-margin-top: 5rem;
+}
+
+.insight-prose h3 {
+  font-size: var(--fs-lg);
+  margin-top: var(--space-8);
+  scroll-margin-top: 5rem;
+}
+
+.insight-prose ul,
+.insight-prose ol {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.insight-prose blockquote {
+  margin: var(--space-6) 0;
+  padding: var(--space-2) 0 var(--space-2) var(--space-6);
+  border-left: 3px solid var(--accent);
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  color: var(--text);
+}
+
+.insight-prose a {
+  color: var(--link);
+}
+
+/* -------------------------------------------------------- Single: share */
+.insight-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.insight-share__label {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.insight-share__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.insight-share__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.insight-share__link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.insight-share__link.is-copied {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+/* ------------------------------------------------------- Single: author */
+.insight-author {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  margin-top: var(--space-8);
+  max-width: 68ch;
+}
+
+.insight-author__avatar {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--surface-sunken), var(--color-teal));
+  border: 1px solid var(--border-strong);
+}
+
+.insight-author__name {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.insight-author__bio {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  margin-bottom: 0;
+}
+
+/* ---------------------------------------------------------- Single: CTA */
+.insight-cta {
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 68ch;
+}
+
+.insight-cta__inner h2 {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-2);
+}
+
+.insight-cta__inner p {
+  color: var(--text-muted);
+}
+
+.insight-cta__inner .btn {
+  margin-top: var(--space-2);
+}
+
+/* ------------------------------------------------------ Single: related */
+.insight-related {
+  padding-block: var(--space-12);
+  border-top: 1px solid var(--border);
+}
