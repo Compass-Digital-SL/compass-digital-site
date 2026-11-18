@@ -50,6 +50,12 @@ function compass_core_field_defs() {
 				'type'  => 'textarea',
 			),
 			array(
+				'key'   => 'approach',
+				'label' => __( 'Approach', 'compass-core' ),
+				'type'  => 'textarea',
+				'help'  => __( 'How we tackled it — the plan before the build.', 'compass-core' ),
+			),
+			array(
 				'key'   => 'solution',
 				'label' => __( 'Solution', 'compass-core' ),
 				'type'  => 'textarea',
@@ -58,7 +64,19 @@ function compass_core_field_defs() {
 				'key'   => 'results',
 				'label' => __( 'Results', 'compass-core' ),
 				'type'  => 'textarea',
-				'help'  => __( 'One result per line.', 'compass-core' ),
+				'help'  => __( 'One result per line — lead with a number where you can.', 'compass-core' ),
+			),
+			array(
+				'key'   => 'quote',
+				'label' => __( 'Testimonial quote', 'compass-core' ),
+				'type'  => 'textarea',
+				'help'  => __( 'A client quote for this project (optional).', 'compass-core' ),
+			),
+			array(
+				'key'   => 'quote_author',
+				'label' => __( 'Testimonial author', 'compass-core' ),
+				'type'  => 'text',
+				'help'  => __( 'e.g. Nimali Perera, Owner — Ella Spice Café.', 'compass-core' ),
 			),
 			array(
 				'key'   => 'gallery',
