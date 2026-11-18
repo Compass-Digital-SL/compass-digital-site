@@ -7,7 +7,7 @@
 - [x] 4 CI
 - [ ] 5 SEO strategy
 - [x] 6 Design system
-- [ ] 7 Navigation
+- [x] 7 Navigation
 - [ ] 8 Hero and motion
 - [ ] 9 Post types and settings
 - [ ] 10 Home page
@@ -26,6 +26,52 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 7 — Navigation (2026-11-18)
+**Done**
+- One nav data source `inc/nav.php`: `compass_nav_map()` (6 services, 5 industries,
+  Work, Company), `compass_primary_links()`, filterable `compass_contact_details()` +
+  `compass_whatsapp_url()`. Header, command menu, mobile sheet and footer all read it.
+- **Desktop header** (`header.php`, `template-parts/header/nav.php`): logo left; Services +
+  Industries CSS-first dropdowns (real links, open on hover/focus, JS upgrades to click),
+  Work/About/Insights; right side ghost **Navigate (K)** + brass **Get a quote**. Sticky,
+  glass, shrinks on scroll (`.is-scrolled`).
+- **Command menu** (`template-parts/command-menu.php` + `assets/src/js/command-menu.js`):
+  full-screen glass overlay, server-rendered grouped list, K / button to open, type-to-filter,
+  Arrow/Enter/Esc, focus trap, `inert` background, `[hidden]` default.
+- **Mobile bottom bar** (<768px, `template-parts/mobile-bar.php`): Home, Services, Work,
+  WhatsApp, Quote; Services opens a bottom sheet (Services/Industries/Company); body gets
+  bottom padding so content clears the bar; safe-area insets.
+- **Scroll rail** (`template-parts/scroll-rail.php`, ≥1240px): JS builds compass ticks from
+  on-page `[data-waypoint][id]` sections, IntersectionObserver active state, click-to-jump;
+  stays hidden until a page opts in (none yet).
+- **Breadcrumbs** (`template-parts/breadcrumbs.php`): inner pages only, ancestor-aware,
+  `aria-current`; ready for BreadcrumbList schema in the SEO task.
+- **Footer** rebuilt into sitemap columns (Services/Industries/Company/Legal) + contact
+  (phone/WhatsApp/email/address), social (hidden until set), registration line.
+- **Desktop contact chip** (`template-parts/contact-chip.php`): one WhatsApp chip, desktop only.
+- New `assets/src/css/nav.css` (imported into bundle), tokens only. Verified desktop +
+  375px in-browser; command menu, dropdowns and sheet work; axe clean (6/6 e2e pass),
+  no console errors. Bundle: CSS 5.35KB gzip, JS 2.20KB gzip — within budget.
+
+**Decisions**
+- Everything is progressive enhancement over real `<a>` links: header, command-menu,
+  sheet and footer all work with JS disabled.
+- Services/industries lists are hard-coded from `docs/BRAND.md` (child pages arrive in
+  Tasks 11–12); URLs derived from section bases so they resolve once those pages exist.
+- Vendor-prefixed `-webkit-mask`/`-webkit-backdrop-filter` dropped to satisfy the project's
+  `property-no-vendor-prefix` lint rule; unprefixed `mask`/`backdrop-filter` are fine in
+  current browsers and match the existing glass in `components.css`.
+- Nav URL helpers return **raw** URLs; callers `esc_url()` at output (keeps PHPCS escaping
+  checks honest, no double-escaping).
+
+**Owner action**
+- Contact + registration are placeholders (`+94 11 000 0000`, `hello@compassdigital.lk`,
+  empty social/reg-no). Override via the `compass_contact_details` filter with real details.
+
+**Next**
+- Task 8: Hero and motion. (Hero section can expose `[data-waypoint]` anchors to light up
+  the scroll rail.)
 
 ### Task 6 — Design system (2026-11-18)
 **Done**
