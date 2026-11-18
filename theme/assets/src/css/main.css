@@ -5,6 +5,7 @@
    so preload hrefs stay stable. Only tokens + app CSS go through Vite. */
 @import url("./tokens.css");
 @import url("./components.css");
+@import url("./nav.css");
 
 *,
 *::before,
