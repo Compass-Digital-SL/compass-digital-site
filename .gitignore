@@ -1,0 +1,58 @@
+# Secrets and env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+auth.json
+
+# Raw brand/source assets (optimised copies live in the theme)
+assets-to-use/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+*.map
+.vite/
+
+# WordPress (only the theme is tracked)
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+wp-config.php
+wp-cli.local.yml
+*.sql
+*.sql.gz
+
+# Local environments
+.wp-env.override.json
+.ddev/.homeadditions/
+.docker-data/
+
+# Local tool caches
+.code-review-graph/
+
+# Logs and caches
+*.log
+npm-debug.log*
+.cache/
+.eslintcache
+.stylelintcache
+.phpcs-cache
+.phpunit.result.cache
+coverage/
+lighthouse-reports/
+.lighthouseci/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
