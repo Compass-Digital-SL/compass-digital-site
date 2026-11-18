@@ -1,0 +1,16 @@
+{
+  "name": "compass-digital-theme",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vite build for the Compass Digital WordPress theme.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}
