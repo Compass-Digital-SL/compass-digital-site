@@ -52,7 +52,61 @@ export function initTabs(root = document) {
   });
 }
 
+/**
+ * Pain-point selector (home page). Without JS every tailored panel is rendered
+ * and visible — the cards and the hero bearings are plain in-page anchors, so
+ * the section works as anchored sections. With JS we enhance it into a
+ * swap-in-place selector: one panel shows at a time and the choice follows card
+ * clicks, the hero bearings, and the URL hash (back/forward, deep links).
+ */
+export function initPainSelector(root = document) {
+  const selector = root.querySelector("[data-pain]");
+  if (!selector) return;
+
+  const panels = Array.from(selector.querySelectorAll("[data-pain-panel]"));
+  const cards = Array.from(selector.querySelectorAll("[data-pain-link]"));
+  if (!panels.length) return;
+
+  const byId = new Map(panels.map((p) => [p.id, p]));
+  selector.classList.add("is-enhanced");
+
+  const activate = (id, { focus = false } = {}) => {
+    const panel = byId.get(id) || panels[0];
+    panels.forEach((p) => {
+      const on = p === panel;
+      p.classList.toggle("is-active", on);
+      p.hidden = !on;
+    });
+    cards.forEach((c) => {
+      const on = (c.getAttribute("href") || "").replace(/^#/, "") === panel.id;
+      c.setAttribute("aria-current", on ? "true" : "false");
+    });
+    if (focus) panel.setAttribute("tabindex", "-1");
+  };
+
+  const idFromHash = () => (location.hash || "").replace(/^#/, "");
+
+  // Any in-page anchor pointing at a panel switches it: the pain cards and the
+  // hero bearings. We run before hero.js (its listeners attach after its async
+  // import) and we don't preventDefault, so its smooth scroll still lands.
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const id = (link.getAttribute("href") || "").replace(/^#/, "");
+    if (byId.has(id)) activate(id);
+  });
+
+  window.addEventListener("hashchange", () => {
+    const id = idFromHash();
+    if (byId.has(id)) activate(id);
+  });
+
+  const initial = idFromHash();
+  activate(byId.has(initial) ? initial : panels[0].id);
+}
+
 export function initUI(root = document) {
   initAccordions(root);
   initTabs(root);
+  initPainSelector(root);
 }
