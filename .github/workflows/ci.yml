@@ -102,6 +102,10 @@ jobs:
           name: theme-dist
           path: theme/assets/dist
           retention-days: 1
+          # The Vite manifest lives in the hidden .vite/ directory; without this
+          # it is dropped from the artifact and the e2e job serves the theme
+          # with no CSS/JS enqueued (manifest empty), failing a11y on every page.
+          include-hidden-files: true
 
   # ---------------------------------------------------------------------------
   # End-to-end: boot wp-env, run Playwright smoke + axe, then Lighthouse CI.

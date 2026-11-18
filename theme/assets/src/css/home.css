@@ -1,0 +1,563 @@
+/* Compass Digital — home page sections (Task 10).
+   Tokens only, dark-first, no hard-coded colours (see docs/DESIGN.md).
+   Motion animates transform/opacity only and stays behind
+   prefers-reduced-motion: no-preference. */
+
+/* The hero and every section manage their own width, so let .front-page run
+   full-bleed instead of inheriting the .site-main > * container. */
+.front-page {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.home-section {
+  padding-block: var(--space-24);
+
+  /* Clears the sticky header when an in-page anchor lands here. */
+  scroll-margin-top: 5rem;
+}
+
+.home-section--tight {
+  padding-block: var(--space-16);
+}
+
+.home-section__foot {
+  margin-top: var(--space-8);
+}
+
+/* ------------------------------------------------- Pain-point selector --- */
+.pain__nav {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin-bottom: var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.pain__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  height: 100%;
+  padding: var(--space-6);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.pain__card:hover,
+.pain__card:focus-visible {
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pain__card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2);
+  }
+}
+
+.pain__card[aria-current="true"] {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-2);
+}
+
+.pain__card-quote {
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  font-family: var(--font-serif);
+  line-height: var(--lh-tight);
+}
+
+.pain__card-tag {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* Panels: all shown by default (anchored sections, no JS). JS enhances into a
+   one-at-a-time swap via .is-enhanced + [hidden]. */
+.pain__panels {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.pain__panel {
+  scroll-margin-top: 5rem;
+  padding: var(--space-8);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-lg);
+}
+
+.pain--is-enhanced .pain__panels {
+  display: block;
+}
+
+.pain__panel[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pain--is-enhanced .pain__panel.is-active {
+    animation: pain-fade var(--dur-mid) var(--ease-out) both;
+  }
+}
+
+@keyframes pain-fade {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+.pain__panel-grid {
+  display: grid;
+  gap: var(--space-6) var(--space-8);
+}
+
+@media (width >= 48rem) {
+  .pain__panel-grid {
+    grid-template-columns: 1.3fr 1fr;
+  }
+}
+
+.pain__problem {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  line-height: 1.3;
+  margin-bottom: var(--space-4);
+}
+
+.pain__fix {
+  color: var(--text-muted);
+}
+
+.pain__proof {
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.pain__proof-stat {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.pain__proof-text {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.pain__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* ---------------------------------------------------------- Services --- */
+.services__grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.service-card__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+.service-card__num {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.service-card__text {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.service-card__more {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .service-card__more {
+    transition: transform var(--dur-fast) var(--ease);
+  }
+
+  .service-card:hover .service-card__more {
+    transform: translateX(4px);
+  }
+}
+
+/* ------------------------------------------------------- Industries --- */
+.industries__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.industry-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.industry-chip:hover,
+.industry-chip:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------- Recent work --- */
+.work__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.work__rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(85%, 22rem);
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+  padding-bottom: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.work-card {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.work-card__media {
+  aspect-ratio: 16 / 10;
+  background: var(--surface-sunken);
+  overflow: clip;
+}
+
+.work-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .work-card__media img {
+    transition: transform var(--dur-mid) var(--ease-out);
+  }
+
+  .work-card:hover .work-card__media img {
+    transform: scale(1.04);
+  }
+}
+
+.work-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+}
+
+.work-card__meta {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.work-card__result {
+  margin: 0;
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------ How we work --- */
+.process__steps {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+@media (width >= 52rem) {
+  .process__steps {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+.process__step {
+  position: relative;
+  counter-increment: step;
+  padding-top: var(--space-8);
+}
+
+.process__step::before {
+  content: counter(step);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-pill);
+  color: var(--accent);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  background: var(--surface);
+  position: relative;
+  z-index: 1;
+}
+
+/* The animated line threads the step numbers; it draws in on reveal. */
+.process__line {
+  position: absolute;
+  top: calc(var(--space-8) + 1.25rem);
+  left: 1.25rem;
+  width: 2px;
+  height: calc(100% - var(--space-8) - 1.25rem);
+  background: var(--border-strong);
+  transform-origin: top;
+}
+
+@media (width >= 52rem) {
+  .process__line {
+    top: calc(var(--space-8) + 1.25rem);
+    left: 1.25rem;
+    width: calc(100% - 2.5rem);
+    height: 2px;
+    transform-origin: left;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  .process__line {
+    transform: scaleY(0);
+  }
+
+  @media (width >= 52rem) {
+    .process__line {
+      transform: scaleX(0);
+    }
+  }
+
+  .process__steps.is-revealed .process__line {
+    transition: transform var(--dur-slow) var(--ease-out);
+    transform: none;
+  }
+}
+
+.process__step h3 {
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.process__step p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------ Proof --- */
+.proof__stats {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  margin: 0 0 var(--space-16);
+  padding: 0;
+  list-style: none;
+}
+
+.proof__stat {
+  text-align: center;
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.proof__num {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: var(--fs-2xl);
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.proof__label {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.proof__quotes {
+  display: grid;
+  gap: var(--space-6);
+  margin-bottom: var(--space-16);
+}
+
+@media (width >= 48rem) {
+  .proof__quotes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.proof__quote {
+  margin: 0;
+  padding: var(--space-8);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.proof__quote blockquote {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  line-height: 1.4;
+}
+
+.proof__cite {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-style: normal;
+}
+
+.proof__cite strong {
+  color: var(--text);
+  display: block;
+  font-style: normal;
+}
+
+.guarantees {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guarantee {
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  border-top: 3px solid var(--secondary);
+  background: var(--surface-sunken);
+}
+
+.guarantee h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-base);
+}
+
+.guarantee p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* -------------------------------------------------------------- FAQ --- */
+.faq {
+  max-width: var(--content-width);
+}
+
+/* ---------------------------------------------------- Final CTA band --- */
+.home-cta {
+  background:
+    radial-gradient(
+      90% 120% at 90% 10%,
+      color-mix(in srgb, var(--color-brass) 14%, transparent),
+      transparent 60%
+    ),
+    var(--surface-sunken);
+  border-top: 1px solid var(--border);
+}
+
+.home-cta__inner {
+  max-width: 44rem;
+  text-align: center;
+}
+
+.home-cta h2 {
+  font-size: var(--fs-2xl);
+}
+
+.home-cta__lede {
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-8);
+}
+
+.home-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
+}

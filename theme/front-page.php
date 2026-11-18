@@ -170,14 +170,27 @@ $hero_heading = __( 'Find your way forward.', 'compass-digital' );
 	</section>
 
 	<?php
+	// Home page sections (Task 10). Each part is self-contained; ids line up
+	// with the hero bearings (seo / websites / pos / app / ecommerce / travel).
+	get_template_part( 'template-parts/home/pain-selector' );
+	get_template_part( 'template-parts/home/services' );
+	get_template_part( 'template-parts/home/industries' );
+	get_template_part( 'template-parts/home/work' );
+	get_template_part( 'template-parts/home/process' );
+	get_template_part( 'template-parts/home/proof' );
+	get_template_part( 'template-parts/home/faq' );
+	get_template_part( 'template-parts/home/cta' );
+	?>
+
+	<?php
 	// If an editor has added content to the Home page, show it below the hero.
 	if ( have_posts() ) :
 		while ( have_posts() ) :
 			the_post();
 			if ( '' !== trim( get_the_content() ) ) :
 				?>
-				<section class="front-page__content">
-					<div class="entry-content">
+				<section class="home-section front-page__content">
+					<div class="container entry-content">
 						<?php the_content(); ?>
 					</div>
 				</section>

@@ -10,7 +10,7 @@
 - [x] 7 Navigation
 - [x] 8 Hero and motion
 - [x] 9 Post types and settings
-- [ ] 10 Home page
+- [x] 10 Home page
 - [ ] 11 Service pages
 - [ ] 12 Industry pages
 - [ ] 13 Work portfolio
@@ -26,6 +26,48 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 10 — Home page (2026-11-18)
+**Done**
+- Built the eight home sections after the hero in `front-page.php`, each a self-contained
+  part in `theme/template-parts/home/` (pain-selector, services, industries, work, process,
+  proof, faq, cta). Real, human, plain-English copy from the keyword map — no lorem, one `<h1>`
+  (the hero's); every section uses `<h2>` + the design-system `.section-header`.
+- **“Where are you stuck?” pain-point selector**: six cards whose anchors line up with the Task 8
+  hero bearings (`#seo #websites #pos #app #ecommerce #travel`). Each tailored panel gives the
+  problem in the customer's words, how we fix it, one honest proof point, and buttons to the
+  service page + Get a quote. **Works with JS off** as anchored sections (all panels rendered
+  and visible); `ui.js` `initPainSelector` enhances it into a swap-in-place selector driven by
+  card clicks, the hero bearings and the URL hash (back/forward, deep links), keyboard-accessible.
+- Services preview (6, `.card--glass` hover), industries strip (5 chips), recent-work scroll-snap
+  carousel (featured `work`, falls back to latest 3, `WP_Query`), how-we-work 4 steps with a
+  CSS line that draws on reveal, proof (number counters + featured testimonials + four honest
+  guarantees), FAQ (6 Q&As on the `.accordion` pattern) with inline **FAQPage** JSON-LD, and the
+  final CTA band “Tell us where you want to go. We'll send a quote.”
+- New `assets/src/css/home.css` (tokens only) imported into `main.css`. `.front-page` now runs
+  full-bleed so section bands reach the edges; the hero is unaffected (it centres its own inner).
+
+**Decisions**
+- Proof section stays dark-first (its stat/quote/guarantee cards are dark); the `.section--light`
+  variant would have fought their text colours for no gain.
+- Proof numbers are honest standards we hold to (Lighthouse 95+, <2s load, 6 services, 100% owned)
+  rather than invented client metrics.
+- The pain selector uses progressive enhancement over pure-CSS `:target` so the hero bearings
+  (which `hero.js` scrolls without changing the hash) still switch the active panel.
+
+**Checks**
+- `[data-reveal]` hiding is now wrapped in `@media (scripting: enabled)` (hero.css) and `main.js`
+  runs page-level reveal/counters on the home page, so below-hero content is visible with JS off
+  and animates with JS on. stylelint + eslint clean; PHPCS (theme) 0 errors/0 warnings; Vite build
+  green (CSS 7.91KB gzip, home JS ≈ 6KB gzip — budgets intact); Playwright 6/6 pass incl. axe a11y
+  on the home page; one `<h1>`, FAQPage schema present, all bearing anchors resolve.
+
+**Owner action**
+- Flag the three strongest case studies as **Featured** and add a couple of **Testimonials**
+  (Featured) so the Recent-work carousel and Proof quotes fill with real content.
+
+**Next**
+- Task 11: Service pages (the six `/services/<slug>/` pages the home now links to).
 
 ### Task 9 — Post types and settings (2026-11-18)
 **Done**

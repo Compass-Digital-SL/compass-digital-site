@@ -10,6 +10,13 @@ import { initNavigation } from "./command-menu.js";
 function initMotion() {
   if (document.querySelector("[data-hero]")) {
     import("./hero.js").then((m) => m.initHero());
+    // The home page also has below-hero sections (Task 10) that use scroll
+    // reveal and number counters. hero.js only drives motion inside the hero,
+    // so init the page-level effects for everything after it.
+    import("./motion.js").then((m) => {
+      m.initScrollReveal();
+      m.initCounters();
+    });
     return;
   }
   const needsMotion = document.querySelector(
