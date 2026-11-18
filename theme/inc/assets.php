@@ -18,10 +18,20 @@ function compass_vite_entry() {
 	return 'js/main.js';
 }
 
+/**
+ * Absolute filesystem path to the built assets directory.
+ *
+ * @return string
+ */
 function compass_dist_dir() {
 	return COMPASS_DIR . '/assets/dist';
 }
 
+/**
+ * Public URL of the built assets directory.
+ *
+ * @return string
+ */
 function compass_dist_uri() {
 	return COMPASS_URI . '/assets/dist';
 }

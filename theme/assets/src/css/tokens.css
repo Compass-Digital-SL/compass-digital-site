@@ -20,8 +20,8 @@
   --border: color-mix(in srgb, var(--color-ink) 14%, transparent);
 
   /* Type families */
-  --font-sans: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: "Fraunces", "Fraunces Fallback", Georgia, Cambria, "Times New Roman", serif;
+  --font-sans: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
+  --font-serif: "Fraunces", "Fraunces Fallback", georgia, cambria, "Times New Roman", serif;
 
   /* Fluid type scale */
   --fs-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
