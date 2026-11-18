@@ -403,6 +403,30 @@
   margin-top: var(--space-2);
 }
 
+/* ------------------------------------- Industry: services that fit --- */
+.industry-fit {
+  display: flex;
+  flex-direction: column;
+}
+
+.industry-fit__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.industry-fit__link:hover,
+.industry-fit__link:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.industry-fit__more {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  color: var(--secondary);
+  font-weight: 600;
+}
+
 /* -------------------------------------------------------- Hub grid --- */
 .services-hub__grid {
   display: grid;

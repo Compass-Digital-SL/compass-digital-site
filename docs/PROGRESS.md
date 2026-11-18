@@ -12,8 +12,8 @@
 - [x] 9 Post types and settings
 - [x] 10 Home page
 - [x] 11 Service pages
-- [ ] 12 Industry pages
-- [ ] 13 Work portfolio
+- [x] 12 Industry pages
+- [x] 13 Work portfolio
 - [ ] 14 About/Process/FAQ/Insights
 - [ ] 15 Quote flow
 - [ ] 16 Technical SEO
@@ -26,6 +26,91 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 13 — Work portfolio (2026-11-18)
+**Done**
+- **/work/ archive** (`theme/archive-work.php`, the `work` post-type archive) — a
+  filterable grid of case studies with **filter chips by Service and by Industry**.
+  Chips are real links carrying `?service=` / `?industry=` args: the list is filtered
+  **server-side** (`compass_work_filter_archive()` in `theme/inc/work.php`,
+  `pre_get_posts`), so every filtered URL is **shareable and works with JS off**.
+  `theme/assets/src/js/work-filter.js` (lazy-loaded, ~0.7KB gz) enhances the chips to
+  filter the cards **in place** and keep the URL in sync via the **History API**.
+- **Single case study** (`theme/single-work.php`): problem → **approach** → solution →
+  **results (numbers)** → **tech** → **gallery** (lazy, `decoding=async`, width/height set,
+  serves the uploaded WebP/AVIF) → **testimonial** → **next project** link → **quote CTA**
+  (pre-filled with the case study's service). Emits **CreativeWork** + BreadcrumbList JSON-LD
+  (`compass_work_schema()`), with the testimonial as a nested `Review`.
+- **Shared card component** `theme/template-parts/work-card.php` — the home "Recent work"
+  preview (`template-parts/home/work.php`) and the archive now render the **same** card;
+  its CSS moved to a new `theme/assets/src/css/work.css`. Card carries `data-services` /
+  `data-industries` for client-side filtering.
+- **Admin, no ACF**: added **Approach**, **Testimonial quote** and **Testimonial author**
+  fields to the native Work meta box (`plugins/compass-core/includes/meta-boxes.php`); a case
+  study is one editor screen (title, excerpt, featured image, the detail fields, Industry +
+  Service terms → Publish). The README has a step-by-step "Add a case study" guide.
+- **Breadcrumbs**: added `work` single + archive branches to the shared part. The three
+  `[Sample]` seeded case studies were enriched (approach + quote) so the demo is complete.
+- **Tests**: `/work/` and `/work/?service=seo` added to the Playwright smoke list. CSS
+  **46.5KB raw / 9.1KB gz** (budget 40KB gz); the filter JS is a separate chunk loaded only
+  on /work/. Stylelint, ESLint and Vite build clean; PHPCS clean on all new/changed files
+  (local CRLF sniff excluded — committed blobs are LF, CI runs on Linux).
+
+**Decisions**
+- Used the existing `work` CPT + `industry`/`service` taxonomies and the native meta boxes
+  (no ACF) — the portfolio is just content, editable in one screen.
+- Filtering is **single-select per facet, combinable across facets** (Service AND Industry);
+  server and JS behave identically, so shared URLs and the live UI never disagree.
+- The `/work/` archive is the CPT archive (`has_archive => 'work'`), whose rewrite rule wins
+  over the shadowed placeholder `work` page — kept for consistency with the rest of the site.
+- Testimonials are inline on the case study (self-contained, one screen) rather than a
+  cross-linked Testimonial post, so "add in under 5 minutes" holds.
+
+**Next**
+- Task 14: About / Process / FAQ / Insights.
+
+### Task 12 — Industry pages (2026-11-18)
+**Done**
+- **Industries hub** (`theme/page-industries.php`, slug `industries`) + **one shared
+  template** (`theme/page-industry.php`, `Template Name: Industry`) used by all five
+  industry pages: Retail shops, Restaurants & cafes, Travel & tourism, Ecommerce brands,
+  Corporates & SMEs.
+- **Single content source** `theme/inc/industries-content.php` (`compass_industries_data()`),
+  keyed by slug. Each page: outcome-led headline + lede, intro prose (industry-specific
+  pains in customer language from `SEO.md`), a "Sounds like you if…" signs aside, pains →
+  fixes, **"Services that fit"** cards that cross-link to the matching `/services/<slug>/`
+  pages with *how* each one helps, relevant work (queried by the `industry` taxonomy term),
+  5 FAQs, a related-services strip (+ back to the hub), and a quote CTA. **500+ words of
+  unique copy per page** (Travel renders ~1,900 words incl. nav/footer). Travel covers
+  **booking enquiry flows, multilingual readiness, mobile-first, Google Maps & reviews,
+  and WhatsApp enquiries** as required.
+- **Schema** (`theme/inc/industries.php` for titles/meta; FAQ/Breadcrumb helpers reused
+  from `inc/services.php`): each industry page emits `FAQPage` + `BreadcrumbList` JSON-LD
+  from the same copy; hub emits `BreadcrumbList`. Per-page keyword-map `<title>` + meta
+  description via `pre_get_document_title` + `wp_head`, scoped to these pages.
+- **CTA pre-fill**: reuses `compass_quote_url()` (`?service=<industry>`), matching the
+  quote form field.
+- **CSS**: reuses the Task 11 `.service-*` classes; added a small `.industry-fit` block to
+  `services.css`. Built CSS **43.2KB raw / 8.68KB gzip** (budget 40KB gzip). No new JS —
+  FAQ reuses `.accordion`/`ui.js`, reveals reuse `[data-reveal]`.
+- **Pages seeded**: `seed_industry_pages()` added to the WP-CLI seeder (idempotent) creates
+  the hub + 5 child pages at `/industries/<slug>/` with the template assigned.
+- **Tests**: `/industries/` and `/industries/travel-and-tourism/` added to the Playwright
+  smoke list and Lighthouse config. Verified locally — all pages 200, titles/meta/single
+  H1/schema correct, cross-links to services present, 4/4 smoke+axe pass, Stylelint + ESLint
+  + Vite build clean; PHPCS clean on all new/changed files.
+
+**Decisions**
+- Mirrors Task 11 exactly: one shared `Template Name` template selected by page slug, one
+  data source driving both copy and structured data, child slugs = industry slugs.
+- Related work uses the existing `industry` taxonomy (term names match `work_term`); only 3
+  seeded samples have industries, so Ecommerce/Corporates pages simply omit the work section
+  until real case studies land (Task 13).
+- Reused the service-page CSS wholesale rather than a new stylesheet, keeping the gzip
+  budget comfortable.
+
+**Next**
+- Task 13: Work portfolio.
 
 ### Task 11 — Service pages (2026-11-18)
 **Done**

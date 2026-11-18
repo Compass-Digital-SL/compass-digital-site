@@ -44,6 +44,20 @@ if ( is_page() ) {
 		'label' => get_the_title(),
 		'url'   => '',
 	);
+} elseif ( is_singular( 'work' ) ) {
+	$crumbs[] = array(
+		'label' => __( 'Work', 'compass-digital' ),
+		'url'   => get_post_type_archive_link( 'work' ),
+	);
+	$crumbs[] = array(
+		'label' => get_the_title(),
+		'url'   => '',
+	);
+} elseif ( is_post_type_archive( 'work' ) ) {
+	$crumbs[] = array(
+		'label' => __( 'Work', 'compass-digital' ),
+		'url'   => '',
+	);
 } elseif ( is_search() ) {
 	$crumbs[] = array(
 		'label' => __( 'Search results', 'compass-digital' ),
