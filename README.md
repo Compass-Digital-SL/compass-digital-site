@@ -24,6 +24,37 @@ In early setup. See [docs/PROGRESS.md](docs/PROGRESS.md) for the task list and w
 - Conventional commits
 - Pull request into `main`
 
+## Add a case study (the portfolio)
+
+The portfolio lives at **/work/** (a filterable archive) with one page per
+project. Everything is edited in the WordPress dashboard — no code, no page
+builder. Adding one takes about five minutes:
+
+1. Go to **wp-admin → Work → Add New Case Study**.
+2. **Title** — the project name (e.g. *Ella Spice Café — new website & bookings*).
+3. **Excerpt** (the box under the title, or *Screen Options → Excerpt*) — one
+   sentence; it is the card summary and the meta description.
+4. **Featured image** — the cover shown on the card and at the top of the page.
+   Upload a **WebP or AVIF** file with **width and height** that match, so cards
+   stay sharp and nothing shifts while it loads.
+5. **Case study details** (the box below the editor) — fill what you have:
+   - **Client, Year, Live URL, Tech used** (tech is comma-separated).
+   - **Problem → Approach → Solution** — a short paragraph each.
+   - **Results** — one per line; lead with a number where you can
+     (*Bookings up 40% in three months*). These render as the headline stats.
+   - **Testimonial quote** and **Testimonial author** — a client quote (optional).
+   - **Gallery** — click *Choose images* and pick the screenshots. They lazy-load
+     with dimensions set, and serve the modern format you uploaded.
+   - **Featured** — tick to surface it in the home "Recent work" strip.
+6. In the sidebar set **Industry** and **Service** (one or more of each). These
+   power the filter chips on /work/ and the related-work lists on the service and
+   industry pages — so always set at least one of each.
+7. **Publish.** The page, its filters, the home preview card and the CreativeWork
+   structured data all build themselves from what you entered.
+
+The fastest way to see the shape of a complete entry is the three `[Sample]`
+case studies created by `npm run wp:seed`; copy one and replace the copy.
+
 ## Continuous integration
 
 GitHub Actions runs on every pull request and every push to `main`
@@ -35,7 +66,7 @@ What it checks:
 | --- | --- |
 | **Lint & static checks** | PHP CodeSniffer (WordPress standard), ESLint, Stylelint, `php -l` syntax check. |
 | **Build theme (Vite)** | `npm run build` produces the hashed assets. |
-| **E2E, a11y & Lighthouse** | Boots `wp-env`, runs Playwright smoke tests (home, quote page, 404 — load with no console errors), an axe accessibility scan, and Lighthouse CI against the budgets in `CLAUDE.md` (Lighthouse 95+, LCP < 1.8s, CLS < 0.05, JS < 90KB gz, CSS < 40KB gz; INP is checked in the lab as Total Blocking Time < 200ms). |
+| **E2E, a11y & Lighthouse** | Boots `wp-env`, runs Playwright smoke tests (home, services, industries, work archive, quote page, 404 — load with no console errors), an axe accessibility scan, and Lighthouse CI against the budgets in `CLAUDE.md` (Lighthouse 95+, LCP < 1.8s, CLS < 0.05, JS < 90KB gz, CSS < 40KB gz; INP is checked in the lab as Total Blocking Time < 200ms). |
 
 npm and Composer downloads are cached between runs.
 [Dependabot](.github/dependabot.yml) opens weekly update PRs for npm, Composer and the Actions themselves.

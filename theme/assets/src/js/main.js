@@ -32,10 +32,16 @@ function initMotion() {
   }
 }
 
+function initWork() {
+  if (!document.querySelector("[data-work-filter]")) return;
+  import("./work-filter.js").then((m) => m.initWorkFilter());
+}
+
 function boot() {
   initNavigation();
   initUI();
   initMotion();
+  initWork();
 }
 
 if (document.readyState !== "loading") {

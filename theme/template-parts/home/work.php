@@ -49,46 +49,7 @@ if ( ! $work->have_posts() ) {
 			<?php
 			while ( $work->have_posts() ) :
 				$work->the_post();
-
-				$client    = get_post_meta( get_the_ID(), '_compass_client', true );
-				$work_year = get_post_meta( get_the_ID(), '_compass_year', true );
-				$results   = get_post_meta( get_the_ID(), '_compass_results', true );
-				$result    = '';
-				if ( $results ) {
-					$lines  = preg_split( '/\r\n|\r|\n/', (string) $results );
-					$result = trim( (string) reset( $lines ) );
-				}
-				if ( '' === $result ) {
-					$result = wp_trim_words( get_the_excerpt(), 12 );
-				}
-
-				$meta_bits = array_filter( array( $client, $work_year ) );
-				?>
-				<a class="work-card" href="<?php the_permalink(); ?>">
-					<div class="work-card__media">
-						<?php
-						if ( has_post_thumbnail() ) {
-							the_post_thumbnail(
-								'medium_large',
-								array(
-									'loading' => 'lazy',
-									'alt'     => esc_attr( get_the_title() ),
-								)
-							);
-						}
-						?>
-					</div>
-					<div class="work-card__body">
-						<?php if ( ! empty( $meta_bits ) ) : ?>
-							<span class="work-card__meta"><?php echo esc_html( implode( ' · ', $meta_bits ) ); ?></span>
-						<?php endif; ?>
-						<h3 class="work-card__title"><?php the_title(); ?></h3>
-						<?php if ( $result ) : ?>
-							<p class="work-card__result"><?php echo esc_html( $result ); ?></p>
-						<?php endif; ?>
-					</div>
-				</a>
-				<?php
+				get_template_part( 'template-parts/work-card' );
 			endwhile;
 			wp_reset_postdata();
 			?>

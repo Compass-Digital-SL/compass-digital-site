@@ -281,58 +281,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.work-card {
-  scroll-snap-align: start;
-  display: flex;
-  flex-direction: column;
-  overflow: clip;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-2);
-  color: var(--text);
-  text-decoration: none;
-}
-
-.work-card__media {
-  aspect-ratio: 16 / 10;
-  background: var(--surface-sunken);
-  overflow: clip;
-}
-
-.work-card__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .work-card__media img {
-    transition: transform var(--dur-mid) var(--ease-out);
-  }
-
-  .work-card:hover .work-card__media img {
-    transform: scale(1.04);
-  }
-}
-
-.work-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-6);
-}
-
-.work-card__meta {
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-}
-
-.work-card__result {
-  margin: 0;
-  color: var(--secondary);
-  font-weight: 600;
-}
+/* The shared .work-card component lives in work.css (reused by /work/). */
 
 /* ------------------------------------------------------ How we work --- */
 .process__steps {

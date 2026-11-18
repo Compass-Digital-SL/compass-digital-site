@@ -38,6 +38,8 @@ const pages = [
   { name: "service-seo", path: "/services/seo/", expectStatus: 200, h1: true },
   { name: "industries-hub", path: "/industries/", expectStatus: 200, h1: true },
   { name: "industry-travel", path: "/industries/travel-and-tourism/", expectStatus: 200, h1: true },
+  { name: "work-archive", path: "/work/", expectStatus: 200, h1: true },
+  { name: "work-filtered", path: "/work/?service=seo", expectStatus: 200, h1: true },
   { name: "404", path: "/this-page-does-not-exist/", expectStatus: 404, h1: false },
 ];
 

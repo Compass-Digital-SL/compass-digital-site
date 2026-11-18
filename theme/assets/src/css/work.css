@@ -1,0 +1,274 @@
+/* Compass Digital — Work: shared card, /work/ archive + filters, case study.
+   Tokens only (see docs/DESIGN.md). Dark-first. */
+
+/* Shared work card — reused by the home "Recent work" rail and /work/ grid. */
+.work-card {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.work-card__media {
+  aspect-ratio: 16 / 10;
+  background: var(--surface-sunken);
+  overflow: clip;
+}
+
+.work-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .work-card__media img {
+    transition: transform var(--dur-mid) var(--ease-out);
+  }
+
+  .work-card:hover .work-card__media img {
+    transform: scale(1.04);
+  }
+}
+
+.work-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+}
+
+.work-card__meta {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.work-card__title {
+  margin: 0;
+}
+
+.work-card__result {
+  margin: 0;
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------- Archive grid --- */
+.work-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  margin-top: var(--space-8);
+}
+
+.work-grid__empty {
+  margin-top: var(--space-8);
+  color: var(--text-muted);
+}
+
+/* Card hidden by the client-side filter (progressive enhancement). */
+.work-card[hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------- Filter chips --- */
+.work-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.work-filter__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.work-filter__label {
+  margin-right: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.work-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.work-chip:hover,
+.work-chip:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.work-chip.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* ------------------------------------------------- Case study --- */
+.case-study__cover {
+  margin: var(--space-8) auto 0;
+}
+
+.case-study__cover img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.case-study__story-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.case-block {
+  padding: var(--space-6);
+}
+
+.case-block__label {
+  margin: 0 0 var(--space-2);
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.case-block p {
+  margin: 0;
+}
+
+.case-results__list {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-result {
+  padding: var(--space-6);
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+  color: var(--secondary);
+}
+
+.case-tech__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Gallery — lazy, dimensioned images; CSS columns keep it light. */
+.case-gallery {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  margin-top: var(--space-6);
+}
+
+.case-gallery__item {
+  margin: 0;
+  overflow: clip;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-sunken);
+}
+
+.case-gallery__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.case-quote {
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.case-quote__text {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-base);
+  color: var(--text);
+}
+
+.case-quote__text::before {
+  content: "\201C";
+}
+
+.case-quote__text::after {
+  content: "\201D";
+}
+
+.case-quote__author {
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.case-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.case-next:hover,
+.case-next:focus-visible {
+  border-color: var(--accent);
+}
+
+.case-next__label {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.case-next__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+}
+
+.case-next__more {
+  color: var(--secondary);
+  font-size: var(--fs-sm);
+}

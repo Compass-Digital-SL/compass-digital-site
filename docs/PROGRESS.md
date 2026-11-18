@@ -13,7 +13,7 @@
 - [x] 10 Home page
 - [x] 11 Service pages
 - [x] 12 Industry pages
-- [ ] 13 Work portfolio
+- [x] 13 Work portfolio
 - [ ] 14 About/Process/FAQ/Insights
 - [ ] 15 Quote flow
 - [ ] 16 Technical SEO
@@ -26,6 +26,48 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 13 — Work portfolio (2026-11-18)
+**Done**
+- **/work/ archive** (`theme/archive-work.php`, the `work` post-type archive) — a
+  filterable grid of case studies with **filter chips by Service and by Industry**.
+  Chips are real links carrying `?service=` / `?industry=` args: the list is filtered
+  **server-side** (`compass_work_filter_archive()` in `theme/inc/work.php`,
+  `pre_get_posts`), so every filtered URL is **shareable and works with JS off**.
+  `theme/assets/src/js/work-filter.js` (lazy-loaded, ~0.7KB gz) enhances the chips to
+  filter the cards **in place** and keep the URL in sync via the **History API**.
+- **Single case study** (`theme/single-work.php`): problem → **approach** → solution →
+  **results (numbers)** → **tech** → **gallery** (lazy, `decoding=async`, width/height set,
+  serves the uploaded WebP/AVIF) → **testimonial** → **next project** link → **quote CTA**
+  (pre-filled with the case study's service). Emits **CreativeWork** + BreadcrumbList JSON-LD
+  (`compass_work_schema()`), with the testimonial as a nested `Review`.
+- **Shared card component** `theme/template-parts/work-card.php` — the home "Recent work"
+  preview (`template-parts/home/work.php`) and the archive now render the **same** card;
+  its CSS moved to a new `theme/assets/src/css/work.css`. Card carries `data-services` /
+  `data-industries` for client-side filtering.
+- **Admin, no ACF**: added **Approach**, **Testimonial quote** and **Testimonial author**
+  fields to the native Work meta box (`plugins/compass-core/includes/meta-boxes.php`); a case
+  study is one editor screen (title, excerpt, featured image, the detail fields, Industry +
+  Service terms → Publish). The README has a step-by-step "Add a case study" guide.
+- **Breadcrumbs**: added `work` single + archive branches to the shared part. The three
+  `[Sample]` seeded case studies were enriched (approach + quote) so the demo is complete.
+- **Tests**: `/work/` and `/work/?service=seo` added to the Playwright smoke list. CSS
+  **46.5KB raw / 9.1KB gz** (budget 40KB gz); the filter JS is a separate chunk loaded only
+  on /work/. Stylelint, ESLint and Vite build clean; PHPCS clean on all new/changed files
+  (local CRLF sniff excluded — committed blobs are LF, CI runs on Linux).
+
+**Decisions**
+- Used the existing `work` CPT + `industry`/`service` taxonomies and the native meta boxes
+  (no ACF) — the portfolio is just content, editable in one screen.
+- Filtering is **single-select per facet, combinable across facets** (Service AND Industry);
+  server and JS behave identically, so shared URLs and the live UI never disagree.
+- The `/work/` archive is the CPT archive (`has_archive => 'work'`), whose rewrite rule wins
+  over the shadowed placeholder `work` page — kept for consistency with the rest of the site.
+- Testimonials are inline on the case study (self-contained, one screen) rather than a
+  cross-linked Testimonial post, so "add in under 5 minutes" holds.
+
+**Next**
+- Task 14: About / Process / FAQ / Insights.
 
 ### Task 12 — Industry pages (2026-11-18)
 **Done**
