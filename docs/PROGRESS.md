@@ -18,7 +18,7 @@
 - [x] 15 Quote flow
 - [x] 16 Technical SEO
 - [x] 17 Local SEO and analytics
-- [ ] 18 Performance
+- [x] 18 Performance
 - [ ] 19 Accessibility and QA
 - [ ] 20 Security and legal
 - [ ] 21 CD pipeline
@@ -26,6 +26,55 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 18 — Performance (2026-11-19)
+**Done**
+- **Zero render-blocking CSS on first paint** (`theme/inc/assets.php`): design tokens
+  (`tokens.css`) + a slim hand-authored critical layer (`theme/assets/critical.css` — base,
+  header, hero) are **inlined in `<head>`**; the **@font-face rules are inlined** with absolute
+  woff2 URLs (the separate `fonts.css` request is gone); the **full stylesheet now loads
+  non-render-blocking** via `rel=preload` + `onload` rel-swap with a `<noscript>` fallback. The LCP
+  font + the two variable fonts stay preloaded (`inc/fonts.php`).
+- **Speculation Rules prefetch** (`theme/inc/perf.php`): same-origin document links are prefetched on
+  hover / pointer-down (moderate eagerness), excluding `wp-admin`, `wp-login`, `rel="nofollow"` and
+  `data-no-prefetch`. Prefetch only (no prerender) so analytics never double-counts.
+- **Image pipeline** (`inc/perf.php`): WebP/AVIF uploads allowed, image quality pinned to 82. Work /
+  Insights cards already ship `loading="lazy"` + `decoding="async"`; WordPress core supplies
+  `width`/`height` + `srcset`/`sizes` for library images, and the inlined critical CSS reserves the
+  hero height so the deferred sheet cannot shift it.
+- **Long-cache headers** (`theme/assets/.htaccess`): hashed JS/CSS, fonts and images cached
+  `public, max-age=31536000, immutable`, with `mod_deflate` as a compression fallback. HTML cache
+  rule + the nginx equivalent documented in `docs/GO-LIVE.md` (server-side, Task 21/22).
+- **CI performance budgets that fail the build** (`lighthouserc.json` + `budget.json`): LHCI runs 5 key
+  URLs (home, services, work, get-a-quote, contact) on **throttled 4G mobile**, 3 runs, median, and
+  **errors** on perf score < 0.95, LCP > 1.8 s, CLS > 0.05 or TBT > 200 ms; transfer budgets cap JS
+  90 KB / CSS 40 KB / fonts 180 KB and third-party count. The CI `e2e` job already calls `npm run lhci`.
+- Lint (ESLint, Stylelint), the Vite build and PHPCS are clean on changed files.
+
+**Before → after**
+- **Render-blocking stylesheets in `<head>`: 2 → 0** (was `compass-main` + `fonts.css`; now both
+  inlined/deferred).
+- **Asset budgets (unchanged bytes, now enforced):** homepage **CSS 11.08 KB gzip** (budget 40 KB) and
+  **JS ≈ 6.1 KB gzip** — `main` 3.34 + `hero` 1.38 + `motion` 1.41 (budget 90 KB). Both pass with large
+  headroom; JS was already per-feature code-split (`js/main.js`), so no unused JS per template.
+- **Runtime metrics (Lighthouse score, LCP, CLS, TBT)** are produced by the CI `e2e` job (wp-env +
+  LHCI); they were **not measured locally** — Docker/wp-env is unavailable in this sandbox, same
+  constraint noted in Tasks 16–17.
+
+**Decisions**
+- **Inlined critical CSS is hand-authored and lean, not per-template-extracted.** The whole bundle is
+  only 11 KB gzip and largely shared across templates, so a `critical`/`penthouse` extraction step
+  (headless browser + running site at build time, plus a heavy dev dep) wasn't worth it. Inlining
+  tokens + a base/header/hero layer and deferring the rest removes the render-blocking requests with
+  no new tooling. `unused-css-rules` is a **warn** in LHCI to flag regressions without blocking.
+- **Prefetch, not prerender**, in Speculation Rules — prerender executes page JS and would fire GA4 /
+  consent logic on pages the visitor may never open.
+- **Budgets live in CI**, not just docs: `lighthouserc.json` thresholds mirror CLAUDE.md rule 5 exactly,
+  so a regression fails the PR.
+
+**Next**
+- Task 19 (Accessibility + QA): run the full LHCI + axe suite against the live wp-env once Docker is
+  available, confirm the perf budgets pass green, and capture the real LCP/CLS/score numbers.
 
 ### Task 17 — Local SEO + analytics (2026-11-19)
 **Done**

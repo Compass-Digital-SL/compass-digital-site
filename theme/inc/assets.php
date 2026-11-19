@@ -70,20 +70,65 @@ function compass_vite_manifest() {
 	return $manifest;
 }
 
+/**
+ * Read a theme CSS file once and cache it. Used to inline critical CSS.
+ *
+ * @param string $rel Path relative to the theme's assets directory.
+ * @return string
+ */
+function compass_asset_contents( $rel ) {
+	static $cache = array();
+	if ( isset( $cache[ $rel ] ) ) {
+		return $cache[ $rel ];
+	}
+	$path           = COMPASS_DIR . '/assets/' . ltrim( $rel, '/' );
+	$cache[ $rel ]  = is_readable( $path ) ? (string) file_get_contents( $path ) : '';
+	return $cache[ $rel ];
+}
+
+/**
+ * Inline the @font-face rules with absolute woff2 URLs so there is no
+ * render-blocking fonts stylesheet request. The metric-adjusted fallbacks ship
+ * in the same block so the fallback text has the right metrics immediately (no
+ * layout shift when the webfont swaps in). Paired with the preloads in
+ * inc/fonts.php. Printed very early in the head.
+ */
+add_action(
+	'wp_head',
+	function () {
+		$css = compass_asset_contents( 'fonts/fonts.css' );
+		if ( '' === $css ) {
+			return;
+		}
+		// Rewrite relative url("./x.woff2") to absolute so it resolves from the
+		// document, not the (now absent) stylesheet.
+		$css = str_replace( 'url("./', 'url("' . COMPASS_URI . '/assets/fonts/', $css );
+		printf( "<style id=\"compass-fonts-inline\">%s</style>\n", $css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- First-party CSS from the theme, no user input.
+	},
+	1
+);
+
+/**
+ * Inline the critical, above-the-fold CSS (design tokens + base/header/hero) so
+ * the first paint is correct with zero render-blocking stylesheets. The full
+ * stylesheet is then loaded non-render-blocking (see the style_loader_tag
+ * filter below). Printed after the fonts, still before wp_head CSS output.
+ */
+add_action(
+	'wp_head',
+	function () {
+		$critical = compass_asset_contents( 'src/css/tokens.css' ) . compass_asset_contents( 'critical.css' );
+		if ( '' === trim( $critical ) ) {
+			return;
+		}
+		printf( "<style id=\"compass-critical\">%s</style>\n", $critical ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- First-party CSS from the theme, no user input.
+	},
+	2
+);
+
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		// Static, un-hashed fonts stylesheet (loaded in dev and prod).
-		$fonts_css = COMPASS_DIR . '/assets/fonts/fonts.css';
-		if ( is_readable( $fonts_css ) ) {
-			wp_enqueue_style(
-				'compass-fonts',
-				COMPASS_URI . '/assets/fonts/fonts.css',
-				array(),
-				(string) filemtime( $fonts_css )
-			);
-		}
-
 		$entry = compass_vite_entry();
 		$dev   = compass_vite_dev_server();
 
@@ -129,6 +174,33 @@ add_action(
 			);
 		}
 	}
+);
+
+/**
+ * Load the main (below-the-fold) stylesheet non-render-blocking.
+ *
+ * The critical CSS is already inlined, so the full bundle can load without
+ * holding up first paint: preload it as a stylesheet and swap rel on load, with
+ * a <noscript> fallback for JS-off visitors. Only the theme's own
+ * `compass-main*` handles are affected.
+ */
+add_filter(
+	'style_loader_tag',
+	function ( $tag, $handle, $href, $media ) {
+		if ( 0 !== strpos( $handle, 'compass-main' ) ) {
+			return $tag;
+		}
+		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- The style is enqueued; this filter only rewrites its tag to load non-blocking.
+		return sprintf(
+			'<link rel="preload" as="style" href="%1$s" media="%2$s" onload="this.onload=null;this.rel=\'stylesheet\'">' . "\n"
+			. '<noscript><link rel="stylesheet" href="%1$s" media="%2$s"></noscript>' . "\n",
+			esc_url( $href ),
+			esc_attr( $media )
+		);
+		// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+	},
+	10,
+	4
 );
 
 /**

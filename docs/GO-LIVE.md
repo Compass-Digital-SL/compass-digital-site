@@ -41,6 +41,33 @@ off there.
     launch. _Source: Task 17 (owner decision, 2026-11-19); supersedes the Task 16
     "revisit areaServed" note._
 
+## Performance — server caching (Task 18)
+
+Static theme assets are long-cached by a committed `theme/assets/.htaccess`
+(`Cache-Control: public, max-age=31536000, immutable` for JS/CSS/fonts/images).
+That covers Apache/cPanel (Namecheap) hosting with no extra setup. Two things are
+still server-side:
+
+- [ ] **HTML caching rule.** Pages must **not** be cached immutably (content
+  changes, and quote/thank-you pages are per-visit). If a full-page cache plugin
+  or host cache is enabled, set HTML `Cache-Control` to roughly
+  `public, max-age=0, s-maxage=600, must-revalidate` (short shared cache, always
+  revalidate) and **exclude** `/get-a-quote/` and `/thank-you/` from caching.
+- [ ] **Nginx hosts only:** `.htaccess` is ignored. Add the equivalent to the
+  server block:
+  ```nginx
+  location ~* \.(js|mjs|css|woff2|avif|webp|png|jpe?g|svg|gif|ico)$ {
+      add_header Cache-Control "public, max-age=31536000, immutable";
+      access_log off;
+  }
+  ```
+- [ ] **Confirm compression** is on at the host (gzip or brotli for HTML/CSS/JS).
+  Most managed hosts enable it by default; the `.htaccess` requests `mod_deflate`
+  as a fallback.
+
+_Source: Task 18. Budgets are enforced in CI (`lighthouserc.json` + `budget.json`);
+see `docs/PROGRESS.md` Task 18._
+
 ## SEO verification (after deploy to staging/live)
 
 - [ ] **Run the SEO audit** against the deployed site:

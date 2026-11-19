@@ -1,0 +1,90 @@
+/* Critical, above-the-fold CSS — inlined in <head> on every page (see inc/assets.php).
+   Paired with the design tokens (tokens.css is inlined alongside this) so the first
+   paint is correct — dark surface, right fonts, header and hero laid out — while the
+   full stylesheet loads non-render-blocking. Keep this LEAN: base, header and hero
+   only. Everything below the fold lives in the deferred main bundle. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  line-height: var(--lh-tight);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-4);
+}
+
+h1 { font-size: var(--fs-2xl); }
+
+p { margin: 0 0 var(--space-4); }
+
+a { color: var(--link); text-underline-offset: 0.15em; }
+
+img { max-width: 100%; height: auto; }
+
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -3rem;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: var(--radius);
+  transition: top var(--dur-fast) var(--ease);
+}
+.skip-link:focus { top: var(--space-2); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Layout primitives (shared by header, main sections and footer). */
+.container,
+.site-header__inner,
+.site-footer__inner,
+.site-main > * {
+  max-width: var(--wide-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+}
+
+/* Hero is the LCP region on the home page: reserve height so the deferred
+   stylesheet cannot shift it, and keep the title readable on first paint. */
+.hero { padding-block: var(--space-16); }
+.hero--expedition { min-height: 70vh; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:8888/",
+        "http://localhost:8888/services/",
+        "http://localhost:8888/work/",
+        "http://localhost:8888/get-a-quote/",
+        "http://localhost:8888/contact/"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "simulate",
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"]
+      }
+    },
+    "assert": {
+      "budgetsFile": "./budget.json",
+      "aggregationMethod": "median-run",
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.95 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 1800 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 200 }],
+        "first-contentful-paint": ["warn", { "maxNumericValue": 1500 }],
+        "speed-index": ["warn", { "maxNumericValue": 3000 }],
+        "render-blocking-resources": ["warn", { "maxLength": 0 }],
+        "unused-css-rules": ["warn", { "maxLength": 0 }],
+        "uses-responsive-images": ["warn", { "maxLength": 0 }],
+        "modern-image-formats": ["warn", { "maxLength": 0 }],
+        "unsized-images": ["error", { "maxLength": 0 }],
+        "efficient-animated-content": ["warn", { "maxLength": 0 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}
