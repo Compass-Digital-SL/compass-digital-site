@@ -23,10 +23,23 @@ off there.
   values; **the Facebook/Instagram/LinkedIn URLs are placeholders — swap for the
   real pages before launch.** Feeds the footer, contact page and the
   Organization / LocalBusiness schema.
-- [ ] **Revisit `areaServed` in the schema** if positioning as worldwide: the
-  LocalBusiness/ProfessionalService node in `theme/inc/seo.php` currently states
-  `areaServed: Sri Lanka` and a Colombo address. Fine for a Colombo-registered
-  firm; widen in Task 17 if needed. _Source: Task 16._
+- [ ] **Widen positioning to worldwide before deploy (decided — do not forget).**
+  Compass works **from Sri Lanka for the whole world**, not Sri Lanka only. The
+  site currently reads Sri Lanka–first in several places; broaden the wording and
+  the structured data (keep Colombo as the base, add global reach). Touch points:
+  - `theme/inc/seo.php` — `compass_localbusiness_schema()` / Organization
+    `contactPoint`: `areaServed` is `Sri Lanka` / `LK`. Add **Worldwide** (e.g.
+    `areaServed: ["LK", "Worldwide"]` or a broader `areaServed`).
+  - `theme/template-parts/home/local-area.php` — service-area block copy and the
+    city chips say "across Sri Lanka"; add a clear "…and worldwide, remotely" line.
+  - `docs/SEO.md §Base city / service area` and the home/meta copy — currently
+    "all of Sri Lanka, overseas Sri Lankan-owned businesses secondary". Reframe
+    worldwide delivery as a primary audience, not just a secondary one.
+  - Keep **NAP, address and Google Business Profile** as the Colombo base (local
+    SEO still wants a real place); this is about *reach*, not moving the office.
+  - Best handled as its own small copy/positioning pass (its own branch) before
+    launch. _Source: Task 17 (owner decision, 2026-11-19); supersedes the Task 16
+    "revisit areaServed" note._
 
 ## SEO verification (after deploy to staging/live)
 
