@@ -119,6 +119,18 @@ $testimonials = new WP_Query(
 			</div>
 		<?php endif; ?>
 
+		<?php
+		$reviews_url = function_exists( 'compass_get_setting' ) ? compass_get_setting( 'reviews_url' ) : '';
+		if ( $reviews_url ) :
+			?>
+			<p class="proof__reviews" data-reveal>
+				<a class="proof__reviews-link" href="<?php echo esc_url( $reviews_url ); ?>" rel="noopener" target="_blank">
+					<?php esc_html_e( 'Read more reviews on Google', 'compass-digital' ); ?>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'compass-digital' ); ?></span>
+				</a>
+			</p>
+		<?php endif; ?>
+
 		<ul class="guarantees" role="list" data-reveal>
 			<?php foreach ( $guarantees as $guarantee ) : ?>
 				<li class="guarantee">

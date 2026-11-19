@@ -28,6 +28,7 @@ require_once COMPASS_CORE_DIR . 'includes/post-types.php';
 require_once COMPASS_CORE_DIR . 'includes/meta-boxes.php';
 require_once COMPASS_CORE_DIR . 'includes/quote-requests.php';
 require_once COMPASS_CORE_DIR . 'includes/settings.php';
+require_once COMPASS_CORE_DIR . 'includes/analytics.php';
 require_once COMPASS_CORE_DIR . 'includes/quote-handler.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {

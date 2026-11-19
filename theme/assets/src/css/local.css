@@ -1,0 +1,94 @@
+/* Compass Digital — local-SEO block (Task 17).
+   Service area, NAP card, embed-free map link, reviews. Tokens only. */
+
+.local-area__grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+  margin-top: var(--space-8);
+}
+
+@media (width >= 48rem) {
+  .local-area__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: start;
+  }
+}
+
+.local-area__subtitle {
+  font-size: var(--fs-base);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-3);
+}
+
+.local-area__nap {
+  padding: var(--space-6);
+}
+
+.local-area__address {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-style: normal;
+  margin-bottom: var(--space-4);
+}
+
+.local-area__name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.local-area__line {
+  color: var(--text-muted);
+}
+
+a.local-area__line {
+  color: var(--link);
+}
+
+.local-area__map-link {
+  margin-top: var(--space-2);
+}
+
+.local-area__area-note {
+  color: var(--text-muted);
+}
+
+.local-area__cities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0 0 var(--space-6);
+  list-style: none;
+}
+
+.local-area__city {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.local-area__city--all {
+  background: var(--glass-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.local-area__reviews {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.local-area__reviews-link {
+  font-weight: 600;
+}
+
+.local-area__reviews-soon {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}

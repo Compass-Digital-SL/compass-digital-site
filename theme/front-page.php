@@ -178,6 +178,7 @@ $hero_heading = __( 'Find your way forward.', 'compass-digital' );
 	get_template_part( 'template-parts/home/work' );
 	get_template_part( 'template-parts/home/process' );
 	get_template_part( 'template-parts/home/proof' );
+	get_template_part( 'template-parts/home/local-area' );
 	get_template_part( 'template-parts/home/faq' );
 	get_template_part( 'template-parts/home/cta' );
 	?>

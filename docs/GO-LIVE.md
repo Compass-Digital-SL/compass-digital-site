@@ -42,6 +42,26 @@ off there.
   debugger (Facebook Sharing Debugger / X Card Validator). Re-run
   `npm run og:generate` if the brand or copy changed.
 
+## Local SEO + analytics (Task 17 — owner, via Site Settings)
+
+Full step-by-step owner guide: **`docs/LOCAL-SEO.md`**. In short, in
+**WP Admin → Settings → Site Settings**:
+
+- [ ] **Local & maps:** paste the **Google Maps link** and **Google reviews
+  link** from the verified Google Business Profile; optionally the
+  **latitude/longitude**. Enter **average rating / review count** only once there
+  are real Google reviews (feeds `aggregateRating` schema).
+- [ ] **Analytics & verification:** paste the **GA4 Measurement ID** (`G-…`) and
+  the **Search Console verification** token (or set `COMPASS_GA4_ID` /
+  `COMPASS_GSC_VERIFICATION` as constants in `wp-config.php`). Analytics loads
+  only after cookie consent + page idle; the Search Console tag verifies the site.
+- [ ] **Verify tracking** after launch: accept cookies on the live site and check
+  GA4 **Realtime** shows the visit, then that `quote_submitted`, `whatsapp_click`,
+  `phone_click`, `service_view` and `command_menu_used` events arrive.
+- [ ] **Follow `docs/LOCAL-SEO.md`**: create/verify Google Business Profile, set up
+  Bing Places, gather reviews, and build consistent NAP citations in directories.
+  _Source: Task 17._
+
 ## Rank Math (only if the owner wants the plugin)
 
 - [ ] Import `docs/seo/rank-math-settings.json` (Rank Math → Status & Tools →
