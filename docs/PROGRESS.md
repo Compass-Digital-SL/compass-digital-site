@@ -20,12 +20,77 @@
 - [x] 17 Local SEO and analytics
 - [x] 18 Performance
 - [x] 19 Accessibility and QA
-- [ ] 20 Security and legal
+- [x] 20 Security and legal
 - [x] 21 CD pipeline
 - [ ] 22 Go-live
 - [ ] 23 Post-launch
 
+## Pre-launch audit (2026-11-19)
+
+Full code / security / SEO / performance / features / a11y / UX review and the
+outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
+- ~~Blocks launch: Task 20 (Security & legal) is not started~~ **Done** — security
+  headers + CSP (Report-Only), WP hardening, `security.txt`, and drafted
+  Privacy/Terms/Cookie pages. See the Task 20 log entry and `docs/SECURITY.md`.
+- Also outstanding: Task 22 (go-live), Task 23 (`docs/GROWTH.md`), the decided
+  **worldwide positioning** copy/schema pass, and real Lighthouse numbers
+  (never measured locally — Docker unavailable; capture on staging).
+- Owner "You do" actions (hosting/domain, GitHub secrets + environments, backup
+  bucket, `WP_ENVIRONMENT_TYPE=production`, Site Settings, replace sample
+  content, confirm legal pages) are collected in `docs/AUDIT.md` §10 and
+  `docs/GO-LIVE.md`.
+
 ## Log
+
+### Task 20 — Security and legal (2026-11-19)
+**Done**
+- **`mu-plugins/compass-security.php`** (must-use, survives theme/plugin swaps):
+  - Security headers on every front-end response — `X-Content-Type-Options`,
+    `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, `Permissions-Policy`
+    (geo/mic/cam/payment/USB/FLoC off), `Cross-Origin-Opener-Policy`, and
+    **HSTS only over TLS**.
+  - **CSP in Report-Only first** (`Content-Security-Policy-Report-Only`), allowing
+    self + GA4 + Turnstile; filterable (`compass_csp_directives` /
+    `compass_security_headers`). Flip to enforcing with
+    `define( 'COMPASS_CSP_ENFORCE', true )` after a clean staging run.
+  - **XML-RPC off** + pingback methods/header removed; **`DISALLOW_FILE_EDIT`**.
+  - **User-enumeration blocked** — `?author=N` redirect for guests, REST
+    `/wp/v2/users` removed for unauthenticated, oEmbed author stripped.
+  - **Login throttle** (5 fails / IP / 15 min) + generic login error.
+  - **`security.txt`** at `/.well-known/security.txt` (+ `/security.txt`), RFC 9116,
+    self-refreshing `Expires`.
+- **Legal pages, marked DRAFT for the owner's legal review**, matching what the
+  site actually collects (quote/contact form, GA4 after consent, email, spam
+  defences): `theme/page-privacy.php`, `theme/page-terms.php`,
+  `theme/page-cookie-policy.php` (+ `assets/src/css/legal.css`). Footer Legal
+  column now links the Cookie Policy. Placeholders (`[…]`) for registration
+  details, retention, rights/complaint route and governing law.
+- **`docs/SECURITY.md`** — headers rationale, CSP-tuning path, **least-privilege
+  roles**, **update policy**, and the owner server/account checklist.
+- **Verified (not changed):** the quote/contact form is already nonce-verified,
+  fully sanitised/escaped, honeypot + time-trap + rate-limit + optional Turnstile,
+  saved to a private CPT (Task 15) — no rework needed.
+
+**Decisions**
+- Hardening in **mu-plugins**, not the theme, so it cannot be switched off and
+  survives a theme change (per the pre-launch audit recommendation).
+- **CSP Report-Only first** with a temporary `'unsafe-inline'` for the inline
+  blocks (critical CSS, consent, JSON-LD, speculation rules); nonce + enforce is
+  the documented next step, not this task.
+- `DISALLOW_FILE_EDIT` defined in code (travels with the repo) rather than left to
+  wp-config.
+- Legal pages as **page templates** (slug-based, like the other pages) so the
+  owner creates empty Pages and assigns the template; copy lives in the repo.
+
+**Owner must do** — see `docs/SECURITY.md`:
+- Create Pages `privacy` / `terms` / `cookie-policy` and assign the templates;
+  **read, confirm and complete** the `[…]` placeholders; have them legally
+  reviewed.
+- Serve over HTTPS, enable 2FA on the single admin, keep one Administrator, watch
+  CSP Report-Only on staging then enforce, verify headers on the live URL.
+
+**Next**
+- Task 22 (Go-live): work `docs/GO-LIVE.md`, first staging deploy, tag `v1.0.0`.
 
 ### Task 21 — Continuous deployment (2026-11-19)
 **Done**
