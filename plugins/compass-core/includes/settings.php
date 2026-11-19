@@ -22,58 +22,138 @@ const COMPASS_CORE_OPTION = 'compass_site_settings';
  */
 function compass_core_setting_fields() {
 	return array(
-		'phone'        => array(
+		'phone'            => array(
 			'label' => __( 'Phone', 'compass-core' ),
 			'type'  => 'tel',
 		),
-		'whatsapp'     => array(
+		'whatsapp'         => array(
 			'label' => __( 'WhatsApp number', 'compass-core' ),
 			'type'  => 'text',
 			'help'  => __( 'Digits only, including country code, e.g. 94771234567.', 'compass-core' ),
 		),
-		'email'        => array(
+		'email'            => array(
 			'label' => __( 'Email', 'compass-core' ),
 			'type'  => 'email',
 		),
-		'address'      => array(
+		'address'          => array(
 			'label' => __( 'Address', 'compass-core' ),
 			'type'  => 'textarea',
 		),
-		'service_area' => array(
+		'service_area'     => array(
 			'label' => __( 'Service area', 'compass-core' ),
 			'type'  => 'text',
 			'help'  => __( 'e.g. Colombo & across Sri Lanka.', 'compass-core' ),
 		),
-		'reg_no'       => array(
+		'reg_no'           => array(
 			'label' => __( 'Registration number', 'compass-core' ),
 			'type'  => 'text',
 		),
-		'hours'        => array(
+		'hours'            => array(
 			'label' => __( 'Opening hours', 'compass-core' ),
 			'type'  => 'textarea',
 			'help'  => __( 'One line per day, e.g. Mon–Fri 9:00–17:30.', 'compass-core' ),
 		),
-		'facebook'     => array(
+		'facebook'         => array(
 			'label' => __( 'Facebook URL', 'compass-core' ),
 			'type'  => 'url',
 		),
-		'instagram'    => array(
+		'instagram'        => array(
 			'label' => __( 'Instagram URL', 'compass-core' ),
 			'type'  => 'url',
 		),
-		'linkedin'     => array(
+		'linkedin'         => array(
 			'label' => __( 'LinkedIn URL', 'compass-core' ),
 			'type'  => 'url',
 		),
-		'youtube'      => array(
+		'youtube'          => array(
 			'label' => __( 'YouTube URL', 'compass-core' ),
 			'type'  => 'url',
 		),
-		'tiktok'       => array(
+		'tiktok'           => array(
 			'label' => __( 'TikTok URL', 'compass-core' ),
 			'type'  => 'url',
 		),
+
+		// --- Quote & email (second section). Each value can be overridden by a
+		// PHP constant (see compass_core_secret()) so secrets can live in the
+		// environment / wp-config.php instead of the database.
+		'notify_email'     => array(
+			'label'   => __( 'Quote notification email', 'compass-core' ),
+			'type'    => 'email',
+			'section' => 'quote',
+			'help'    => __( 'Where new quote requests are emailed. Defaults to the site admin email.', 'compass-core' ),
+		),
+		'turnstile_site'   => array(
+			'label'   => __( 'Turnstile site key', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'quote',
+			'help'    => __( 'Cloudflare Turnstile site key. Leave blank to disable the spam widget.', 'compass-core' ),
+		),
+		'turnstile_secret' => array(
+			'label'   => __( 'Turnstile secret key', 'compass-core' ),
+			'type'    => 'password',
+			'section' => 'quote',
+		),
+		'smtp_host'        => array(
+			'label'   => __( 'SMTP host', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'quote',
+			'help'    => __( 'Leave SMTP fields blank to use the server default mailer.', 'compass-core' ),
+		),
+		'smtp_port'        => array(
+			'label'   => __( 'SMTP port', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'quote',
+			'help'    => __( 'e.g. 587 (TLS) or 465 (SSL).', 'compass-core' ),
+		),
+		'smtp_user'        => array(
+			'label'   => __( 'SMTP username', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'quote',
+		),
+		'smtp_pass'        => array(
+			'label'   => __( 'SMTP password', 'compass-core' ),
+			'type'    => 'password',
+			'section' => 'quote',
+		),
+		'smtp_encryption'  => array(
+			'label'   => __( 'SMTP encryption', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'quote',
+			'help'    => __( 'tls, ssl, or blank for none.', 'compass-core' ),
+		),
+		'smtp_from'        => array(
+			'label'   => __( 'From email', 'compass-core' ),
+			'type'    => 'email',
+			'section' => 'quote',
+			'help'    => __( 'The address auto-replies and notifications are sent from. Defaults to the contact email.', 'compass-core' ),
+		),
 	);
+}
+
+/**
+ * A secret / configurable value, preferring a PHP constant over the stored
+ * option so SMTP and Turnstile keys can be supplied via the environment.
+ *
+ * @param string $key Setting key.
+ * @return string
+ */
+function compass_core_secret( $key ) {
+	$const = 'COMPASS_' . strtoupper( $key );
+	if ( defined( $const ) && '' !== (string) constant( $const ) ) {
+		return (string) constant( $const );
+	}
+	return (string) compass_get_setting( $key );
+}
+
+/**
+ * The email address quote notifications go to.
+ *
+ * @return string
+ */
+function compass_core_notify_email() {
+	$email = compass_core_secret( 'notify_email' );
+	return $email ? $email : get_option( 'admin_email' );
 }
 
 /**
@@ -111,13 +191,23 @@ function compass_core_register_settings() {
 		'compass-site-settings'
 	);
 
+	add_settings_section(
+		'compass_core_quote',
+		__( 'Quote &amp; email', 'compass-core' ),
+		function () {
+			echo '<p>' . esc_html__( 'Spam protection and email delivery for the quote form. SMTP and Turnstile keys can instead be set as PHP constants in wp-config.php (e.g. COMPASS_SMTP_PASS).', 'compass-core' ) . '</p>';
+		},
+		'compass-site-settings'
+	);
+
 	foreach ( compass_core_setting_fields() as $key => $field ) {
+		$section = ( isset( $field['section'] ) && 'quote' === $field['section'] ) ? 'compass_core_quote' : 'compass_core_contact';
 		add_settings_field(
 			$key,
 			$field['label'],
 			'compass_core_render_setting_field',
 			'compass-site-settings',
-			'compass_core_contact',
+			$section,
 			array(
 				'key'       => $key,
 				'field'     => $field,
@@ -148,9 +238,9 @@ function compass_core_render_setting_field( $args ) {
 			esc_textarea( $value )
 		);
 	} else {
-		$input_type = in_array( $field['type'], array( 'url', 'email', 'tel' ), true ) ? $field['type'] : 'text';
+		$input_type = in_array( $field['type'], array( 'url', 'email', 'tel', 'password' ), true ) ? $field['type'] : 'text';
 		printf(
-			'<input type="%1$s" id="%2$s" name="%3$s" value="%4$s" class="regular-text" />',
+			'<input type="%1$s" id="%2$s" name="%3$s" value="%4$s" class="regular-text" autocomplete="off" />',
 			esc_attr( $input_type ),
 			esc_attr( $id ),
 			esc_attr( $name ),

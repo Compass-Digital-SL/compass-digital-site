@@ -174,7 +174,7 @@ function compass_core_export_quotes() {
 	header( 'Content-Disposition: attachment; filename=' . $filename );
 
 	$out    = fopen( 'php://output', 'w' );
-	$fields = array( 'name', 'email', 'phone', 'company', 'service', 'budget', 'status', 'message', 'source' );
+	$fields = array( 'name', 'email', 'phone', 'company', 'service', 'industry', 'timeline', 'budget', 'contact_method', 'status', 'message', 'source' );
 
 	$header = array_merge( array( __( 'Received', 'compass-core' ) ), $fields );
 	fputcsv( $out, $header );

@@ -48,10 +48,11 @@ class Compass_Core_CLI {
 		$this->seed_industry_pages();
 		$this->seed_company_pages();
 		$this->seed_insights();
+		$this->seed_quote_pages();
 
 		flush_rewrite_rules();
 
-		WP_CLI::success( 'Seeded Work, Testimonials, Service, Industry and Company pages, plus the Insights blog. Remove placeholders with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
+		WP_CLI::success( 'Seeded Work, Testimonials, Service, Industry and Company pages, the Insights blog and the Quote / Contact / Thank-you pages. Remove placeholders with: wp compass seed --fresh (before next seed) or delete the "[Sample]" items.' );
 	}
 
 	/**
@@ -651,7 +652,25 @@ class Compass_Core_CLI {
 	}
 
 	/**
-	 * Ensure a published page exists at the given slug and parent, with the
+	 * Ensure the quote flow pages exist with their templates assigned:
+	 * Get a quote, Contact, and a noindex Thank-you page.
+	 */
+	private function seed_quote_pages() {
+		$pages = array(
+			'get-a-quote' => array( __( 'Get a quote', 'compass-core' ), 'page-get-a-quote.php' ),
+			'contact'     => array( __( 'Contact', 'compass-core' ), 'page-contact.php' ),
+			'thank-you'   => array( __( 'Thank you', 'compass-core' ), 'page-thank-you.php' ),
+		);
+		foreach ( $pages as $slug => $page ) {
+			$id = $this->ensure_page( $slug, $page[0], 0, $page[1] );
+			if ( $id ) {
+				WP_CLI::log( 'Page: ' . $page[0] );
+			}
+		}
+	}
+
+	/**
+	 * Ensure a page exists at the given slug (optionally under a parent) with the
 	 * given template. Returns the page ID.
 	 *
 	 * @param string $slug      Page slug.

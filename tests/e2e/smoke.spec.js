@@ -34,6 +34,8 @@ function watchForErrors(page) {
 const pages = [
   { name: "home", path: "/", expectStatus: 200, h1: true },
   { name: "quote", path: "/get-a-quote/", expectStatus: 200, h1: true },
+  { name: "contact", path: "/contact/", expectStatus: 200, h1: true },
+  { name: "thank-you", path: "/thank-you/", expectStatus: 200, h1: true },
   { name: "services-hub", path: "/services/", expectStatus: 200, h1: true },
   { name: "service-seo", path: "/services/seo/", expectStatus: 200, h1: true },
   { name: "industries-hub", path: "/industries/", expectStatus: 200, h1: true },
@@ -47,6 +49,47 @@ const pages = [
   { name: "insight-post", path: "/insights/website-cost-sri-lanka/", expectStatus: 200, h1: true },
   { name: "404", path: "/this-page-does-not-exist/", expectStatus: 404, h1: false },
 ];
+
+// End-to-end: a real submission saves and redirects to the thank-you page.
+// Runs with JavaScript on (the stepped wizard) and off (one long form), since
+// the form must work either way.
+for (const js of [true, false]) {
+  test.describe(`quote submission (JS ${js ? "on" : "off"})`, () => {
+    test.use({ javaScriptEnabled: js });
+
+    test(`submits and reaches the thank-you page`, async ({ page }) => {
+      await page.goto("/get-a-quote/", { waitUntil: "networkidle" });
+
+      const next = page.locator("[data-quote-next]");
+      // When JS enhances the form into steps, advance after each step; without
+      // JS every field is visible at once and Next stays hidden.
+      const advance = async () => {
+        if (await next.isVisible()) await next.click();
+      };
+
+      // Step 1 — pick a service.
+      await page.locator('input[name="services[]"]').first().check();
+      await advance();
+      // Step 2 — project detail.
+      await page
+        .locator("#quote-message")
+        .fill("We need a new website and some help with SEO for our shop.");
+      await advance();
+      // Step 3 — contact details + consent.
+      await page.locator("#quote-name").fill("Test Visitor");
+      await page.locator("#quote-email").fill("test.visitor@example.com");
+      await page.locator("#quote-phone").fill("0771234567");
+      await page.locator("#quote-consent").check();
+
+      await Promise.all([
+        page.waitForURL(/\/thank-you\//, { timeout: 15000 }),
+        page.locator("[data-quote-submit]").click(),
+      ]);
+
+      await expect(page.locator("h1")).toContainText("Thank you");
+    });
+  });
+}
 
 for (const p of pages) {
   test.describe(p.name, () => {

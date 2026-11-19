@@ -15,7 +15,7 @@
 - [x] 12 Industry pages
 - [x] 13 Work portfolio
 - [x] 14 About/Process/FAQ/Insights
-- [ ] 15 Quote flow
+- [x] 15 Quote flow
 - [ ] 16 Technical SEO
 - [ ] 17 Local SEO and analytics
 - [ ] 18 Performance
@@ -26,6 +26,53 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 15 — Quote flow + Contact (2026-11-18)
+**Done**
+- **Quote form** (`theme/page-get-a-quote.php` + shared part `theme/template-parts/quote-form.php`):
+  a friendly **3-step** request — (1) services *multi-select* + industry, (2) message, timeline,
+  optional budget, (3) name, email, phone/WhatsApp, preferred contact, consent. It is **one real
+  `<form>` with every field in the DOM**, so it works fully **without JavaScript** as one long form;
+  `quote.js` (lazy, ~0.7KB gz, loaded only where the form exists) layers the stepper + inline
+  validation on top. **Pre-fills from URL params** — the singular `?service=<name>` used by every
+  site-wide CTA pre-checks the matching service, and `?industry=` pre-selects.
+- **Server handler** (`plugins/compass-core/includes/quote-handler.php`, posts to `admin-post.php`):
+  validates every field server-side; on failure **flashes errors + the visitor's own input** via a
+  short transient and redirects back with an accessible error summary (no typing lost); on success
+  saves a private **`quote_request`** (`_compass_*` meta, services joined, status `new`), emails the
+  owner a clean summary + sends the visitor an auto-reply, then redirects to **`/thank-you/`**.
+- **Spam defence**: honeypot (silent drop), min-time trap (<2s), per-IP rate limit (5 / 15 min), and
+  **Cloudflare Turnstile** — site/secret keys from Site Settings *or* PHP constants, **skipped
+  gracefully when unset**, so it works now and activates when keys are added (Task 21).
+- **Contact page** (`theme/page-contact.php`): the same form (marked source `contact`, lands in the
+  same Quote Requests), plus business details, a **pre-filled WhatsApp link** and a clear
+  **one-business-day** response promise. Emits ContactPage + BreadcrumbList JSON-LD.
+- **Thank-you page** (`theme/page-thank-you.php`, noindex): confirmation + next steps + a
+  `generate_lead` analytics event (dataLayer + gtag-safe) for Task 17. Seeded with its template by
+  `wp compass seed` (`seed_quote_pages()`), which also assigns templates to Get-a-quote / Contact.
+- **Settings** (`includes/settings.php`): new **Quote & email** section — notification recipient,
+  Turnstile site/secret, and SMTP host/port/user/pass/encryption/from. Each value is overridable by a
+  `COMPASS_*` constant (env/wp-config). SMTP is wired via `phpmailer_init`, used only when a host is set.
+- **Admin**: Quote Requests meta box + CSV export now also carry Industry, Timeline and Preferred
+  contact.
+- **Verified on the live local server**: form renders, URL pre-fill works, a full submission returns
+  `302 → /thank-you/?sent=1` (saves first), a bad submission bounces back with the error flash, and the
+  honeypot drops silently. `/get-a-quote/`, `/contact/`, `/thank-you/` + a JS-on/JS-off submission test
+  added to the Playwright smoke list. Stylelint, ESLint, Vite build and PHPCS clean (CSS **10.9KB gz**,
+  budget 40KB; `quote.js` a separate **0.67KB gz** chunk).
+
+**Decisions**
+- The handler lives in **compass-core**, not the theme, so enquiries survive a theme change — matching
+  the existing `quote_request` CPT. The theme owns only presentation + the option lists.
+- Failed submits use a **random-token transient flash** (errors + input) rather than a session, so the
+  form replays accessibly with no data loss and no reliance on cookies.
+- Turnstile + SMTP **degrade to off** when unconfigured, so the whole flow is testable before the owner
+  supplies keys in Task 21 — no hard dependency on external services.
+
+**Next**
+- Task 16: Technical SEO.
+- **Owner (Task 21)**: add Turnstile keys + SMTP details in **Settings → Site Settings → Quote & email**
+  (or as `COMPASS_*` constants). After deploy, run `npm run wp:seed` once so `/thank-you/` exists.
 
 ### Task 14 — About / Process / FAQ / Insights (2026-11-18)
 **Done**

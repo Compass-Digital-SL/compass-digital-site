@@ -141,12 +141,27 @@ function compass_core_field_defs() {
 			),
 			array(
 				'key'   => 'service',
-				'label' => __( 'Service wanted', 'compass-core' ),
+				'label' => __( 'Services wanted', 'compass-core' ),
+				'type'  => 'text',
+			),
+			array(
+				'key'   => 'industry',
+				'label' => __( 'Industry', 'compass-core' ),
+				'type'  => 'text',
+			),
+			array(
+				'key'   => 'timeline',
+				'label' => __( 'Timeline', 'compass-core' ),
 				'type'  => 'text',
 			),
 			array(
 				'key'   => 'budget',
 				'label' => __( 'Budget', 'compass-core' ),
+				'type'  => 'text',
+			),
+			array(
+				'key'   => 'contact_method',
+				'label' => __( 'Preferred contact', 'compass-core' ),
 				'type'  => 'text',
 			),
 			array(
