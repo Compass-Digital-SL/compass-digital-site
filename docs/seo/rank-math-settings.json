@@ -1,0 +1,70 @@
+{
+  "_comment": "Compass Digital — Rank Math baseline, versioned in the repo. Import via WordPress admin → Rank Math → Status & Tools → Import & Export → Import. The theme (theme/inc/seo.php + per-template JSON-LD) is the single source of truth for titles, meta descriptions, canonical URLs, Open Graph / X cards, schema and the XML sitemap, so Rank Math's overlapping modules are turned OFF here to avoid duplicate tags. Rank Math is kept only for Redirections, the 404 monitor and Search Console / Analytics. Review after import; do not treat as final. See docs/seo/README.md.",
+  "modules": {
+    "link-counter": "off",
+    "rich-snippet": "off",
+    "sitemap": "off",
+    "breadcrumbs": "off",
+    "woocommerce": "off",
+    "acf": "off",
+    "news-sitemap": "off",
+    "video-sitemap": "off",
+    "local-seo": "off",
+    "redirections": "on",
+    "404-monitor": "on",
+    "search-console": "on",
+    "analytics": "on",
+    "seo-analysis": "on",
+    "role-manager": "off",
+    "instant-indexing": "off"
+  },
+  "general": {
+    "support_rich_snippets": "off",
+    "breadcrumbs": "off",
+    "add_meta_description": "off",
+    "disable_author_archives": "on",
+    "disable_date_archives": "on",
+    "attachment_redirect_urls": "on",
+    "nofollow_external_links": "off",
+    "redirections_debug": "off",
+    "404_monitor_mode": "simple",
+    "404_monitor_limit": 100
+  },
+  "titles": {
+    "noindex_empty_taxonomies": "on",
+    "title_separator": "-",
+    "homepage_title": "%sitename% %page% %sep% Websites, SEO & POS in Sri Lanka",
+    "homepage_description": "Sri Lankan web design, SEO and POS systems that are clear, fast and built around your business. Request a free quote.",
+    "knowledgegraph_type": "company",
+    "knowledgegraph_name": "Compass Digital",
+    "local_business_type": "ProfessionalService",
+    "local_address_format": "%address% %locality% %country%",
+    "local_address": {
+      "addressLocality": "Colombo",
+      "addressCountry": "LK"
+    },
+    "opening_hours_format": "off",
+    "local_seo_phone_number": "+94 11 000 0000",
+    "pt_page_title": "%title% %sep% %sitename%",
+    "pt_page_description": "%excerpt%",
+    "pt_page_robots": [],
+    "pt_post_title": "%title% %sep% %sitename%",
+    "pt_post_description": "%excerpt%",
+    "pt_work_title": "%title% %sep% %sitename%",
+    "pt_work_description": "%excerpt%",
+    "author_add_meta_box": "off",
+    "disable_author_archives": "on",
+    "author_robots": [ "noindex" ],
+    "date_archive_robots": [ "noindex" ],
+    "search_title": "%search_query% %page% %sep% %sitename%",
+    "search_robots": [ "noindex" ],
+    "robots_global": [ "noindex" ],
+    "_comment_robots": "robots_global noindex is a safety net; production is forced to index by the hosting environment check — the theme's wp_robots filter (production vs staging/local) is authoritative."
+  },
+  "sitemap": {
+    "_comment": "Rank Math sitemap is disabled (module off). The site uses the core WordPress sitemap at /wp-sitemap.xml, trimmed in theme/inc/seo.php (no author sitemap; styleguide, thank-you and quote requests excluded)."
+  },
+  "redirections": {
+    "_comment": "Managed in the Rank Math UI and/or the repo's compass_redirects() map in theme/inc/seo.php. Theme redirects are version-controlled and survive the plugin being disabled."
+  }
+}

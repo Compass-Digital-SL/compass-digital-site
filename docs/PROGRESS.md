@@ -16,7 +16,7 @@
 - [x] 13 Work portfolio
 - [x] 14 About/Process/FAQ/Insights
 - [x] 15 Quote flow
-- [ ] 16 Technical SEO
+- [x] 16 Technical SEO
 - [ ] 17 Local SEO and analytics
 - [ ] 18 Performance
 - [ ] 19 Accessibility and QA
@@ -26,6 +26,52 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 16 — Technical SEO + schema (2026-11-19)
+**Done**
+- **One SEO engine** (`theme/inc/seo.php`): a single source of truth for the document head, so
+  there are no duplicate tags. It centralises the **meta description** (the per-section printers in
+  services/industries/insights/work/company are unhooked on `wp_loaded`; the title filters stay),
+  and emits **canonical URLs** (pagination-aware), **Open Graph** + **X (Twitter) cards**,
+  `article:published/modified_time`, and the identity **schema** graph.
+- **Share images**: `scripts/og/generate-og.mjs` (sharp) renders 8 branded 1200×630 PNGs into
+  `theme/assets/og/` (home + per section + default); `npm run og:generate`. The head maps each
+  request to the right image and uses a post/case-study featured image when present.
+- **Schema graph** (JSON-LD, no duplicates): identity nodes **Organization + WebSite
+  (SearchAction) + LocalBusiness/ProfessionalService** in the head on Home, LocalBusiness on
+  Contact, with stable `@id` anchors; per-page **Service, FAQPage, BreadcrumbList, Article,
+  CreativeWork** stay in the templates (already present).
+- **Indexability by environment**: `wp_robots` outputs **noindex,nofollow** site-wide on
+  local/staging (`wp_get_environment_type() !== 'production'`) and `max-image-preview:large` on
+  production; search, 404, author/date archives and paginated subpages are noindex everywhere.
+  `robots.txt` allows crawl + advertises `/wp-sitemap.xml` on production and `Disallow: /` elsewhere.
+- **Sitemap**: core `/wp-sitemap.xml`, trimmed — no author sitemap, private `quote_request`
+  excluded; styleguide and thank-you already self-exclude.
+- **Redirects + trailing slashes**: a version-controlled `compass_redirects()` 301 map applied on
+  `template_redirect` (filterable, survives a plugin toggle); core `redirect_canonical` enforces the
+  single trailing-slash form for `/%postname%/`.
+- **Rank Math**: `docs/seo/rank-math-settings.json` baseline turns off every overlapping module
+  (Schema, Sitemap, Breadcrumbs, meta description) so the plugin, if used, never duplicates the
+  theme; kept for Redirections / 404 / Search Console. See `docs/seo/README.md`.
+- **Audit**: `scripts/seo/audit.mjs` (`npm run seo:audit`) crawls the running local site and reports
+  broken links, missing/empty titles, missing or duplicate H1, heading-hierarchy skips, images with
+  no `alt`, missing canonical/description, and orphan pages; exits non-zero on errors.
+- PHPCS, ESLint, Stylelint and the Vite build are clean; OG images generated and committed.
+
+**Decisions**
+- **Theme owns SEO, not the plugin.** The theme already emitted per-section titles/meta/schema;
+  Task 16 generalised the head into one engine rather than handing output to Rank Math, so SEO is
+  version-controlled and works with zero plugins. Rank Math's overlapping modules are disabled by
+  the exported config (one owner — no duplicate tags).
+- **Share images are pre-generated PNGs**, committed to the repo, so production needs no render
+  toolchain; `sharp` is a dev-only dependency used by the generator.
+- **Indexability keys off `WP_ENVIRONMENT_TYPE`**, so staging/local can never leak into the index
+  and production is explicit.
+
+**Next**
+- Task 17 (Local SEO + analytics): finalise LocalBusiness geo/opening hours, Google Business Profile
+  + Search Console, analytics events. Run `npm run seo:audit` against the live site once Docker is
+  available (not runnable in this sandbox) to confirm zero broken links / missing alt.
 
 ### Task 15 — Quote flow + Contact (2026-11-18)
 **Done**

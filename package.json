@@ -15,7 +15,9 @@
     "lint:js": "eslint .",
     "lint:css": "stylelint \"theme/assets/src/**/*.css\"",
     "test:e2e": "playwright test",
-    "lhci": "lhci autorun"
+    "lhci": "lhci autorun",
+    "og:generate": "node scripts/og/generate-og.mjs",
+    "seo:audit": "node scripts/seo/audit.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
@@ -24,6 +26,7 @@
     "@playwright/test": "^1.49.0",
     "@wordpress/env": "^12.1.0",
     "eslint": "^10.15.0",
+    "sharp": "^0.35.5",
     "stylelint": "^18.0.0",
     "stylelint-config-standard": "^41.0.0",
     "wait-on": "^9.5.1"
