@@ -72,6 +72,8 @@
 - Task 17 (Local SEO + analytics): finalise LocalBusiness geo/opening hours, Google Business Profile
   + Search Console, analytics events. Run `npm run seo:audit` against the live site once Docker is
   available (not runnable in this sandbox) to confirm zero broken links / missing alt.
+- **Go-live actions** (set `WP_ENVIRONMENT_TYPE=production`, add real NAP + social, validate schema,
+  submit sitemap) are server-side, so they are parked in **`docs/GO-LIVE.md`** for Tasks 21 and 22.
 
 ### Task 15 — Quote flow + Contact (2026-11-18)
 **Done**
