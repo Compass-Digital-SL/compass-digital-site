@@ -74,7 +74,62 @@ function compass_core_setting_fields() {
 			'type'  => 'url',
 		),
 
-		// --- Quote & email (second section). Each value can be overridden by a
+		// --- Local & maps (third section). Drives the service-area block, the
+		// embed-free map link, the reviews CTA and the LocalBusiness schema.
+		'map_url'          => array(
+			'label'   => __( 'Google Maps link', 'compass-core' ),
+			'type'    => 'url',
+			'section' => 'local',
+			'help'    => __( 'The "share" link to your Google Business Profile on Maps. Shown as a lightweight link — no heavy embedded map.', 'compass-core' ),
+		),
+		'reviews_url'      => array(
+			'label'   => __( 'Google reviews link', 'compass-core' ),
+			'type'    => 'url',
+			'section' => 'local',
+			'help'    => __( 'The public "read / write a review" link for your Google Business Profile. Leave blank until the profile is live.', 'compass-core' ),
+		),
+		'geo_lat'          => array(
+			'label'   => __( 'Latitude', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'local',
+			'help'    => __( 'Optional. Decimal degrees, e.g. 6.9271. Added to the LocalBusiness schema.', 'compass-core' ),
+		),
+		'geo_lng'          => array(
+			'label'   => __( 'Longitude', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'local',
+			'help'    => __( 'Optional. Decimal degrees, e.g. 79.8612.', 'compass-core' ),
+		),
+		'rating_value'     => array(
+			'label'   => __( 'Average review rating', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'local',
+			'help'    => __( 'Optional, 1–5, e.g. 4.9. Only fill this in with real Google figures — it feeds star-rating schema.', 'compass-core' ),
+		),
+		'rating_count'     => array(
+			'label'   => __( 'Number of reviews', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'local',
+			'help'    => __( 'Optional. The real count behind the rating above. Leave both blank if you have no reviews yet.', 'compass-core' ),
+		),
+
+		// --- Analytics & verification (fourth section). IDs only — scripts load
+		// after cookie consent and once the page is idle. Each can be set as a PHP
+		// constant (COMPASS_GA4_ID, COMPASS_GSC_VERIFICATION) instead.
+		'ga4_id'           => array(
+			'label'   => __( 'GA4 Measurement ID', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'analytics',
+			'help'    => __( 'From Google Analytics 4, looks like G-XXXXXXXXXX. Leave blank to load no analytics.', 'compass-core' ),
+		),
+		'gsc_verification' => array(
+			'label'   => __( 'Search Console verification', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'analytics',
+			'help'    => __( 'The content value from Google Search Console\'s "HTML tag" method — the part after content=. Not the whole tag.', 'compass-core' ),
+		),
+
+		// --- Quote & email (fifth section). Each value can be overridden by a
 		// PHP constant (see compass_core_secret()) so secrets can live in the
 		// environment / wp-config.php instead of the database.
 		'notify_email'     => array(
@@ -192,6 +247,24 @@ function compass_core_register_settings() {
 	);
 
 	add_settings_section(
+		'compass_core_local',
+		__( 'Local &amp; maps', 'compass-core' ),
+		function () {
+			echo '<p>' . esc_html__( 'Map, reviews and coordinates for the service-area block and the LocalBusiness schema. Fill the review rating only with real Google figures.', 'compass-core' ) . '</p>';
+		},
+		'compass-site-settings'
+	);
+
+	add_settings_section(
+		'compass_core_analytics',
+		__( 'Analytics &amp; verification', 'compass-core' ),
+		function () {
+			echo '<p>' . esc_html__( 'Enter IDs only. Analytics loads after the visitor accepts cookies and once the page is idle; Search Console verification is a lightweight meta tag.', 'compass-core' ) . '</p>';
+		},
+		'compass-site-settings'
+	);
+
+	add_settings_section(
 		'compass_core_quote',
 		__( 'Quote &amp; email', 'compass-core' ),
 		function () {
@@ -200,8 +273,14 @@ function compass_core_register_settings() {
 		'compass-site-settings'
 	);
 
+	$section_map = array(
+		'quote'     => 'compass_core_quote',
+		'local'     => 'compass_core_local',
+		'analytics' => 'compass_core_analytics',
+	);
+
 	foreach ( compass_core_setting_fields() as $key => $field ) {
-		$section = ( isset( $field['section'] ) && 'quote' === $field['section'] ) ? 'compass_core_quote' : 'compass_core_contact';
+		$section = ( isset( $field['section'] ) && isset( $section_map[ $field['section'] ] ) ) ? $section_map[ $field['section'] ] : 'compass_core_contact';
 		add_settings_field(
 			$key,
 			$field['label'],
@@ -285,6 +364,26 @@ function compass_core_sanitize_settings( $input ) {
 	// WhatsApp: keep digits only.
 	if ( ! empty( $clean['whatsapp'] ) ) {
 		$clean['whatsapp'] = preg_replace( '/\D/', '', $clean['whatsapp'] );
+	}
+
+	// GA4 Measurement ID: uppercase, only the allowed characters.
+	if ( ! empty( $clean['ga4_id'] ) ) {
+		$clean['ga4_id'] = strtoupper( preg_replace( '/[^A-Za-z0-9\-]/', '', $clean['ga4_id'] ) );
+	}
+
+	// Search Console: a token only — strip any pasted <meta> wrapper.
+	if ( ! empty( $clean['gsc_verification'] ) ) {
+		if ( preg_match( '/content=["\']([^"\']+)["\']/', $clean['gsc_verification'], $m ) ) {
+			$clean['gsc_verification'] = $m[1];
+		}
+		$clean['gsc_verification'] = preg_replace( '/[^A-Za-z0-9_\-]/', '', $clean['gsc_verification'] );
+	}
+
+	// Geo + rating: keep a sane numeric shape.
+	foreach ( array( 'geo_lat', 'geo_lng', 'rating_value', 'rating_count' ) as $num_key ) {
+		if ( ! empty( $clean[ $num_key ] ) ) {
+			$clean[ $num_key ] = preg_replace( '/[^0-9.\-]/', '', $clean[ $num_key ] );
+		}
 	}
 
 	return $clean;

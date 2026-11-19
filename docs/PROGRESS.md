@@ -17,7 +17,7 @@
 - [x] 14 About/Process/FAQ/Insights
 - [x] 15 Quote flow
 - [x] 16 Technical SEO
-- [ ] 17 Local SEO and analytics
+- [x] 17 Local SEO and analytics
 - [ ] 18 Performance
 - [ ] 19 Accessibility and QA
 - [ ] 20 Security and legal
@@ -26,6 +26,49 @@
 - [ ] 23 Post-launch
 
 ## Log
+
+### Task 17 — Local SEO + analytics (2026-11-19)
+**Done**
+- **Site Settings extended** (`plugins/compass-core/includes/settings.php`): two new sections —
+  **Local & maps** (Google Maps link, Google reviews link, latitude/longitude, average rating,
+  review count) and **Analytics & verification** (GA4 Measurement ID, Search Console token). IDs are
+  entered by the owner, never hard-coded; GA4/GSC can alternatively be PHP constants
+  (`COMPASS_GA4_ID`, `COMPASS_GSC_VERIFICATION`). Sanitised on save (GA4 uppercased, GSC meta-wrapper
+  stripped to a token, geo/rating kept numeric).
+- **Analytics + consent** (`plugins/compass-core/includes/analytics.php` + `assets/consent.js`):
+  Search Console verification is a plain meta tag (no cookies). **GA4 loads only after the visitor
+  accepts cookies AND the page is idle** (`requestIdleCallback`), never blocking first paint; with no
+  consent nothing loads and every event is a silent no-op. A **minimal cookie consent bar** (no
+  library, ~2.4 KB) with Accept/Decline, token-styled, plus a **"Cookie preferences"** link in the
+  footer that reopens it. Choice stored in `localStorage`.
+- **Event tracking** (via `window.compassTrack`): `quote_submitted` (thank-you page), `whatsapp_click`,
+  `phone_click`, `service_view` (with the service slug), `command_menu_used` (observed on the command
+  menu opening). Page-level events are decided in PHP and fired once after consent.
+- **Local content** (`theme/template-parts/home/local-area.php` + `local.css`): a service-area block
+  on the home page — Colombo base, Kandy/Galle/Jaffna + island-wide, NAP pulled from Site Settings so
+  it stays consistent everywhere, an **embed-free "Open in Google Maps" link** (no heavy iframe), and
+  a **reviews** block ready for the real Google reviews link. The home proof section gains a
+  "Read more reviews on Google" link when the reviews URL is set.
+- **LocalBusiness schema finalised** (`theme/inc/seo.php`): street address, `geo` coordinates,
+  `hasMap`, and `aggregateRating` are added from Site Settings when present (rating only with real
+  figures). Opening hours kept out of schema — owner free-text doesn't match schema.org syntax.
+- **`docs/LOCAL-SEO.md`**: donkey-level, step-by-step owner guide for Google Business Profile, Bing
+  Places, reviews and local directories, plus a table of which setting powers what.
+- ESLint, Stylelint and the Vite build are clean (CSS 11.1 KB gzip; consent.js served separately,
+  outside the bundle). PHPCS clean on new files (CI ignores warnings; local CRLF is an autocrlf
+  artifact).
+
+**Decisions**
+- **Consent + analytics live in the plugin, not the theme**, so they survive a theme change (a
+  compliance/data concern), and so the GA4 ID (plugin-owned setting) stays with its loader. The bar is
+  styled with the theme's design tokens via CSS variables — no hard-coded colours, no theme rebuild.
+- **No analytics library and no gtag until consent + idle** to protect the performance budget; the
+  consent script is vanilla and self-contained.
+- **Event binding is DOM-based** (delegated click listeners + a MutationObserver on the command menu),
+  so it needs no changes to the theme's Vite bundle.
+
+**Next (owner, after launch):** follow `docs/LOCAL-SEO.md` — create/verify Google Business Profile,
+paste the Maps + reviews links and GA4/GSC IDs into Site Settings, set up Bing Places and directories.
 
 ### Task 16 — Technical SEO + schema (2026-11-19)
 **Done**

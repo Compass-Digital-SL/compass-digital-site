@@ -525,6 +525,21 @@ function compass_website_schema() {
 function compass_localbusiness_schema() {
 	$details = function_exists( 'compass_contact_details' ) ? compass_contact_details() : array();
 
+	$get = function ( $key ) {
+		return function_exists( 'compass_get_setting' ) ? (string) compass_get_setting( $key ) : '';
+	};
+
+	$address = array(
+		'@type'           => 'PostalAddress',
+		'addressLocality' => 'Colombo',
+		'addressCountry'  => 'LK',
+	);
+	// A real street address from Site Settings replaces the city-only fallback.
+	$street = $get( 'address' );
+	if ( '' !== $street ) {
+		$address['streetAddress'] = $street;
+	}
+
 	$node = array(
 		'@context'           => 'https://schema.org',
 		'@type'              => 'ProfessionalService',
@@ -533,11 +548,7 @@ function compass_localbusiness_schema() {
 		'url'                => home_url( '/' ),
 		'image'              => compass_og_image_url( 'og-home' ),
 		'parentOrganization' => array( '@id' => home_url( '/#organization' ) ),
-		'address'            => array(
-			'@type'           => 'PostalAddress',
-			'addressLocality' => 'Colombo',
-			'addressCountry'  => 'LK',
-		),
+		'address'            => $address,
 		'areaServed'         => array(
 			'@type' => 'Country',
 			'name'  => 'Sri Lanka',
@@ -551,6 +562,42 @@ function compass_localbusiness_schema() {
 	if ( ! empty( $details['email'] ) ) {
 		$node['email'] = $details['email'];
 	}
+
+	// Geo coordinates, when the owner has entered them.
+	$lat = $get( 'geo_lat' );
+	$lng = $get( 'geo_lng' );
+	if ( '' !== $lat && '' !== $lng ) {
+		$node['geo'] = array(
+			'@type'     => 'GeoCoordinates',
+			'latitude'  => $lat,
+			'longitude' => $lng,
+		);
+	}
+
+	// A Google Business Profile / Maps link strengthens the entity.
+	$map_url = $get( 'map_url' );
+	if ( '' !== $map_url ) {
+		$node['hasMap'] = $map_url;
+	}
+
+	// Opening hours are shown on the Contact page but kept out of the schema:
+	// the owner-entered free text (e.g. "Mon–Fri 9:00–17:30") does not match
+	// schema.org's strict openingHours syntax, and invalid markup is worse than
+	// none. Add structured openingHoursSpecification later if hours are needed.
+
+	// Aggregate rating — only when real Google figures are present.
+	$rating = $get( 'rating_value' );
+	$count  = $get( 'rating_count' );
+	if ( '' !== $rating && '' !== $count && (float) $count > 0 ) {
+		$node['aggregateRating'] = array(
+			'@type'       => 'AggregateRating',
+			'ratingValue' => $rating,
+			'reviewCount' => $count,
+			'bestRating'  => '5',
+			'worstRating' => '1',
+		);
+	}
+
 	$social = compass_social_profiles();
 	if ( $social ) {
 		$node['sameAs'] = $social;

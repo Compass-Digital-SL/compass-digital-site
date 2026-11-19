@@ -74,6 +74,7 @@ $compass_columns = array( $compass_map['services'], $compass_map['industries'], 
 					<ul>
 						<li><a href="<?php echo esc_url( compass_nav_url( 'privacy/' ) ); ?>"><?php esc_html_e( 'Privacy', 'compass-digital' ); ?></a></li>
 						<li><a href="<?php echo esc_url( compass_nav_url( 'terms/' ) ); ?>"><?php esc_html_e( 'Terms', 'compass-digital' ); ?></a></li>
+						<li><button type="button" class="site-footer__consent-btn" data-consent-open><?php esc_html_e( 'Cookie preferences', 'compass-digital' ); ?></button></li>
 					</ul>
 				</div>
 			</nav>

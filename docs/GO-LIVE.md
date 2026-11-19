@@ -23,10 +23,23 @@ off there.
   values; **the Facebook/Instagram/LinkedIn URLs are placeholders — swap for the
   real pages before launch.** Feeds the footer, contact page and the
   Organization / LocalBusiness schema.
-- [ ] **Revisit `areaServed` in the schema** if positioning as worldwide: the
-  LocalBusiness/ProfessionalService node in `theme/inc/seo.php` currently states
-  `areaServed: Sri Lanka` and a Colombo address. Fine for a Colombo-registered
-  firm; widen in Task 17 if needed. _Source: Task 16._
+- [ ] **Widen positioning to worldwide before deploy (decided — do not forget).**
+  Compass works **from Sri Lanka for the whole world**, not Sri Lanka only. The
+  site currently reads Sri Lanka–first in several places; broaden the wording and
+  the structured data (keep Colombo as the base, add global reach). Touch points:
+  - `theme/inc/seo.php` — `compass_localbusiness_schema()` / Organization
+    `contactPoint`: `areaServed` is `Sri Lanka` / `LK`. Add **Worldwide** (e.g.
+    `areaServed: ["LK", "Worldwide"]` or a broader `areaServed`).
+  - `theme/template-parts/home/local-area.php` — service-area block copy and the
+    city chips say "across Sri Lanka"; add a clear "…and worldwide, remotely" line.
+  - `docs/SEO.md §Base city / service area` and the home/meta copy — currently
+    "all of Sri Lanka, overseas Sri Lankan-owned businesses secondary". Reframe
+    worldwide delivery as a primary audience, not just a secondary one.
+  - Keep **NAP, address and Google Business Profile** as the Colombo base (local
+    SEO still wants a real place); this is about *reach*, not moving the office.
+  - Best handled as its own small copy/positioning pass (its own branch) before
+    launch. _Source: Task 17 (owner decision, 2026-11-19); supersedes the Task 16
+    "revisit areaServed" note._
 
 ## SEO verification (after deploy to staging/live)
 
@@ -41,6 +54,26 @@ off there.
 - [ ] **Confirm share images** render: paste a few live URLs through a social
   debugger (Facebook Sharing Debugger / X Card Validator). Re-run
   `npm run og:generate` if the brand or copy changed.
+
+## Local SEO + analytics (Task 17 — owner, via Site Settings)
+
+Full step-by-step owner guide: **`docs/LOCAL-SEO.md`**. In short, in
+**WP Admin → Settings → Site Settings**:
+
+- [ ] **Local & maps:** paste the **Google Maps link** and **Google reviews
+  link** from the verified Google Business Profile; optionally the
+  **latitude/longitude**. Enter **average rating / review count** only once there
+  are real Google reviews (feeds `aggregateRating` schema).
+- [ ] **Analytics & verification:** paste the **GA4 Measurement ID** (`G-…`) and
+  the **Search Console verification** token (or set `COMPASS_GA4_ID` /
+  `COMPASS_GSC_VERIFICATION` as constants in `wp-config.php`). Analytics loads
+  only after cookie consent + page idle; the Search Console tag verifies the site.
+- [ ] **Verify tracking** after launch: accept cookies on the live site and check
+  GA4 **Realtime** shows the visit, then that `quote_submitted`, `whatsapp_click`,
+  `phone_click`, `service_view` and `command_menu_used` events arrive.
+- [ ] **Follow `docs/LOCAL-SEO.md`**: create/verify Google Business Profile, set up
+  Bing Places, gather reviews, and build consistent NAP citations in directories.
+  _Source: Task 17._
 
 ## Rank Math (only if the owner wants the plugin)
 
