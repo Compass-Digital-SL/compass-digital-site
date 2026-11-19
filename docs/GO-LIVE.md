@@ -17,12 +17,16 @@ off there.
 
 ## Business details (NAP + social)
 
-- [ ] **Add real contact details** via a must-use plugin so a theme update never
-  wipes them: `wp-content/mu-plugins/compass-contact.php` filtering
-  `compass_contact_details` — real phone, WhatsApp (digits only), email, address
-  and the Facebook/Instagram/LinkedIn URLs. Feeds the footer **and** the
-  Organization / LocalBusiness schema. Placeholders live in
-  `theme/inc/nav.php` (`compass_contact_details`). _Source: Task 16._
+- [ ] **Replace the sample contact details** in `mu-plugins/compass-contact.php`
+  (mapped to `wp-content/mu-plugins/` via `.wp-env.json`; a must-use plugin, so a
+  theme update never wipes it). Phone/WhatsApp/email are set to real sample
+  values; **the Facebook/Instagram/LinkedIn URLs are placeholders — swap for the
+  real pages before launch.** Feeds the footer, contact page and the
+  Organization / LocalBusiness schema.
+- [ ] **Revisit `areaServed` in the schema** if positioning as worldwide: the
+  LocalBusiness/ProfessionalService node in `theme/inc/seo.php` currently states
+  `areaServed: Sri Lanka` and a Colombo address. Fine for a Colombo-registered
+  firm; widen in Task 17 if needed. _Source: Task 16._
 
 ## SEO verification (after deploy to staging/live)
 
