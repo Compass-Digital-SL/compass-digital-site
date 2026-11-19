@@ -5,6 +5,38 @@ development. Collected here as tasks surface them, so nothing is forgotten at
 launch. Owned by **Task 21 (CD pipeline)** and **Task 22 (Go-live)**; tick each
 off there.
 
+## Deployment pipeline (Task 21 — owner, after buying hosting)
+
+CD is built: push to `main` → staging, a `vX.Y.Z` tag → production (manual
+approval). Full secret inventory in **`docs/SECRETS.md`**; restore steps in
+**`docs/RESTORE.md`**. You must do this once on GitHub + the host:
+
+- [ ] **Buy hosting + SSH access**, and create a staging subdomain/site
+  (e.g. `staging.compassdigital.lk`) alongside live.
+- [ ] **Add every secret** from `docs/SECRETS.md` in GitHub → Settings → Secrets
+  and variables → Actions. Paste values into GitHub only — never into chat.
+- [ ] **Create the GitHub Environments** `staging` and `production`; add a
+  **Required reviewer** (yourself) on `production` so tag deploys wait for approval.
+- [ ] **Create a deploy-only SSH key**, put its public half in the host's
+  `authorized_keys`, and `ssh-keyscan` the host for `SSH_KNOWN_HOSTS`.
+- [ ] **On the host:** create `<DEPLOY_PATH>/releases/`, point each site's docroot
+  at `<DEPLOY_PATH>/current` (the symlink the pipeline flips), and confirm `wp`
+  (WP-CLI) is on `PATH`.
+- [ ] **Password-protect staging** (HTTP Basic Auth / `.htpasswd`) and keep
+  `WP_ENVIRONMENT_TYPE=staging` so it stays noindex.
+- [ ] **First release:** merge to `main`, watch the **Deploy** workflow deploy to
+  staging, smoke-test + Lighthouse pass; then tag `v1.0.0`, approve the
+  `production` gate.
+
+## Backups (Task 21 — owner)
+
+- [ ] **Create an offsite bucket** (S3 / Backblaze B2 / Cloudflare R2 / Wasabi) and
+  add the `BACKUP_S3_*` secrets. The scheduled **Backup** workflow then runs daily
+  (02:15 UTC); trigger a first run manually to confirm it works.
+- [ ] _(Optional, belt-and-braces)_ also enable the **host's own** daily DB+files
+  backup if the plan includes one — independent of GitHub.
+- [ ] **Do a restore drill** into staging once backups exist (see `docs/RESTORE.md`).
+
 ## Environment
 
 - [ ] **Set `WP_ENVIRONMENT_TYPE`** on each host.
