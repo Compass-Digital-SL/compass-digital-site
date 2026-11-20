@@ -46,6 +46,26 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### CI site-audit fix — broken internal links (2026-11-20)
+**Done** (PR #31 / #64)
+- The CI "SEO crawl" step failed with 6 errors (3 broken internal links): `/cookie-policy/`,
+  `/insights/category/websites/`, `/insights/category/pos-payments/`. The 35 warnings
+  (missing meta/canonical, `h1→h3` skips, orphans) are non-blocking and were left.
+- **Cookie Policy page**: `scripts/setup.sh` seeded Privacy + Terms but not Cookie Policy,
+  so the footer link 404'd in CI. Added `create_page 'Cookie Policy'` (template auto-applies
+  by slug via `page-cookie-policy.php`).
+- **Insights category archives**: `wp compass seed` switches the permalink structure to
+  `/insights/%postname%/` in-memory, so the rewrite flush inside that process kept the old
+  `/` front and wrote category rules at `/category/<slug>/`. The front end boots with front
+  `/insights/`, emitting `/insights/category/<slug>/` links with no matching rule → 404
+  (`seo` only survived via a stray 301 guess to `/services/seo/`). Fix: a second
+  `wp rewrite flush --hard` in `setup.sh` **after** the seed — a fresh WP-CLI process boots
+  from the persisted structure, recomputes the `/insights/` front, and regenerates matching
+  category rules.
+- **Decision**: fix lives on `task/27` (which already contains all of `task/26`), so PR #31
+  carries both; PR #30 superseded and closed.
+- `.mockup-tmp/` (gitignored local scratch) removed.
+
 ### Task 27 — AI sales-assistant chatbot (2026-11-20)
 **Done**
 - **Server-side proxy** (the API key never reaches the browser): REST route

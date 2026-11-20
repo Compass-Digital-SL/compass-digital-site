@@ -73,6 +73,7 @@ create_page 'Contact'        >/dev/null
 create_page 'Get a quote'    >/dev/null
 create_page 'Privacy'        >/dev/null
 create_page 'Terms'          >/dev/null
+create_page 'Cookie Policy'  >/dev/null
 
 echo "==> Set Home as the static front page"
 wp option update show_on_front 'page'
@@ -84,6 +85,17 @@ wp plugin activate compass-core 2>/dev/null || echo "!! compass-core not found â
 
 echo "==> Seed placeholder Work + Testimonials"
 wp compass seed || true
+
+# Flush rewrite rules once more in a fresh WP-CLI process. `wp compass seed`
+# switches the permalink structure to /insights/%postname%/ in memory, but the
+# in-process rewrite engine still carries the previous front (computed from the
+# /%postname%/ structure setup.sh set), so the category rules it flushes land at
+# /category/<slug>/. The front end then boots with front = /insights/ and emits
+# /insights/category/<slug>/ links that have no matching rule and 404. A separate
+# process boots from the persisted structure, recomputes the /insights/ front,
+# and regenerates category rules that match the links.
+echo "==> Flush rewrite rules again (fresh process, correct /insights/ front)"
+wp rewrite flush --hard
 
 echo ""
 echo "Done. WordPress is seeded at http://localhost:8888"
