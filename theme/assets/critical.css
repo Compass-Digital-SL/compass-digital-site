@@ -8,6 +8,12 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* No transitions until the deferred main stylesheet has applied (see
+   inc/theme-mode.php), so its arrival does not animate every element. */
+.css-pending *,
+.css-pending *::before,
+.css-pending *::after { transition: none !important; }
+
 html { text-size-adjust: 100%; }
 
 body {
