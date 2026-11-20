@@ -124,37 +124,11 @@
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Light theme — system preference (unless the visitor picked dark). */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    color-scheme: light;
-    --bg: #f5f3ee;
-    --bg-2: #fff;
-    --bg-3: #ece8e0;
-    --ink: #12151b;          /* 16.5:1 on --bg */
-    --ink-body: #3a414c;     /* 9.3:1 */
-    --ink-muted: #4a515c;    /* 7.2:1 */
-    --ink-subtle: #5e6673;   /* 5.2:1 on --bg, 4.7:1 on --bg-3 */
-    --accent: #186e6e;       /* 5.4:1 on --bg, 4.9:1 on --bg-3 */
-    --accent-2: #135c5c;
-    --accent-fill: #186e6e;  /* white label 6.0:1 */
-    --accent-fill-2: #135a5a;
-    --surface-2: var(--bg-2);
-    --surface-sunken: var(--bg-3);
-    --link: var(--accent);
-    --secondary: var(--accent);
-    --focus: var(--accent);
-    --glow-a: color-mix(in srgb, #1d4f7a 10%, transparent);
-    --glow-b: color-mix(in srgb, var(--accent-fill) 10%, transparent);
-    --shadow-color: rgb(18, 21, 27, 0.18);
-    --grain-opacity: 0.035;
-    --glass-bg: color-mix(in srgb, var(--bg) 72%, transparent);
-  --danger: #b42318;
-  --danger-text: #b42318; /* 5.9:1 on --bg */
-  }
-}
+/* Dark is the default theme for everyone. Light applies only when the visitor
+   explicitly picks it with the header toggle (the :root[data-theme="light"]
+   block below) — never from the system colour-scheme preference. */
 
-/* Light theme — picked with the header toggle. Keep equal to the block above. */
+/* Light theme — picked with the header toggle. */
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #f5f3ee;

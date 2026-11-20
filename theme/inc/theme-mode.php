@@ -5,7 +5,8 @@
  * Both choices are made in the header (see assets/src/js/theme-mode.js) and kept
  * in the visitor's own browser (localStorage). This tiny inline script re-applies
  * them before first paint so a returning visitor never sees a flash of the
- * default theme. With no saved choice, CSS follows the system setting.
+ * default theme. With no saved choice, the site stays dark (the default);
+ * light applies only when the visitor explicitly picks it.
  *
  * It also sets `css-pending` on <html>, which critical.css uses to switch
  * transitions off until the deferred main stylesheet has applied. Without it,
