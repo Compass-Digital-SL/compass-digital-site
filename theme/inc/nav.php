@@ -43,7 +43,7 @@ function compass_nav_map() {
 			'items' => array(
 				array(
 					'label' => __( 'Website design & development', 'compass-digital' ),
-					'url'   => compass_nav_url( 'services/website-design-development/' ),
+					'url'   => compass_nav_url( 'services/website-design-and-development/' ),
 				),
 				array(
 					'label' => __( 'SEO', 'compass-digital' ),
@@ -77,11 +77,11 @@ function compass_nav_map() {
 				),
 				array(
 					'label' => __( 'Restaurants & cafes', 'compass-digital' ),
-					'url'   => compass_nav_url( 'industries/restaurants-cafes/' ),
+					'url'   => compass_nav_url( 'industries/restaurants-and-cafes/' ),
 				),
 				array(
 					'label' => __( 'Travel & tourism', 'compass-digital' ),
-					'url'   => compass_nav_url( 'industries/travel-tourism/' ),
+					'url'   => compass_nav_url( 'industries/travel-and-tourism/' ),
 				),
 				array(
 					'label' => __( 'Ecommerce brands', 'compass-digital' ),
@@ -89,7 +89,7 @@ function compass_nav_map() {
 				),
 				array(
 					'label' => __( 'Corporates & SMEs', 'compass-digital' ),
-					'url'   => compass_nav_url( 'industries/corporates-smes/' ),
+					'url'   => compass_nav_url( 'industries/corporates-and-smes/' ),
 				),
 			),
 		),
