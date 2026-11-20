@@ -42,6 +42,29 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Fix — CI + deploy green after Task 20 (2026-11-20)
+**Done**
+- **Deploy workflow rejected at parse time** (0 s runs): `environment.url` used
+  `secrets.*`, which GitHub forbids there. Now `vars.STAGING_URL` /
+  `vars.PRODUCTION_URL` (documented in `docs/SECRETS.md`).
+- **CSP console errors** (all smoke "no console errors" tests): a Report-Only
+  policy with no reporting endpoint logs an error in Chromium/WebKit. Added
+  `report-uri` + `report-to csp` + `Reporting-Endpoints` header pointing at a new
+  `POST /wp-json/compass/v1/csp-report` route (logs one capped line to the PHP
+  error log, returns 204). `upgrade-insecure-requests` is now sent only when
+  `COMPASS_CSP_ENFORCE` is on (it is ignored, with an error, in Report-Only).
+- **Flaky axe `color-contrast`** (mostly WebKit): axe sampled text mid
+  scroll-reveal fade (foreground ≈ background). New `tests/e2e/helpers.js`
+  `settleMotion()` waits for finite animations/transitions before axe; both
+  specs share `axeBlocking()`. Real palette contrast is unchanged and passes.
+
+**Decisions**
+- Report endpoint logs to `error_log` only — no DB table, nothing to clean up.
+
+**Next**
+- Owner: add `STAGING_URL` / `PRODUCTION_URL` as environment variables.
+- Review `CSP report:` lines in the staging error log before enforcing CSP.
+
 ### Task 20 — Security and legal (2026-11-19)
 **Done**
 - **`mu-plugins/compass-security.php`** (must-use, survives theme/plugin swaps):

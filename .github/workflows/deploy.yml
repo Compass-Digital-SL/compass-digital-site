@@ -93,7 +93,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: ${{ secrets.STAGING_URL }}
+      # `secrets` is not allowed in environment.url (the whole workflow is
+      # rejected at parse time); a site URL is not secret, so use a variable.
+      url: ${{ vars.STAGING_URL }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -129,7 +131,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ secrets.PRODUCTION_URL }}
+      url: ${{ vars.PRODUCTION_URL }}
     steps:
       - uses: actions/checkout@v7
         with:
