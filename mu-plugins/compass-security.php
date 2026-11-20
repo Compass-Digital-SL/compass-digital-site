@@ -72,11 +72,14 @@ add_filter(
 // ==== User enumeration ====
 
 /**
- * Block the ?author=N probe that maps user IDs to login names.
+ * Block the ?author=N probe and author archives for guests.
  *
- * Only guests are blocked and only when it is an enumeration attempt (a numeric
- * author on a non-author query); logged-in users and genuine author archives
- * (disabled elsewhere by noindex) are unaffected.
+ * `?author=N` would otherwise be canonical-redirected to /author/<login>/,
+ * leaking the login name, so this runs at priority 1 — before core's
+ * redirect_canonical (priority 10). Author archives themselves also reveal the
+ * login in the URL and have no content worth showing here (the blog is single
+ * author), so guests are sent home from those too. Logged-in users are
+ * unaffected.
  */
 add_action(
 	'template_redirect',
@@ -86,10 +89,19 @@ add_action(
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only probe check on a public query string.
 		$author = isset( $_GET['author'] ) ? sanitize_text_field( wp_unslash( $_GET['author'] ) ) : '';
-		if ( '' !== $author && preg_match( '/^\d+$/', $author ) ) {
+		if ( '' !== $author || is_author() ) {
 			wp_safe_redirect( home_url( '/' ), 301 );
 			exit;
 		}
+	},
+	1
+);
+
+// Never print author archive links for guests (post bylines, feeds).
+add_filter(
+	'author_link',
+	function ( $link ) {
+		return is_user_logged_in() ? $link : home_url( '/' );
 	}
 );
 
@@ -201,8 +213,9 @@ add_filter(
  * @return array<string,string>
  */
 function compass_security_csp_directives() {
-	$ga        = 'https://www.googletagmanager.com https://www.google-analytics.com';
-	$ga_conn   = 'https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com';
+	// Google's documented GA4 hosts, including the regional collection endpoints.
+	$ga        = 'https://*.googletagmanager.com https://*.google-analytics.com';
+	$ga_conn   = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com';
 	$turnstile = 'https://challenges.cloudflare.com';
 
 	$directives = array(
@@ -304,7 +317,7 @@ add_action(
 			'X-Content-Type-Options'     => 'nosniff',
 			'X-Frame-Options'            => 'SAMEORIGIN',
 			'Referrer-Policy'            => 'strict-origin-when-cross-origin',
-			'Permissions-Policy'         => 'geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()',
+			'Permissions-Policy'         => 'geolocation=(), microphone=(), camera=(), payment=(), usb=()',
 			'Cross-Origin-Opener-Policy' => 'same-origin',
 		);
 
@@ -323,6 +336,9 @@ add_action(
 		 * @param array<string,string> $headers Header name => value.
 		 */
 		$headers = apply_filters( 'compass_security_headers', $headers );
+
+		// Do not advertise the PHP version.
+		header_remove( 'X-Powered-By' );
 
 		foreach ( $headers as $name => $value ) {
 			if ( '' !== $value ) {

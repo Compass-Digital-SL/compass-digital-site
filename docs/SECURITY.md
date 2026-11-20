@@ -14,7 +14,8 @@ plugin changes). Legal pages are in `docs`/the theme (see §6).
   - `X-Content-Type-Options: nosniff`
   - `X-Frame-Options: SAMEORIGIN` (plus `frame-ancestors 'self'` in CSP)
   - `Referrer-Policy: strict-origin-when-cross-origin`
-  - `Permissions-Policy` — geolocation, mic, camera, payment, USB, FLoC all off
+  - `Permissions-Policy` — geolocation, mic, camera, payment, USB all off
+  - `X-Powered-By` removed (no PHP version leak)
   - `Cross-Origin-Opener-Policy: same-origin`
   - `Strict-Transport-Security: max-age=31536000; includeSubDomains` — **only
     over HTTPS** (`is_ssl()`), so it is never sent on a plain-HTTP dev box.
@@ -22,7 +23,9 @@ plugin changes). Legal pages are in `docs`/the theme (see §6).
 - **XML-RPC off** (`xmlrpc_enabled` → false), pingback methods and the
   `X-Pingback` header removed.
 - **File editor off** — `DISALLOW_FILE_EDIT` defined.
-- **User-enumeration blocked** — `?author=N` redirects home for guests; the
+- **User-enumeration blocked** — `?author=N` and author archives redirect home
+  for guests (before core's canonical redirect, which would leak the login),
+  author links point home; the
   REST `/wp/v2/users` endpoints are removed for unauthenticated requests; the
   oEmbed author fields are stripped.
 - **Login throttle** — 5 failed attempts per IP in 15 minutes locks that IP out
@@ -45,8 +48,9 @@ page. The policy currently allows `'unsafe-inline'` for scripts and styles
 because the site still emits inline blocks (critical CSS, consent config,
 JSON-LD schema, speculation rules).
 
-**Allowed origins:** Google Analytics / Tag Manager (`googletagmanager.com`,
-`google-analytics.com`, `region1.google-analytics.com`) and Cloudflare Turnstile
+**Allowed origins:** Google Analytics / Tag Manager per Google's GA4 CSP guide
+(`*.googletagmanager.com`, `*.google-analytics.com`, `*.analytics.google.com` —
+the wildcards cover the regional collection hosts) and Cloudflare Turnstile
 (`challenges.cloudflare.com`). Images allow `self data:`; fonts are self-hosted.
 
 Tune with the `compass_csp_directives` filter (add origins) or
