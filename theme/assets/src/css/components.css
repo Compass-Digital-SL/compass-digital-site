@@ -247,12 +247,10 @@ textarea.field__control {
    block below. */
 select.field__control {
   appearance: none;
-  -webkit-appearance: none;
   cursor: pointer;
   padding-right: 2.9rem;
   background-color: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
   border-color: var(--glass-border);
   background-image:
     linear-gradient(180deg, color-mix(in srgb, var(--ink) 7%, transparent), transparent 48%),
@@ -286,15 +284,7 @@ select.field__control:focus-visible {
   color: var(--text);
 }
 
-/* Light themes need a dark chevron. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) select.field__control {
-    background-image:
-      linear-gradient(180deg, color-mix(in srgb, var(--ink) 5%, transparent), transparent 48%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1.5 7 7l6-5.5' stroke='%2312151B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  }
-}
-
+/* The light theme (explicit toggle only) needs a dark chevron. */
 :root[data-theme="light"] select.field__control {
   background-image:
     linear-gradient(180deg, color-mix(in srgb, var(--ink) 5%, transparent), transparent 48%),
@@ -323,7 +313,6 @@ select.field__control:focus-visible {
   select.field__control::picker(select) {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-2);

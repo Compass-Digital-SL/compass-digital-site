@@ -1,7 +1,8 @@
 // Compass Digital — theme (dark / light) toggle and the visitor's accent colour.
 // The choices live in the visitor's own browser (localStorage). inc/theme-mode.php
 // re-applies them before first paint; this module wires the header controls.
-// Without JS, the site follows the system colour scheme and keeps the teal accent.
+// The site is dark by default; light applies only when the visitor picks it.
+// Without JS, the site stays dark and keeps the teal accent.
 
 const THEME_KEY = "cd-theme";
 const ACCENT_KEY = "cd-accent";
@@ -98,7 +99,6 @@ export function accentCss(hex) {
     `--accent-fill:${rgb2hex(lightFill)};--accent-fill-2:${rgb2hex(mix(lightFill, BLACK, 0.14))};--glow-b:${glow(10)};`;
   return (
     `:root{${d}}` +
-    `@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){${l}}}` +
     `:root[data-theme="light"]{${l}}:root[data-theme="dark"]{${d}}`
   );
 }
@@ -127,8 +127,8 @@ function initThemeToggle() {
   const btn = document.querySelector("[data-theme-toggle]");
   if (!btn) return;
   const root = document.documentElement;
-  const mq = window.matchMedia("(prefers-color-scheme: light)");
-  const current = () => root.dataset.theme || (mq.matches ? "light" : "dark");
+  // Dark is the default; light is active only when explicitly chosen.
+  const current = () => root.dataset.theme || "dark";
   const label = () => {
     const next = current() === "dark" ? "light" : "dark";
     btn.setAttribute("aria-label", next === "light" ? "Switch to light theme" : "Switch to dark theme");
@@ -140,7 +140,6 @@ function initThemeToggle() {
     store.set(THEME_KEY, next);
     label();
   });
-  mq.addEventListener?.("change", label);
 }
 
 // ---------- accent picker ----------

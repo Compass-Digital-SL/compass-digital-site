@@ -9,10 +9,9 @@ Live reference: hidden **/styleguide/** page (noindex) renders every token and c
 Approved mockup: the Task 24 artifact (homepage), built 1:1 into the theme.
 
 ## Direction
-- **Dark-first, light available.** Dark values sit on bare `:root`. Light applies when
-  the system asks for light (and the visitor has not picked dark) or when the visitor
-  picks light with the header toggle (`data-theme` on `<html>`). The two light blocks in
-  `tokens.css` must stay identical.
+- **Dark by default, light available.** Dark values sit on bare `:root` and are the
+  default for everyone, regardless of the system colour scheme. Light applies only when
+  the visitor explicitly picks it with the header toggle (`data-theme="light"` on `<html>`).
 - **One accent per decision.** Teal marks the primary action, the active state and the
   compass needle. Emphasised words in headings (`<em>`) are teal and upright.
 - **Hairlines over boxes.** Sections are separated by 1px rules; cards are reserved for

@@ -111,11 +111,6 @@ img { max-width: 100%; height: auto; }
 :root[data-theme="light"] .brand__logo--dark { display: none; }
 :root[data-theme="light"] .brand__logo--light { display: block; }
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .brand__logo--dark { display: none; }
-  :root:not([data-theme="dark"]) .brand__logo--light { display: block; }
-}
-
 .primary-nav,
 .header-actions__navigate,
 .header-actions__quote,

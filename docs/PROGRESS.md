@@ -46,6 +46,25 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Insights filter chip contrast on dark (2026-11-20)
+**Done** (task/31)
+- `.post-chip.is-active` (the "All" chip on `/insights/`, active on every load) used
+  `--accent` (#309393) as its fill under a white label: 3.67:1, below AA — 9 serious
+  axe `color-contrast` failures across Chromium/Firefox/WebKit at mobile + tablet.
+  Same bug and fix as the earlier work-chip one: switch the fill/border to
+  `--accent-fill` (#1c8282, documented white-label 4.6:1). `insights.css` only.
+
+### Dark theme is now the default (2026-11-20)
+**Done** (task/31)
+- Dark is the default for every visitor regardless of OS colour scheme. Removed all
+  `@media (prefers-color-scheme: light)` auto-apply blocks (`tokens.css`, `nav.css`,
+  `critical.css`, `components.css`, and the generated accent CSS in `theme-mode.js`); light
+  now applies **only** via the explicit header toggle (`:root[data-theme="light"]`).
+- Toggle default resolution changed from "follow system" to dark (`theme-mode.js`), so the
+  first click always flips to light. No-JS visitors stay dark. Updated `inc/theme-mode.php`
+  and `docs/DESIGN.md` wording. Verified: light-OS visitor with no saved choice → dark; the
+  toggle still switches to light and back.
+
 ### Premium glassy dropdowns + 180° compass needle (2026-11-20)
 **Done** (task/28)
 - Restyled every front-end `<select>` (`.field__control`) as a frosted-glass control: custom
