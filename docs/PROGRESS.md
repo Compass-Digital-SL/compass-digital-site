@@ -65,6 +65,9 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - **Worldwide positioning**: Sri Lanka / Colombo targeting removed from all copy, meta
   titles/descriptions and share images; schema `areaServed` = Worldwide. Legal pages
   keep their Sri Lankan law references; the registered address stays in schema only.
+- **Favicon** (`inc/favicon.php`, `assets/brand/favicon.{svg,ico}`, `apple-touch-icon.png`):
+  the compass mark on a white disc with an ink ring, clear on light and dark tab bars;
+  also served at `/favicon.ico`.
 - **Fixes found on the way**: hidden menus overriding `[hidden]`, consent accept button
   contrast, quote form stealing focus on load, 320px reflow on Contact.
 - Checks: stylelint + eslint clean; build OK (CSS 15.2KB gz, main JS 5KB gz, home HTML
@@ -78,11 +81,15 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - No italic Fraunces face is shipped; heading emphasis is teal and upright. Adding the
   italic file later is a one-file change (`assets/fonts/README.md`).
 - Hero spec numbers replace the duplicate counters in the Proof section.
+- The theme favicon replaces any Customizer Site Icon (the uploaded full wordmark is
+  unreadable at 16px). Favicon needle red is `#D7191F`, a deeper take on the logo red
+  for a more formal look and better contrast on white.
 - Sinhala is deferred to Task 25 (needs real `/si/` pages, not a text swap).
 
 **Owner must do**
 - Delete the placeholder text "This will be the landing page" from the Home page in the
   editor (it renders under the home sections).
+- Optional: clear the Site Icon in Customizer → Site Identity (it is no longer used).
 - Decide the quote form budget currency (still LKR) for worldwide clients.
 - Replace the sample insights/case studies (they still mention Sri Lanka) before launch.
 
