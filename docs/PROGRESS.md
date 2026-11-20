@@ -46,6 +46,19 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Pain selector: panel blank for non-first choice (2026-11-20)
+**Done** (task/32)
+- The home "Where are you stuck?" selector showed a blank answer panel whenever
+  any card but the first was chosen, or on a deep link such as `/#websites`. The
+  anti-CLS first-paint rule `html.js .pain__panel:not(:first-child){display:none}`
+  kept forcing non-first panels to `display:none` even after `initPainSelector`
+  added `.is-enhanced` and removed `[hidden]` — so JS could un-hide a panel but
+  CSS still hid it.
+- Scoped that rule and the three first-paint active-card rules to
+  `.pain:not(.is-enhanced)`, so once enhanced the active panel is driven only by
+  `[hidden]`. `home.css` only; verified live (deep link + card click swap). No-JS
+  and first-paint anti-shift behaviour unchanged.
+
 ### Insights filter chip contrast on dark (2026-11-20)
 **Done** (task/31)
 - `.post-chip.is-active` (the "All" chip on `/insights/`, active on every load) used
