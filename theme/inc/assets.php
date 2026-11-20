@@ -117,7 +117,12 @@ add_action(
 add_action(
 	'wp_head',
 	function () {
-		$critical = compass_asset_contents( 'src/css/tokens.css' ) . compass_asset_contents( 'critical.css' );
+		// Built + minified by Vite (vite.config.js criticalCss). The source pair is
+		// only a dev fallback: assets/src is not shipped in the deploy artifact.
+		$critical = compass_asset_contents( 'dist/critical.css' );
+		if ( '' === $critical ) {
+			$critical = compass_asset_contents( 'src/css/tokens.css' ) . compass_asset_contents( 'critical.css' );
+		}
 		if ( '' === trim( $critical ) ) {
 			return;
 		}
