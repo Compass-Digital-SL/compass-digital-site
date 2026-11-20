@@ -46,6 +46,14 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Insights filter chip contrast on dark (2026-11-20)
+**Done** (task/31)
+- `.post-chip.is-active` (the "All" chip on `/insights/`, active on every load) used
+  `--accent` (#309393) as its fill under a white label: 3.67:1, below AA — 9 serious
+  axe `color-contrast` failures across Chromium/Firefox/WebKit at mobile + tablet.
+  Same bug and fix as the earlier work-chip one: switch the fill/border to
+  `--accent-fill` (#1c8282, documented white-label 4.6:1). `insights.css` only.
+
 ### Dark theme is now the default (2026-11-20)
 **Done** (task/31)
 - Dark is the default for every visitor regardless of OS colour scheme. Removed all
