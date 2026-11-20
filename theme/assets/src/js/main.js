@@ -33,6 +33,13 @@ function initMotion() {
   }
 }
 
+// Decorative scroll-driven compass watermark (every page except home).
+function initCompass() {
+  const el = document.querySelector("[data-compass]");
+  if (!el) return;
+  import("./motion.js").then((m) => m.initScrollCompass(el));
+}
+
 function initWork() {
   if (!document.querySelector("[data-work-filter]")) return;
   import("./work-filter.js").then((m) => m.initWorkFilter());
@@ -95,6 +102,7 @@ function boot() {
   initNavigation();
   initUI();
   initMotion();
+  initCompass();
   initWork();
   initInsights();
   initQuote();
