@@ -1,38 +1,13 @@
 <?php
 /**
- * Home — proof: numbers, testimonials and honest guarantees.
+ * Home — proof: our promise, testimonials and honest guarantees.
+ *
+ * The headline numbers live in the hero spec strip, so they are not repeated here.
  *
  * @package CompassDigital
  */
 
 defined( 'ABSPATH' ) || exit;
-
-$stats = array(
-	array(
-		'num'    => 95,
-		'suffix' => '+',
-		'prefix' => '',
-		'label'  => __( 'Lighthouse score we build every site to', 'compass-digital' ),
-	),
-	array(
-		'num'    => 2,
-		'suffix' => 's',
-		'prefix' => '<',
-		'label'  => __( 'Page load we design for on mobile', 'compass-digital' ),
-	),
-	array(
-		'num'    => 6,
-		'suffix' => '',
-		'prefix' => '',
-		'label'  => __( 'Services, one team to call', 'compass-digital' ),
-	),
-	array(
-		'num'    => 100,
-		'suffix' => '%',
-		'prefix' => '',
-		'label'  => __( 'Yours to own and take anywhere', 'compass-digital' ),
-	),
-);
 
 $guarantees = array(
 	array(
@@ -68,31 +43,14 @@ $testimonials = new WP_Query(
 	)
 );
 ?>
-<section class="home-section proof" id="proof" aria-labelledby="proof-title">
+<section class="home-section proof" id="proof" aria-labelledby="proof-title" data-waypoint data-label="<?php esc_attr_e( 'Promise', 'compass-digital' ); ?>">
 	<div class="container">
 		<div class="section-header" data-reveal>
-			<span class="section-header__eyebrow"><?php esc_html_e( 'Why trust us', 'compass-digital' ); ?></span>
-			<h2 id="proof-title"><?php esc_html_e( 'Proof, not promises.', 'compass-digital' ); ?></h2>
-			<p class="section-header__lede"><?php esc_html_e( 'Clear standards we hold ourselves to, and the plain guarantees that come with every project.', 'compass-digital' ); ?></p>
+			<span class="section-header__eyebrow"><?php esc_html_e( 'Our promise', 'compass-digital' ); ?></span>
+			<h2 id="proof-title" class="proof__promise"><?php esc_html_e( 'You should always know what you’re paying for,', 'compass-digital' ); ?> <em><?php esc_html_e( 'what happens next,', 'compass-digital' ); ?></em> <?php esc_html_e( 'and that it’s yours.', 'compass-digital' ); ?></h2>
+			<p class="section-header__lede"><?php esc_html_e( 'The plain guarantees that come with every project, and what our clients say.', 'compass-digital' ); ?></p>
 		</div>
 
-		<ul class="proof__stats" role="list" data-reveal>
-			<?php foreach ( $stats as $stat ) : ?>
-				<?php
-				$counter_attrs = 'data-counter="' . esc_attr( $stat['num'] ) . '"';
-				if ( '' !== $stat['prefix'] ) {
-					$counter_attrs .= ' data-prefix="' . esc_attr( $stat['prefix'] ) . '"';
-				}
-				if ( '' !== $stat['suffix'] ) {
-					$counter_attrs .= ' data-suffix="' . esc_attr( $stat['suffix'] ) . '"';
-				}
-				?>
-				<li class="proof__stat">
-					<span class="proof__num" <?php echo $counter_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- attribute values escaped with esc_attr above. ?>><?php echo esc_html( $stat['prefix'] . $stat['num'] . $stat['suffix'] ); ?></span>
-					<span class="proof__label"><?php echo esc_html( $stat['label'] ); ?></span>
-				</li>
-			<?php endforeach; ?>
-		</ul>
 
 		<?php if ( $testimonials->have_posts() ) : ?>
 			<div class="proof__quotes" data-reveal>

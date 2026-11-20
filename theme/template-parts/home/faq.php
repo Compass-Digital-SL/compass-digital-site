@@ -29,8 +29,8 @@ $faqs = array(
 		'a' => __( 'Yes. We build on tools that are easy to edit, and we show you how to change text, images and prices yourself. For anything bigger, we’re a message away — but you’ll never have to pay us for a small tweak.', 'compass-digital' ),
 	),
 	array(
-		'q' => __( 'Do you work with businesses outside Colombo?', 'compass-digital' ),
-		'a' => __( 'Absolutely. We’re based in Colombo and work with businesses across Sri Lanka — Kandy, Galle, Jaffna and everywhere between — as well as Sri Lankan-owned businesses overseas. Most of the work happens remotely, simply and clearly.', 'compass-digital' ),
+		'q' => __( 'Where are your clients based?', 'compass-digital' ),
+		'a' => __( 'All over the world. We work remotely, schedule calls in your time zone and share progress as we go, so distance never slows a project down.', 'compass-digital' ),
 	),
 	array(
 		'q' => __( 'What happens after launch?', 'compass-digital' ),
@@ -54,11 +54,11 @@ foreach ( $faqs as $faq ) {
 	);
 }
 ?>
-<section class="home-section faq-section" id="faq" aria-labelledby="faq-title">
+<section class="home-section faq-section" id="faq" aria-labelledby="faq-title" data-waypoint data-label="<?php esc_attr_e( 'FAQ', 'compass-digital' ); ?>">
 	<div class="container">
 		<div class="section-header" data-reveal>
 			<span class="section-header__eyebrow"><?php esc_html_e( 'Questions', 'compass-digital' ); ?></span>
-			<h2 id="faq-title"><?php esc_html_e( 'The things people usually ask.', 'compass-digital' ); ?></h2>
+			<h2 id="faq-title"><?php esc_html_e( 'The things people', 'compass-digital' ); ?> <em><?php esc_html_e( 'usually ask.', 'compass-digital' ); ?></em></h2>
 			<p class="section-header__lede"><?php esc_html_e( 'Straight answers. If yours isn’t here, just ask us for a quote and we’ll talk it through.', 'compass-digital' ); ?></p>
 		</div>
 

@@ -63,9 +63,9 @@ $pain_points = array(
 		'quote'     => __( '“I want to sell online but I don’t know where to start.”', 'compass-digital' ),
 		'tag'       => __( 'Selling online', 'compass-digital' ),
 		'problem'   => __( 'You’ve got products people want, enquiries landing on WhatsApp, and no proper way to take an order and get paid.', 'compass-digital' ),
-		'fix'       => __( 'We build a fast, secure online store with local payment options and stock control that’s genuinely easy to run — so you can start selling without needing a tech team.', 'compass-digital' ),
-		'proof'     => __( 'Local payments', 'compass-digital' ),
-		'proof_txt' => __( 'Set up for how Sri Lanka pays — local gateways and cash on delivery included — so checkout works for your customers from day one.', 'compass-digital' ),
+		'fix'       => __( 'We build a fast, secure online store with the right payment options for your market and stock control that’s genuinely easy to run, so you can start selling without needing a tech team.', 'compass-digital' ),
+		'proof'     => __( 'Right payments', 'compass-digital' ),
+		'proof_txt' => __( 'Set up with the gateways your customers already trust in your market, so checkout works for them from day one.', 'compass-digital' ),
 		'link'      => '/services/ecommerce-websites/',
 		'link_txt'  => __( 'See ecommerce stores', 'compass-digital' ),
 	),
@@ -75,7 +75,7 @@ $pain_points = array(
 		'tag'       => __( 'Welcoming travellers', 'compass-digital' ),
 		'problem'   => __( 'Visitors compare you to polished international sites and decide in seconds. A slow, dated site loses the booking before you ever hear from them.', 'compass-digital' ),
 		'fix'       => __( 'We build fast, trustworthy travel and tourism sites with clear itineraries, easy enquiries or bookings, and SEO that reaches people planning their trip — wherever in the world they are.', 'compass-digital' ),
-		'proof'     => __( 'Found abroad', 'compass-digital' ),
+		'proof'     => __( 'Found by travellers', 'compass-digital' ),
 		'proof_txt' => __( 'We build for the searches travellers actually make before they arrive, so you’re in the running when they’re choosing.', 'compass-digital' ),
 		'link'      => '/industries/travel-and-tourism/',
 		'link_txt'  => __( 'See travel & tourism', 'compass-digital' ),
@@ -84,50 +84,49 @@ $pain_points = array(
 
 $quote_url = esc_url( home_url( '/get-a-quote/' ) );
 ?>
-<section class="home-section pain" id="pain" data-pain aria-labelledby="pain-title">
+<section class="home-section pain" id="pain" data-pain aria-labelledby="pain-title" data-waypoint data-label="<?php esc_attr_e( 'Your problem', 'compass-digital' ); ?>">
 	<div class="container">
 		<div class="section-header" data-reveal>
 			<span class="section-header__eyebrow"><?php esc_html_e( 'Where are you stuck?', 'compass-digital' ); ?></span>
-			<h2 id="pain-title"><?php esc_html_e( 'Pick the problem that sounds like you.', 'compass-digital' ); ?></h2>
-			<p class="section-header__lede"><?php esc_html_e( 'Choose one and we’ll show you, in plain language, how we’d fix it — and where to go next.', 'compass-digital' ); ?></p>
+			<h2 id="pain-title"><?php esc_html_e( 'Pick the problem that', 'compass-digital' ); ?> <em><?php esc_html_e( 'sounds like you.', 'compass-digital' ); ?></em></h2>
+			<p class="section-header__lede"><?php esc_html_e( 'Choose one and we’ll show you, in plain language, how we’d fix it, and where to go next.', 'compass-digital' ); ?></p>
 		</div>
 
-		<ul class="pain__nav" role="list" data-reveal>
-			<?php foreach ( $pain_points as $point ) : ?>
-				<li>
-					<a class="pain__card" href="#<?php echo esc_attr( $point['id'] ); ?>" data-pain-link>
-						<span class="pain__card-quote"><?php echo esc_html( $point['quote'] ); ?></span>
-						<span class="pain__card-tag"><?php echo esc_html( $point['tag'] ); ?></span>
-					</a>
-				</li>
-			<?php endforeach; ?>
-		</ul>
+		<div class="pain__layout">
+			<ul class="pain__nav" role="list" data-reveal>
+				<?php foreach ( $pain_points as $point ) : ?>
+					<li>
+						<a class="pain__card" href="#<?php echo esc_attr( $point['id'] ); ?>" data-pain-link>
+							<span class="pain__card-quote"><?php echo esc_html( $point['quote'] ); ?></span>
+							<span class="pain__card-tag"><?php echo esc_html( $point['tag'] ); ?></span>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
 
-		<div class="pain__panels">
-			<?php foreach ( $pain_points as $point ) : ?>
-				<article
-					class="pain__panel"
-					id="<?php echo esc_attr( $point['id'] ); ?>"
-					data-pain-panel
-					aria-label="<?php echo esc_attr( $point['tag'] ); ?>"
-				>
-					<div class="pain__panel-grid">
-						<div>
-							<p class="pain__problem"><?php echo esc_html( $point['quote'] ); ?></p>
-							<p class="pain__fix"><?php echo esc_html( $point['problem'] ); ?></p>
-							<p class="pain__fix"><strong><?php esc_html_e( 'How we fix it:', 'compass-digital' ); ?></strong> <?php echo esc_html( $point['fix'] ); ?></p>
-							<div class="pain__actions">
-								<a class="btn btn--primary" href="<?php echo esc_url( home_url( $point['link'] ) ); ?>"><?php echo esc_html( $point['link_txt'] ); ?></a>
-								<a class="btn btn--ghost" href="<?php echo $quote_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Get a quote', 'compass-digital' ); ?></a>
-							</div>
+			<div class="pain__panels">
+				<?php foreach ( $pain_points as $point ) : ?>
+					<article
+						class="pain__panel"
+						id="<?php echo esc_attr( $point['id'] ); ?>"
+						data-pain-panel
+						aria-label="<?php echo esc_attr( $point['tag'] ); ?>"
+					>
+						<p class="eyebrow pain__panel-tag"><?php echo esc_html( $point['tag'] ); ?></p>
+						<p class="pain__problem"><?php echo esc_html( $point['quote'] ); ?></p>
+						<p class="pain__fix"><?php echo esc_html( $point['problem'] ); ?></p>
+						<p class="pain__fix"><strong><?php esc_html_e( 'How we fix it:', 'compass-digital' ); ?></strong> <?php echo esc_html( $point['fix'] ); ?></p>
+						<div class="pain__actions">
+							<a class="btn btn--primary btn--sm" href="<?php echo esc_url( home_url( $point['link'] ) ); ?>"><?php echo esc_html( $point['link_txt'] ); ?> <span class="btn__arrow" aria-hidden="true">→</span></a>
+							<a class="btn btn--ghost btn--sm" href="<?php echo $quote_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"><?php esc_html_e( 'Get a quote', 'compass-digital' ); ?></a>
 						</div>
-						<aside class="pain__proof">
+						<p class="pain__proof">
 							<span class="pain__proof-stat"><?php echo esc_html( $point['proof'] ); ?></span>
 							<span class="pain__proof-text"><?php echo esc_html( $point['proof_txt'] ); ?></span>
-						</aside>
-					</div>
-				</article>
-			<?php endforeach; ?>
+						</p>
+					</article>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</div>
 </section>

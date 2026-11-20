@@ -1,94 +1,135 @@
-/* Compass Digital — local-SEO block (Task 17).
-   Service area, NAP card, embed-free map link, reviews. Tokens only. */
+/* Compass Digital — home "Where we work" (worldwide).
+   A coordinate card with the visitor's local time + regions, and a side column
+   on how remote projects run. Tokens only. */
 
 .local-area__grid {
   display: grid;
-  gap: var(--space-6);
-  grid-template-columns: 1fr;
-  margin-top: var(--space-8);
+  gap: var(--space-8) var(--space-16);
 }
 
-@media (width >= 48rem) {
+@media (width >= 900px) {
   .local-area__grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     align-items: start;
   }
 }
 
-.local-area__subtitle {
-  font-size: var(--fs-base);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  margin: 0 0 var(--space-3);
-}
-
-.local-area__nap {
-  padding: var(--space-6);
-}
-
-.local-area__address {
+/* Coordinate card: hairline grid, a pulsing pin and the local time. */
+.local-area__card {
+  position: relative;
+  overflow: hidden;
+  min-height: 22rem;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  font-style: normal;
-  margin-bottom: var(--space-4);
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: clamp(1.75rem, 1rem + 2vw, 2.75rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(60% 70% at 70% 30%, var(--glow-b), transparent 70%),
+    var(--surface-2);
 }
 
-.local-area__name {
-  font-weight: 600;
+.local-area__grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(70% 80% at 70% 35%, #000, transparent);
+}
+
+.local-area__pin {
+  position: absolute;
+  top: 34%;
+  left: 68%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .local-area__pin::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    animation: local-ping 2.6s var(--ease-out) infinite;
+  }
+}
+
+@keyframes local-ping {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.local-area__time {
+  position: relative;
+  margin: 0;
+  font: 300 clamp(2rem, 1.4rem + 2vw, 3rem)/1.1 var(--font-serif);
   color: var(--text);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
-.local-area__line {
-  color: var(--text-muted);
+.local-area__time small {
+  display: block;
+  margin-bottom: var(--space-3);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-subtle);
 }
 
-a.local-area__line {
-  color: var(--link);
-}
-
-.local-area__map-link {
+.local-area__zone {
+  display: block;
   margin-top: var(--space-2);
-}
-
-.local-area__area-note {
+  font: 400 var(--fs-sm)/1.4 var(--font-sans);
   color: var(--text-muted);
+  letter-spacing: 0;
 }
 
-.local-area__cities {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: 0;
-  margin: 0 0 var(--space-6);
-  list-style: none;
+.local-area__regions {
+  position: relative;
 }
 
-.local-area__city {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
+.local-area__regions .is-all {
+  border-color: var(--accent);
   color: var(--text);
 }
 
-.local-area__city--all {
-  background: var(--glass-bg);
-  border-color: var(--accent);
+/* Side column */
+.local-area__side p {
+  color: var(--text-body);
+}
+
+.local-area__subtitle {
+  margin: var(--space-8) 0 var(--space-3);
+  font: 400 var(--fs-lg)/1.2 var(--font-serif);
+}
+
+.local-area__side .local-area__subtitle:first-child {
+  margin-top: 0;
+}
+
+.local-area__contact {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.local-area__contact a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.local-area__contact a:hover {
   color: var(--accent);
-}
-
-.local-area__reviews {
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
-}
-
-.local-area__reviews-link {
-  font-weight: 600;
-}
-
-.local-area__reviews-soon {
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
 }
