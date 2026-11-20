@@ -46,6 +46,30 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Premium glassy dropdowns + 180° compass needle (2026-11-20)
+**Done** (task/28)
+- Restyled every front-end `<select>` (`.field__control`) as a frosted-glass control: custom
+  chevron, `--glass-bg` + backdrop blur, accent hover/focus. Option list follows the theme's
+  `color-scheme`. Browsers with customizable `<select>` (`appearance: base-select`, Chrome 135+)
+  also get a real frosted-glass popup with rounded, accent-highlighted options; others fall back
+  to the themed native popup. Admin selects left on native WP styling. Files: `components.css`.
+- Compass scroll gauge: needle now travels a total **180°** top→bottom (was 540). One-line
+  default change in `initScrollCompass()`; still overridable via `data-compass-turn`.
+
+### Compass watermark — scroll gauge, right-middle half-face (2026-11-20)
+**Done** (task/28)
+- Reworked the watermark into a **scroll-position gauge**: a half-compass pinned to the
+  **right-middle edge** showing only the left half of the face (`top: 50%; right: -21vmin;
+  42vmin; translateY(-50%)`), over the gutter so it clears body copy. Opacity 0.1.
+- The needle now **tracks scroll directly** (0° → −180° across the page; see the later entry
+  that capped the sweep at 180°). Dropped the
+  `prefers-reduced-motion` guard in both the CSS and `initScrollCompass()`: a position
+  indicator driven by the user's own scrolling is not autonomous animation (same reasoning as
+  a scrollbar), so it keeps working under reduced motion. No transitions/easing — one rAF
+  write per scroll frame.
+- Earlier this task it was briefly 64vmin centre-right (overlapped content) then 40vmin
+  bottom-corner; superseded by the gauge above.
+
 ### CI site-audit warnings — meta descriptions + heading order (2026-11-20)
 **Done** (task/28)
 - Cleared the non-blocking audit warnings left after the broken-link fix.
@@ -58,6 +82,18 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   cards' `h3`s nest correctly. No visual change.
 - The remaining audit lines are query-string duplicates of these same pages; all resolve
   once the base page is fixed. No errors were present (build was already green).
+
+### Compass watermark — visibility + position fix (2026-11-20)
+**Done** (task/30)
+- The needle looked static because the watermark sat *behind* content (`z-index: 0`) and the
+  pages' opaque section backgrounds hid it. Switched it to a faint overlay **above** content
+  (`z-index: 2`, below `--z-header: 50` so the sticky header/nav/chat stay on top),
+  `pointer-events: none`, `aria-hidden`.
+- Repositioned from the bottom corner to **centre-right, cropped off the right edge**
+  (`top: 50%; right: -14vmin; 64vmin`), matching the sketch; opacity 0.07.
+- Removed the now-unneeded `.site-main / .site-footer` z-index rule.
+- Verified in a local static-server harness: needle rotates smoothly 0° → −540° across the
+  scroll and stays visible over opaque sections.
 
 ### Scroll-driven compass watermark (2026-11-20)
 **Done** (task/29)

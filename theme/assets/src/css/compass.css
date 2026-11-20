@@ -1,19 +1,21 @@
-/* Compass watermark — a faint, fixed compass whose needle rotates as the reader
-   scrolls (see js/motion.js initScrollCompass). It overlays the page as a light
-   watermark: pointer-events off, aria-hidden, and sits above the content but
-   below the header/nav/chat chrome (z-index 2, under --z-header: 50). Not
-   rendered on the home page. */
+/* Compass watermark — a faint, fixed half-compass pinned to the right-middle
+   edge (only the left half of the face shows). Its needle acts as a scroll
+   gauge: it sweeps in direct proportion to scroll progress (see js/motion.js
+   initScrollCompass), so it is a position indicator, not decorative animation,
+   and keeps tracking scroll under prefers-reduced-motion — like a scrollbar.
+   pointer-events off, aria-hidden, above content but below header/nav/chat
+   chrome (z-index 2, under --z-header: 50). Not rendered on the home page. */
 
 .compass-watermark {
   position: fixed;
   top: 50%;
-  right: -14vmin;
-  width: 64vmin;
-  height: 64vmin;
+  right: -21vmin;
+  width: 42vmin;
+  height: 42vmin;
   transform: translateY(-50%);
   z-index: 2;
   color: var(--ink);
-  opacity: 0.07;
+  opacity: 0.1;
   pointer-events: none;
   user-select: none;
 }
@@ -30,12 +32,6 @@
   transform: rotate(var(--compass-rot, 0deg));
   transform-origin: center;
   transform-box: fill-box;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .compass-watermark__needle {
-    transform: none;
-  }
 }
 
 @media print {
