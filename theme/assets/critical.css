@@ -63,13 +63,20 @@ img { max-width: 100%; height: auto; }
 
 [hidden] { display: none !important; }
 
-/* Layout primitives (shared by header, main sections and footer). */
+/* Layout primitives (shared by header, main sections and footer). Page
+   wrappers with their own .container run full-bleed (list mirrors main.css). */
 .container,
 .site-footer__inner,
-.site-main > * {
+:where(.site-main) > * {
   max-width: calc(var(--wide-width) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+
+:where(.site-main) > :is(.front-page, .service-page, .services-hub, .about-page, .process-page, .faq-page, .contact-page, .quote-page, .legal-page, .thankyou-page, .work-archive, .case-study, .insights-archive, .insight, .error-page) {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
 }
 
 /* Floating header island (detail in nav.css). */
@@ -123,8 +130,6 @@ img { max-width: 100%; height: auto; }
 
 /* Home hero is the LCP region: reserve its height and set the title scale so
    the deferred stylesheet cannot shift it. */
-.site-main > .front-page { max-width: none; margin-inline: 0; padding-inline: 0; }
-
 .hero.hero--v2 {
   position: relative;
   isolation: isolate;

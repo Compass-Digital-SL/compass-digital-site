@@ -98,8 +98,6 @@
 .post-card__media {
   display: block;
   aspect-ratio: 16 / 9;
-  background: var(--surface-sunken);
-  overflow: hidden;
 }
 
 .post-card__media img {

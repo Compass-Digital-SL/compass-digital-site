@@ -419,3 +419,78 @@ textarea.field__control {
   font-size: var(--fs-sm);
   color: var(--text-body);
 }
+
+/* ---------------------------------------------------------------- Service card */
+/* Numbered link card used by the Services and Industries hubs. */
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: 15rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.service-card__title {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.service-card__num {
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.14em;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.service-card__text {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.service-card__more {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  color: var(--link);
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  transition: transform var(--dur-mid) var(--ease);
+}
+
+.service-card:hover .service-card__title {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .service-card:hover .service-card__more {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------------------------------------------------------------- Chip link */
+.industry-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.15rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    border-color var(--dur-mid) var(--ease),
+    background-color var(--dur-mid) var(--ease);
+}
+
+.industry-chip:hover,
+.industry-chip:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}

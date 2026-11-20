@@ -137,6 +137,12 @@ hr {
   border-radius: var(--radius-sm);
 }
 
+/* Non-interactive targets that scripts focus for screen readers (step legends,
+   sections, panels) are not controls, so they get no ring. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -154,12 +160,22 @@ hr {
 }
 
 /* --- Layout primitives --- */
+/* Direct children of <main> get the centred column by default (zero
+   specificity via :where, so any page wrapper can opt out). Page templates
+   whose wrapper holds its own .container run full-bleed so their heroes and
+   bands can span the viewport. Keep this list in step with critical.css. */
 .container,
 .site-footer__inner,
-.site-main > * {
+:where(.site-main) > * {
   max-width: calc(var(--wide-width) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+
+:where(.site-main) > :is(.front-page, .service-page, .services-hub, .about-page, .process-page, .faq-page, .contact-page, .quote-page, .legal-page, .thankyou-page, .work-archive, .case-study, .insights-archive, .insight, .error-page) {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
 }
 
 .container--narrow {

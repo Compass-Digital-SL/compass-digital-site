@@ -34,7 +34,7 @@ export function initQuote() {
     ? Array.from(progress.querySelectorAll(".quote-progress__step"))
     : [];
 
-  function show(index) {
+  function show(index, { focus = true } = {}) {
     current = Math.max(0, Math.min(index, steps.length - 1));
 
     steps.forEach((step, i) => {
@@ -53,8 +53,9 @@ export function initQuote() {
     if (submit) submit.hidden = !isLast;
 
     // Move focus to the step so screen readers land on the new content.
+    // Not on first load: focus would jump past the page header.
     const legend = steps[current].querySelector(".quote-step__legend");
-    if (legend) {
+    if (legend && focus) {
       legend.setAttribute("tabindex", "-1");
       legend.focus();
     }
@@ -102,5 +103,5 @@ export function initQuote() {
     back.addEventListener("click", () => show(current - 1));
   }
 
-  show(0);
+  show(0, { focus: false });
 }
