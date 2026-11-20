@@ -17,6 +17,7 @@
 @import url("./quote.css");
 @import url("./local.css");
 @import url("./legal.css");
+@import url("./compass.css");
 
 *,
 *::before,
@@ -45,6 +46,15 @@ body {
 ::selection {
   background: color-mix(in srgb, var(--accent) 35%, transparent);
   color: var(--text);
+}
+
+/* Keep page content above the fixed compass watermark (z-index: 0), so the
+   faint decoration never sits over text. Header is left untouched to preserve
+   its sticky behaviour. */
+.site-main,
+.site-footer {
+  position: relative;
+  z-index: 1;
 }
 
 h1,

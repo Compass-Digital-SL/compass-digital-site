@@ -59,6 +59,20 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - The remaining audit lines are query-string duplicates of these same pages; all resolve
   once the base page is fixed. No errors were present (build was already green).
 
+### Scroll-driven compass watermark (2026-11-20)
+**Done** (task/29)
+- A faint (~5% opacity) fixed compass, pinned bottom-right and cropped, whose needle
+  rotates anti-clockwise in proportion to scroll progress. Rendered on every template
+  **except the home page**.
+- Files: `template-parts/compass-watermark.php` (inline SVG, `aria-hidden`, decorative),
+  `assets/src/css/compass.css`, `initScrollCompass()` in `assets/src/js/motion.js`, wired
+  from `main.js` (lazy — only when `[data-compass]` is present), included from `footer.php`
+  behind `! is_front_page()`.
+- Kept behind content (`.site-main` / `.site-footer` raised to `z-index: 1`) so it never
+  lowers text contrast; sticky header untouched. Transform-only, one rAF write per scroll
+  frame. Static under `prefers-reduced-motion` and hidden in print. Rotation span tunable
+  via `data-compass-turn` (default 540°).
+
 ### CI site-audit fix — broken internal links (2026-11-20)
 **Done** (PR #31 / #64)
 - The CI "SEO crawl" step failed with 6 errors (3 broken internal links): `/cookie-policy/`,

@@ -92,6 +92,13 @@ $compass_columns = array( $compass_map['services'], $compass_map['industries'], 
 	</div>
 </footer>
 
+<?php
+// Decorative scroll-driven compass watermark, on every template except home.
+if ( ! is_front_page() ) {
+	get_template_part( 'template-parts/compass-watermark' );
+}
+?>
+
 <?php wp_footer(); ?>
 </body>
 </html>
