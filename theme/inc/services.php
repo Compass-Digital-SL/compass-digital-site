@@ -52,7 +52,7 @@ function compass_services_document_title( $title ) {
 		return $service['title'];
 	}
 	if ( compass_is_services_hub() ) {
-		return __( 'Our Services — Websites, SEO, POS & Software | Compass', 'compass-digital' );
+		return __( 'Services — Websites, SEO, POS & Software | Compass Digital', 'compass-digital' );
 	}
 	return $title;
 }
