@@ -206,20 +206,27 @@ function compass_security_csp_directives() {
 	$turnstile = 'https://challenges.cloudflare.com';
 
 	$directives = array(
-		'default-src'               => "'self'",
-		'base-uri'                  => "'self'",
-		'object-src'                => "'none'",
-		'frame-ancestors'           => "'self'",
-		'form-action'               => "'self'",
-		'script-src'                => "'self' 'unsafe-inline' {$ga} {$turnstile}",
-		'style-src'                 => "'self' 'unsafe-inline'",
-		'img-src'                   => "'self' data: {$ga}",
-		'font-src'                  => "'self'",
-		'connect-src'               => "'self' {$ga_conn}",
-		'frame-src'                 => $turnstile,
-		'manifest-src'              => "'self'",
-		'upgrade-insecure-requests' => '',
+		'default-src'     => "'self'",
+		'base-uri'        => "'self'",
+		'object-src'      => "'none'",
+		'frame-ancestors' => "'self'",
+		'form-action'     => "'self'",
+		'script-src'      => "'self' 'unsafe-inline' {$ga} {$turnstile}",
+		'style-src'       => "'self' 'unsafe-inline'",
+		'img-src'         => "'self' data: {$ga}",
+		'font-src'        => "'self'",
+		'connect-src'     => "'self' {$ga_conn}",
+		'frame-src'       => $turnstile,
+		'manifest-src'    => "'self'",
+		'report-uri'      => esc_url_raw( rest_url( 'compass/v1/csp-report' ) ),
+		'report-to'       => 'csp',
 	);
+
+	// upgrade-insecure-requests is ignored (with a console error) in a
+	// Report-Only policy, so it is only sent once the policy is enforced.
+	if ( compass_security_csp_enforced() ) {
+		$directives['upgrade-insecure-requests'] = '';
+	}
 
 	/**
 	 * Filter the CSP directives before they are assembled.
@@ -228,6 +235,42 @@ function compass_security_csp_directives() {
 	 */
 	return apply_filters( 'compass_csp_directives', $directives );
 }
+
+/**
+ * Whether the CSP is enforced (COMPASS_CSP_ENFORCE) or Report-Only.
+ *
+ * @return bool
+ */
+function compass_security_csp_enforced() {
+	return defined( 'COMPASS_CSP_ENFORCE' ) && COMPASS_CSP_ENFORCE;
+}
+
+/**
+ * Receive CSP violation reports (legacy report-uri and Reporting API report-to).
+ *
+ * Each report goes to the PHP error log as one capped line, so the Report-Only
+ * run can be reviewed before enforcing. Nothing is stored in the database.
+ */
+add_action(
+	'rest_api_init',
+	function () {
+		register_rest_route(
+			'compass/v1',
+			'/csp-report',
+			array(
+				'methods'             => 'POST',
+				'permission_callback' => '__return_true',
+				'callback'            => function ( WP_REST_Request $request ) {
+					$body = substr( (string) $request->get_body(), 0, 2000 );
+					if ( '' !== $body ) {
+						error_log( 'CSP report: ' . preg_replace( '/\s+/', ' ', $body ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional violation log.
+					}
+					return new WP_REST_Response( null, 204 );
+				},
+			)
+		);
+	}
+);
 
 /**
  * Assemble the directive map into a CSP header string.
@@ -270,8 +313,9 @@ add_action(
 		}
 
 		$csp         = compass_security_csp_string( compass_security_csp_directives() );
-		$csp_enforce = defined( 'COMPASS_CSP_ENFORCE' ) && COMPASS_CSP_ENFORCE;
+		$csp_enforce = compass_security_csp_enforced();
 		$headers[ $csp_enforce ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only' ] = $csp;
+		$headers['Reporting-Endpoints'] = 'csp="' . esc_url_raw( rest_url( 'compass/v1/csp-report' ) ) . '"';
 
 		/**
 		 * Filter the full set of security headers before they are sent.

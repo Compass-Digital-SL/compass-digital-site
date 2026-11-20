@@ -1,6 +1,6 @@
 // @ts-check
 const { test, expect } = require("@playwright/test");
-const { AxeBuilder } = require("@axe-core/playwright");
+const { axeBlocking } = require("./helpers");
 
 /**
  * Watch a page for JS errors and failed network responses.
@@ -124,13 +124,7 @@ for (const p of pages) {
     test(`has no critical/serious axe violations (${p.name})`, async ({ page }) => {
       await page.goto(p.path, { waitUntil: "networkidle" });
 
-      const results = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
-        .analyze();
-
-      const blocking = results.violations.filter(
-        (v) => v.impact === "critical" || v.impact === "serious"
-      );
+      const blocking = await axeBlocking(page);
 
       expect(
         blocking,

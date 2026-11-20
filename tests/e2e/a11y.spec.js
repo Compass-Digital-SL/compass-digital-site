@@ -1,6 +1,6 @@
 // @ts-check
 const { test, expect } = require("@playwright/test");
-const { AxeBuilder } = require("@axe-core/playwright");
+const { axeBlocking } = require("./helpers");
 
 /**
  * Accessibility + responsive QA (Task 19).
@@ -12,7 +12,6 @@ const { AxeBuilder } = require("@axe-core/playwright");
  */
 
 const WIDTHS = { mobile: 360, tablet: 768, desktop: 1440 };
-const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 // Representative set spanning every template type.
 const routes = [
@@ -31,13 +30,6 @@ const routes = [
   { name: "contact", path: "/contact/" },
   { name: "thank-you", path: "/thank-you/" },
 ];
-
-async function axeBlocking(page) {
-  const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
-  return results.violations.filter(
-    (v) => v.impact === "critical" || v.impact === "serious"
-  );
-}
 
 // --- Responsive axe: phone and tablet widths (desktop is covered by smoke) ---
 for (const [label, width] of [

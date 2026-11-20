@@ -40,6 +40,13 @@ Add under the matching environment (`staging` / `production`).
 | `PRODUCTION_WP_PATH` | production | Live WordPress docroot. |
 | `PRODUCTION_URL` | production | Live site URL, e.g. `https://compassdigital.lk`. |
 
+> **Also add `STAGING_URL` / `PRODUCTION_URL` as _repository variables_**
+> (Settings → Secrets and variables → Actions → Variables), same values.
+> They are the on-switch: until `STAGING_URL` is set the staging deploy job is
+> **skipped** (main stays green before hosting exists); same for
+> `PRODUCTION_URL` and tag deploys. They also feed the environment's display
+> link, where GitHub does not allow secrets.
+
 > The web server's docroot should point at `<DEPLOY_PATH>/current` so flipping the
 > symlink switches the live code atomically. Set this up once on the host.
 
