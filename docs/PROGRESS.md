@@ -26,6 +26,7 @@
 - [ ] 23 Post-launch
 - [x] 24 Premium redesign (v2 design system, worldwide positioning)
 - [ ] 25 Sinhala language version (future: real /si/ URLs + hreflang, native review)
+- [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -43,6 +44,28 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 26 — Audit fixes after the redesign (2026-11-20)
+**Done** (full list in `docs/AUDIT.md`, "Re-audit" section)
+- Main-menu 404s fixed (4 wrong slugs in `inc/nav.php`, plus the seeded article).
+- Login-name leak via `?author=N` → `/author/<login>/` closed; author archives off
+  for guests.
+- Critical CSS now built to `assets/dist/critical.css` (minified) — the deploy
+  excluded `assets/src`, so production would have lost the inlined tokens.
+- `no-store` on contact/quote/thank-you (form nonce vs page cache).
+- Worldwide `contactPoint`, proper titles for every page, GA4 CSP wildcards,
+  `interest-cohort` and `X-Powered-By` removed, comments closed.
+- CI runs `npm run seo:audit` (broken links fail the build); crawler decodes `&#038;`.
+
+**Decisions**
+- Fallback titles live in `inc/seo.php` at priority 20 and only fill gaps left by
+  the section filters.
+- Form pages send `no-store` from the theme rather than relying on the host's
+  cache exclusions alone.
+
+**Next**
+- Merge Task 24 then this branch; Task 22 (Go-live). Design call on the 360px hero
+  needle overlap and the phone cookie card.
 
 ### Task 24 — Premium redesign (2026-11-20)
 **Done**
