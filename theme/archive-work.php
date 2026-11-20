@@ -38,7 +38,7 @@ $archive_url     = get_post_type_archive_link( 'work' );
 			<div class="service-hero__inner" data-reveal>
 				<p class="service-hero__eyebrow"><?php esc_html_e( 'Our work', 'compass-digital' ); ?></p>
 				<h1 class="service-hero__title"><?php esc_html_e( 'Real businesses, real results.', 'compass-digital' ); ?></h1>
-				<p class="service-hero__lede"><?php esc_html_e( 'A look at what we have built for Sri Lankan businesses — the problem, the work, and the numbers that followed. Filter by what you need.', 'compass-digital' ); ?></p>
+				<p class="service-hero__lede"><?php esc_html_e( 'A look at what we have built for our clients — the problem, the work, and the numbers that followed. Filter by what you need.', 'compass-digital' ); ?></p>
 			</div>
 		</div>
 	</header>

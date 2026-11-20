@@ -208,7 +208,7 @@ function compass_post_author( $post_id ) {
 	$name      = get_the_author_meta( 'display_name', $author_id );
 	$bio       = get_the_author_meta( 'description', $author_id );
 	if ( ! $bio ) {
-		$bio = __( 'The Compass Digital team — a Sri Lankan software and digital services firm helping businesses find their way online with clear, dependable work.', 'compass-digital' );
+		$bio = __( 'The Compass Digital team — a software and digital services firm helping businesses find their way online with clear, dependable work.', 'compass-digital' );
 	}
 	return array(
 		'name' => $name ? $name : get_bloginfo( 'name' ),
@@ -225,7 +225,7 @@ function compass_post_author( $post_id ) {
  */
 function compass_insights_document_title( $title ) {
 	if ( is_home() ) {
-		return __( 'Insights — Practical Digital Advice for Sri Lanka | Compass', 'compass-digital' );
+		return __( 'Insights — Practical Digital Advice | Compass Digital', 'compass-digital' );
 	}
 	if ( is_singular( 'post' ) ) {
 		return get_the_title( get_queried_object_id() ) . ' | Compass Digital';
@@ -245,7 +245,7 @@ function compass_insights_head() {
 	$description = '';
 
 	if ( is_home() ) {
-		$description = __( 'Practical, jargon-free advice on websites, SEO, POS and selling online — written for Sri Lankan business owners by Compass Digital.', 'compass-digital' );
+		$description = __( 'Practical, jargon-free advice on websites, SEO, POS and selling online — written for business owners by Compass Digital.', 'compass-digital' );
 	} elseif ( is_singular( 'post' ) ) {
 		$id          = get_queried_object_id();
 		$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $id ) ), 30 );
@@ -253,7 +253,7 @@ function compass_insights_head() {
 		$description = wp_strip_all_tags( get_the_archive_description() );
 		if ( ! $description ) {
 			/* translators: %s: category name. */
-			$description = sprintf( __( 'Insights on %s from Compass Digital — plain-language advice for Sri Lankan businesses.', 'compass-digital' ), single_cat_title( '', false ) );
+			$description = sprintf( __( 'Insights on %s from Compass Digital — plain-language advice for growing businesses.', 'compass-digital' ), single_cat_title( '', false ) );
 		}
 	}
 

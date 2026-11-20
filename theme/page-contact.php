@@ -18,7 +18,6 @@ get_header();
 $page_url = get_permalink();
 $contact  = compass_contact_details();
 $hours    = function_exists( 'compass_get_setting' ) ? compass_get_setting( 'hours' ) : '';
-$area     = function_exists( 'compass_get_setting' ) ? compass_get_setting( 'service_area' ) : '';
 ?>
 <article class="contact-page" data-quote-page>
 
@@ -68,18 +67,10 @@ $area     = function_exists( 'compass_get_setting' ) ? compass_get_setting( 'ser
 							<a href="<?php echo esc_url( 'mailto:' . $contact['email'] ); ?>"><?php echo esc_html( $contact['email'] ); ?></a>
 						</li>
 					<?php endif; ?>
-					<?php if ( ! empty( $contact['address'] ) ) : ?>
-						<li>
-							<span class="contact-list__label"><?php esc_html_e( 'Where we are', 'compass-digital' ); ?></span>
-							<?php echo esc_html( $contact['address'] ); ?>
-						</li>
-					<?php endif; ?>
-					<?php if ( $area ) : ?>
-						<li>
-							<span class="contact-list__label"><?php esc_html_e( 'Service area', 'compass-digital' ); ?></span>
-							<?php echo esc_html( $area ); ?>
-						</li>
-					<?php endif; ?>
+					<li>
+						<span class="contact-list__label"><?php esc_html_e( 'Where we work', 'compass-digital' ); ?></span>
+						<?php esc_html_e( 'Worldwide, remotely. Calls scheduled in your time zone.', 'compass-digital' ); ?>
+					</li>
 					<?php if ( $hours ) : ?>
 						<li>
 							<span class="contact-list__label"><?php esc_html_e( 'Hours', 'compass-digital' ); ?></span>

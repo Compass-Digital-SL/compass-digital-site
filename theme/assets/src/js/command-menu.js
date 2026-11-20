@@ -185,13 +185,30 @@ function initSheets() {
   });
 }
 
-/** Header shrinks once the page is scrolled. */
+/**
+ * Header: glass once scrolled, tucked away while reading down, back on the way
+ * up. Also drives the bottom scroll-progress bar (one rAF-throttled listener).
+ */
 function initHeaderShrink() {
   const header = document.querySelector("[data-site-header]");
+  const progress = document.querySelector("[data-scroll-progress]");
   if (!header) return;
   let ticking = false;
+  let lastY = window.scrollY;
   function update() {
-    header.classList.toggle("is-scrolled", window.scrollY > 24);
+    const y = window.scrollY;
+    header.classList.toggle("is-scrolled", y > 24);
+    if (Math.abs(y - lastY) > 6) {
+      // Never hide while a menu inside the header is open or focused.
+      const busy = header.contains(document.activeElement) || header.querySelector(".is-open, [data-tint-pop]:not([hidden])");
+      header.classList.toggle("is-hidden", y > lastY && y > 400 && !busy);
+      lastY = y;
+    }
+    if (progress) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const k = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+      progress.style.setProperty("--progress", k.toFixed(4));
+    }
     ticking = false;
   }
   window.addEventListener(

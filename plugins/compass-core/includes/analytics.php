@@ -139,8 +139,8 @@ function compass_core_consent_styles() {
 		.compass-consent__text{margin:0;max-width:52ch;flex:1 1 20rem}
 		.compass-consent__text a{color:var(--link,#5fb5bd)}
 		.compass-consent__actions{display:flex;gap:var(--space-2,.5rem);flex:0 0 auto}
-		.compass-consent__btn{cursor:pointer;font:inherit;padding:var(--space-2,.5rem) var(--space-4,1rem);border-radius:var(--radius,.625rem);border:1px solid var(--border-strong,rgba(246,242,234,.24));background:transparent;color:inherit}
-		.compass-consent__btn--accept{background:var(--accent,#c9a24b);color:var(--accent-text,#0f2a43);border-color:var(--accent,#c9a24b);font-weight:600}
+		.compass-consent__btn{cursor:pointer;font:inherit;padding:var(--space-2,.5rem) var(--space-4,1rem);border-radius:var(--radius-pill,999px);border:1px solid var(--border-strong,rgba(246,242,234,.24));background:transparent;color:inherit}
+		.compass-consent__btn--accept{background:var(--accent-fill,#1c8282);color:var(--accent-text,#fff);border-color:var(--accent-fill,#1c8282);font-weight:500}
 		.compass-consent__btn:focus-visible{outline:3px solid var(--focus,#c9a24b);outline-offset:2px}
 		.site-footer__consent-btn{cursor:pointer;background:none;border:0;padding:0;margin:0;font:inherit;color:var(--link,#5fb5bd);text-decoration:underline;text-underline-offset:.15em}
 		@media (prefers-reduced-motion: no-preference){.compass-consent{animation:compass-consent-in var(--dur-mid,300ms) var(--ease-out,ease)}}

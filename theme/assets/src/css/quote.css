@@ -276,3 +276,8 @@
   flex-wrap: wrap;
   gap: var(--space-3);
 }
+
+/* Grid items default to min-width:auto; let the form column shrink at 320px. */
+.quote-layout > * {
+  min-width: 0;
+}

@@ -54,7 +54,7 @@ function compass_industries_document_title( $title ) {
 		return $industry['title'];
 	}
 	if ( compass_is_industries_hub() ) {
-		return __( 'Industries We Serve — Sri Lanka | Compass Digital', 'compass-digital' );
+		return __( 'Industries We Serve | Compass Digital', 'compass-digital' );
 	}
 	return $title;
 }
@@ -70,7 +70,7 @@ function compass_industries_head() {
 	if ( $industry ) {
 		$description = $industry['meta'];
 	} elseif ( compass_is_industries_hub() ) {
-		$description = __( 'Websites, POS, ecommerce and software built for Sri Lankan retail, restaurants, travel, ecommerce brands and SMEs. Quote on request.', 'compass-digital' );
+		$description = __( 'Websites, POS, ecommerce and software built for retail, restaurants, travel, ecommerce brands and SMEs worldwide. Quote on request.', 'compass-digital' );
 	}
 
 	if ( $description ) {

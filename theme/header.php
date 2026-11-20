@@ -32,10 +32,16 @@ get_template_part( 'template-parts/mobile-bar' );
 get_template_part( 'template-parts/scroll-rail' );
 get_template_part( 'template-parts/contact-chip' );
 ?>
+<div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__fill" data-scroll-progress></span></div>
 
 <main id="main" class="site-main" tabindex="-1">
 <?php
-if ( ! is_front_page() ) {
+// Templates with a .service-hero print the breadcrumbs inside their hero, so
+// only print them here for the rest (otherwise they appear twice).
+$compass_own_crumbs = is_page_template( array( 'page-service.php', 'page-services.php', 'page-industries.php', 'page-industry.php' ) )
+	|| is_post_type_archive( 'work' )
+	|| is_singular( 'work' );
+if ( ! is_front_page() && ! $compass_own_crumbs ) {
 	get_template_part( 'template-parts/breadcrumbs' );
 }
 ?>

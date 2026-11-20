@@ -60,19 +60,19 @@ function compass_services_data() {
 		'website-design-and-development' => array(
 			'tax_name'      => 'Website design and development',
 			'service_type'  => 'Website design and development',
-			'title'         => __( 'Website Design & Development in Sri Lanka | Compass', 'compass-digital' ),
-			'meta'          => __( 'Fast, modern business websites built in Sri Lanka — mobile-first, easy to update, built to rank. See our work and request a quote.', 'compass-digital' ),
+			'title'         => __( 'Website Design & Development | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Fast, modern business websites for clients worldwide — mobile-first, easy to update, built to rank. See our work and request a quote.', 'compass-digital' ),
 			'eyebrow'       => __( 'Website design & development', 'compass-digital' ),
 			'headline'      => __( 'A website you’re proud to share — fast, modern and easy to run.', 'compass-digital' ),
-			'lede'          => __( 'We design and build business websites in Sri Lanka that load in under two seconds, look right on a phone, and you can update yourself. Website design that works as hard as you do.', 'compass-digital' ),
+			'lede'          => __( 'We design and build business websites that load in under two seconds, look right on a phone, and you can update yourself. Website design that works as hard as you do.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Owners embarrassed by a slow, dated site they’d rather not share.', 'compass-digital' ),
 				__( 'Businesses still relying on a Facebook page who need a proper home online.', 'compass-digital' ),
 				__( 'Anyone burned by a developer who vanished after taking the money.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'Your website is usually the first thing a customer in Sri Lanka sees before they ever call. If it’s slow, awkward on a phone or looks like it was built a decade ago, you lose the enquiry before you hear from them. Good website design and development fixes that quietly: the site loads fast, reads clearly, and makes the next step obvious.', 'compass-digital' ),
-				__( 'We build every business website as a custom WordPress theme — no bloated page builders, no plugin for every little thing. That keeps your pages light, which is exactly what both your customers and Google reward. As website designers in Sri Lanka we care about the unglamorous parts: clean code, real accessibility, images that don’t blow your data, and a content structure search engines can actually read.', 'compass-digital' ),
+				__( 'Your website is usually the first thing a customer sees before they ever call. If it’s slow, awkward on a phone or looks like it was built a decade ago, you lose the enquiry before you hear from them. Good website design and development fixes that quietly: the site loads fast, reads clearly, and makes the next step obvious.', 'compass-digital' ),
+				__( 'We build every business website as a custom WordPress theme — no bloated page builders, no plugin for every little thing. That keeps your pages light, which is exactly what both your customers and Google reward. As website designers we care about the unglamorous parts: clean code, real accessibility, images that don’t blow your data, and a content structure search engines can actually read.', 'compass-digital' ),
 				__( 'You get a site that’s genuinely yours. The domain, hosting and accounts are in your name, the design comes from a proper system rather than a stock theme, and you can edit text, images and prices yourself without paying us for every small change. When you do want a hand, we’re a message away — not a mystery you can’t reach.', 'compass-digital' ),
 				__( 'Affordable website design doesn’t mean cheap or cut-corner. It means we scope honestly, build the right thing once, and leave you with something fast and durable instead of a pretty site that falls over in six months.', 'compass-digital' ),
 			),
@@ -125,7 +125,7 @@ function compass_services_data() {
 			'offer_catalog' => array( 'Business website design', 'Website redesign', 'Landing pages', 'Website care and support' ),
 			'faqs'          => array(
 				array(
-					'q' => __( 'How much does a website cost in Sri Lanka?', 'compass-digital' ),
+					'q' => __( 'How much does a website cost?', 'compass-digital' ),
 					'a' => __( 'It depends on size and features, so we give a fixed quote on request before any work starts — no hourly surprises. A simple business site costs less than an online store. Price mostly comes down to how many pages you need, whether you’re selling online, and who supplies the words and photos.', 'compass-digital' ),
 				),
 				array(
@@ -134,7 +134,7 @@ function compass_services_data() {
 				),
 				array(
 					'q' => __( 'Will my website work well on a phone?', 'compass-digital' ),
-					'a' => __( 'Yes. We design mobile-first and test on real devices, because most Sri Lankan visitors arrive on a phone. Pages are built to load fast and stay easy to use on a small screen.', 'compass-digital' ),
+					'a' => __( 'Yes. We design mobile-first and test on real devices, because most visitors arrive on a phone. Pages are built to load fast and stay easy to use on a small screen.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'Can I update the website myself after launch?', 'compass-digital' ),
@@ -151,21 +151,21 @@ function compass_services_data() {
 		'seo'                            => array(
 			'tax_name'      => 'SEO',
 			'service_type'  => 'Search engine optimization',
-			'title'         => __( 'SEO Services in Sri Lanka | Get Found | Compass Digital', 'compass-digital' ),
-			'meta'          => __( 'Get found on Google in Sri Lanka. Honest, measurable SEO — local rankings, faster pages, more enquiries. Request a free SEO review.', 'compass-digital' ),
+			'title'         => __( 'SEO Services | Get Found on Google | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Get found on Google, wherever your customers are. Honest, measurable SEO — local rankings, faster pages, more enquiries. Request a free SEO review.', 'compass-digital' ),
 			'eyebrow'       => __( 'SEO', 'compass-digital' ),
 			'headline'      => __( 'Get found on Google — by the customers who are already looking.', 'compass-digital' ),
-			'lede'          => __( 'Honest, measurable SEO services in Sri Lanka. We fix the technical basics, win local rankings, and turn searches into real enquiries — then show you exactly what’s working in plain language.', 'compass-digital' ),
+			'lede'          => __( 'Honest, measurable SEO services. We fix the technical basics, win the rankings that matter in your market, and turn searches into real enquiries — then show you exactly what’s working in plain language.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Businesses whose competitors show up first on Google and don’t know why.', 'compass-digital' ),
 				__( 'Owners paying for ads but getting no calls, who want traffic that lasts.', 'compass-digital' ),
 				__( 'Anyone tired of SEO jargon and vanity numbers that mean nothing.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'Most people searching for what you sell never scroll past the first few results. If a competitor sits above you, they get the call and you don’t — however good you actually are. Search engine optimization in Sri Lanka is simply the work of earning that spot, and keeping it, so the right customers find you at the moment they’re ready to buy.', 'compass-digital' ),
-				__( 'We start with the unglamorous foundations: a site that loads fast, pages Google can read, a clean structure, and your Google Business Profile and local listings set up properly. For a local SEO push in Sri Lanka that groundwork is half the battle — it’s what gets you into the “near me” results across Colombo, Kandy, Galle and Jaffna.', 'compass-digital' ),
-				__( 'Then we build around the words your customers actually type, not the ones a keyword tool guessed. As an SEO company in Colombo we write pages that answer real questions plainly, earn links the honest way, and keep your content fresh. No tricks, no black-hat shortcuts that get you penalised six months later.', 'compass-digital' ),
-				__( 'Above all, you’ll know what you’re paying for. Every month you get a report you can actually read — rankings, enquiries and exactly what we did — so your Google ranking in Sri Lanka stops being a mystery and starts being something you can see improving.', 'compass-digital' ),
+				__( 'Most people searching for what you sell never scroll past the first few results. If a competitor sits above you, they get the call and you don’t — however good you actually are. Search engine optimization is simply the work of earning that spot, and keeping it, so the right customers find you at the moment they’re ready to buy.', 'compass-digital' ),
+				__( 'We start with the unglamorous foundations: a site that loads fast, pages Google can read, a clean structure, and your Google Business Profile and local listings set up properly. For local SEO that groundwork is half the battle — it’s what gets you into the “near me” results in the places you serve.', 'compass-digital' ),
+				__( 'Then we build around the words your customers actually type, not the ones a keyword tool guessed. As an SEO team we write pages that answer real questions plainly, earn links the honest way, and keep your content fresh. No tricks, no black-hat shortcuts that get you penalised six months later.', 'compass-digital' ),
+				__( 'Above all, you’ll know what you’re paying for. Every month you get a report you can actually read — rankings, enquiries and exactly what we did — so your Google ranking stops being a mystery and starts being something you can see improving.', 'compass-digital' ),
 			),
 			'pains'         => array(
 				array(
@@ -188,7 +188,7 @@ function compass_services_data() {
 				),
 				array(
 					'title' => __( 'Local SEO', 'compass-digital' ),
-					'text'  => __( 'Google Business Profile, maps and local listings set up to win “near me” searches across Sri Lanka.', 'compass-digital' ),
+					'text'  => __( 'Google Business Profile, maps and local listings set up to win “near me” searches where you trade.', 'compass-digital' ),
 				),
 				array(
 					'title' => __( 'Content that ranks', 'compass-digital' ),
@@ -216,7 +216,7 @@ function compass_services_data() {
 			'offer_catalog' => array( 'Technical SEO audit', 'Local SEO', 'On-page SEO', 'Ongoing SEO and content' ),
 			'faqs'          => array(
 				array(
-					'q' => __( 'How long does SEO take to work in Sri Lanka?', 'compass-digital' ),
+					'q' => __( 'How long does SEO take to work?', 'compass-digital' ),
 					'a' => __( 'Technical fixes can help within weeks, but ranking well for competitive terms usually takes a few months of steady work. We set honest expectations up front and show progress every month, so you can see it building rather than taking it on faith.', 'compass-digital' ),
 				),
 				array(
@@ -242,21 +242,21 @@ function compass_services_data() {
 		'pos-systems'                    => array(
 			'tax_name'      => 'POS systems',
 			'service_type'  => 'Point of sale system',
-			'title'         => __( 'POS Systems in Sri Lanka — Billing & Stock | Compass', 'compass-digital' ),
-			'meta'          => __( 'Fast, reliable POS for Sri Lankan shops and restaurants — quick billing, live stock, clear reports, works offline. Request a demo quote.', 'compass-digital' ),
+			'title'         => __( 'POS Systems — Billing & Stock | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Fast, reliable POS for shops and restaurants — quick billing, live stock, clear reports, works offline. Request a demo quote.', 'compass-digital' ),
 			'eyebrow'       => __( 'POS systems', 'compass-digital' ),
 			'headline'      => __( 'Bill in seconds, know your stock, and keep selling even when the internet drops.', 'compass-digital' ),
-			'lede'          => __( 'A fast, reliable POS system for Sri Lankan shops and restaurants — quick billing, live stock, clear reports, and point of sale that keeps working offline when the connection doesn’t.', 'compass-digital' ),
+			'lede'          => __( 'A fast, reliable POS system for shops and restaurants — quick billing, live stock, clear reports, and point of sale that keeps working offline when the connection doesn’t.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Shops and restaurants where the queue backs up at the busiest times.', 'compass-digital' ),
 				__( 'Owners who can’t tell what’s really selling and what’s just sitting there.', 'compass-digital' ),
 				__( 'Anyone whose POS and stock don’t talk to each other.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'At your busiest moment the till shouldn’t be the bottleneck. A good POS system in Sri Lanka bills in seconds, takes any payment your customers use, and prints a kitchen or counter ticket without a second thought — so the queue keeps moving and nobody walks out.', 'compass-digital' ),
+				__( 'At your busiest moment the till shouldn’t be the bottleneck. A good POS system bills in seconds, takes any payment your customers use, and prints a kitchen or counter ticket without a second thought — so the queue keeps moving and nobody walks out.', 'compass-digital' ),
 				__( 'Behind the counter, the point of sale quietly keeps your stock honest. Every sale updates live inventory, so you stop guessing what’s on the shelf and start seeing what actually sells. Clear daily reports tell you your best lines, your slow movers and your real takings — the billing software gives you the numbers to make decisions, not just a receipt.', 'compass-digital' ),
-				__( 'We know Sri Lankan connections drop. That’s why our retail POS in Colombo and beyond keeps billing through an outage and syncs the moment you’re back online. A lost connection never costs you a sale, and you’re never stuck apologising to a customer at the counter.', 'compass-digital' ),
-				__( 'Whether you run one shop or several, we set it up around how you actually work — your products, your prices, your tax, your receipts. Restaurant POS in Sri Lanka handles tables, KOT and takeaway; retail handles barcodes, variants and multi-branch stock. Either way it’s dependable, supported, and built to make a busy day calmer.', 'compass-digital' ),
+				__( 'We know connections drop. That’s why our retail POS keeps billing through an outage and syncs the moment you’re back online. A lost connection never costs you a sale, and you’re never stuck apologising to a customer at the counter.', 'compass-digital' ),
+				__( 'Whether you run one shop or several, we set it up around how you actually work — your products, your prices, your tax, your receipts. Our restaurant POS handles tables, KOT and takeaway; retail handles barcodes, variants and multi-branch stock. Either way it’s dependable, supported, and built to make a busy day calmer.', 'compass-digital' ),
 			),
 			'pains'         => array(
 				array(
@@ -308,7 +308,7 @@ function compass_services_data() {
 			'faqs'          => array(
 				array(
 					'q' => __( 'Does the POS work without internet?', 'compass-digital' ),
-					'a' => __( 'Yes. It’s built offline-first, so billing keeps working during an outage and syncs automatically the moment you’re back online. A dropped connection in Sri Lanka never stops a sale or holds up your queue.', 'compass-digital' ),
+					'a' => __( 'Yes. It’s built offline-first, so billing keeps working during an outage and syncs automatically the moment you’re back online. A dropped connection never stops a sale or holds up your queue.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'Can it handle more than one shop or branch?', 'compass-digital' ),
@@ -333,21 +333,21 @@ function compass_services_data() {
 		'mobile-app-development'         => array(
 			'tax_name'      => 'Mobile app development',
 			'service_type'  => 'Mobile app development',
-			'title'         => __( 'Mobile App Development in Sri Lanka | Compass Digital', 'compass-digital' ),
-			'meta'          => __( 'Android and iOS apps built in Sri Lanka — clear, dependable and built around how you work. See our work and request a quote.', 'compass-digital' ),
+			'title'         => __( 'Mobile App Development | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Android and iOS apps — clear, dependable and built around how you work. See our work and request a quote.', 'compass-digital' ),
 			'eyebrow'       => __( 'Mobile app development', 'compass-digital' ),
 			'headline'      => __( 'An app your customers understand on the first try.', 'compass-digital' ),
-			'lede'          => __( 'Clear, dependable Android and iOS apps built in Sri Lanka — designed around how your business actually works, not a template, and supported long after launch.', 'compass-digital' ),
+			'lede'          => __( 'Clear, dependable Android and iOS apps — designed around how your business actually works, not a template, and supported long after launch.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Businesses whose customers live on their phones and want an easier way to order, book or return.', 'compass-digital' ),
 				__( 'Owners who need an app built around their real workflow, not a generic one.', 'compass-digital' ),
 				__( 'Anyone who wants a dependable partner who won’t disappear after launch.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'An app only earns its place if it makes something genuinely easier — ordering, booking, loyalty, a service your customers use often. We don’t build an app for the sake of it. Mobile app development in Sri Lanka should start with a simple question: what would make your customers’ lives easier, and is an app really the best way to do it? Sometimes the honest answer is a good website, and we’ll tell you so.', 'compass-digital' ),
-				__( 'When an app is the right call, we build it around how you actually work. As app developers in Colombo we design the screens so a first-time user understands them without a manual, keep the flow short, and make sure it feels fast on the mid-range phones most Sri Lankans carry — not just the latest flagship.', 'compass-digital' ),
+				__( 'An app only earns its place if it makes something genuinely easier — ordering, booking, loyalty, a service your customers use often. We don’t build an app for the sake of it. Mobile app development should start with a simple question: what would make your customers’ lives easier, and is an app really the best way to do it? Sometimes the honest answer is a good website, and we’ll tell you so.', 'compass-digital' ),
+				__( 'When an app is the right call, we build it around how you actually work. As app developers we design the screens so a first-time user understands them without a manual, keep the flow short, and make sure it feels fast on the mid-range phones most people carry — not just the latest flagship.', 'compass-digital' ),
 				__( 'We handle Android app development and iOS app development together, so you reach everyone without paying twice for the same work. Behind the screens we connect the app to the systems you already use — your website, your POS, your payments — so it’s one joined-up business, not another island of data.', 'compass-digital' ),
-				__( 'And we stay. A custom mobile app in Sri Lanka needs updates as phones and app stores change, so we support, maintain and grow it after launch. You get a dependable app and a team you can still reach a year later.', 'compass-digital' ),
+				__( 'And we stay. A custom mobile app needs updates as phones and app stores change, so we support, maintain and grow it after launch. You get a dependable app and a team you can still reach a year later.', 'compass-digital' ),
 			),
 			'pains'         => array(
 				array(
@@ -399,7 +399,7 @@ function compass_services_data() {
 			'faqs'          => array(
 				array(
 					'q' => __( 'Do you build for both Android and iOS?', 'compass-digital' ),
-					'a' => __( 'Yes. We build cross-platform, so one codebase serves both Android and iOS. That means you reach every customer in Sri Lanka without paying to build the same app twice.', 'compass-digital' ),
+					'a' => __( 'Yes. We build cross-platform, so one codebase serves both Android and iOS. That means you reach every customer without paying to build the same app twice.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'Do I actually need an app, or is a website enough?', 'compass-digital' ),
@@ -424,21 +424,21 @@ function compass_services_data() {
 		'ecommerce-websites'             => array(
 			'tax_name'      => 'Ecommerce websites',
 			'service_type'  => 'Ecommerce website development',
-			'title'         => __( 'Ecommerce Website Development in Sri Lanka | Compass', 'compass-digital' ),
-			'meta'          => __( 'Start selling online in Sri Lanka. Fast, secure ecommerce stores with local payments and easy stock control. Request a quote today.', 'compass-digital' ),
+			'title'         => __( 'Ecommerce Website Development | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Start selling online. Fast, secure ecommerce stores with the right payments for your market and easy stock control. Request a quote today.', 'compass-digital' ),
 			'eyebrow'       => __( 'Ecommerce websites', 'compass-digital' ),
 			'headline'      => __( 'Start selling online — without needing a tech team to run it.', 'compass-digital' ),
-			'lede'          => __( 'Fast, secure ecommerce websites in Sri Lanka with local payment options and stock control that’s genuinely easy to run — so you can sell online from day one.', 'compass-digital' ),
+			'lede'          => __( 'Fast, secure ecommerce websites with the payment options your market uses and stock control that’s genuinely easy to run — so you can sell online from day one.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Brands with products people want and no proper way to take an order.', 'compass-digital' ),
 				__( 'Owners collecting enquiries on WhatsApp who are ready to sell online properly.', 'compass-digital' ),
 				__( 'Anyone who wants an online store they can run themselves.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'You’ve got products people want and enquiries landing in your WhatsApp — what’s missing is a proper way to take the order and get paid. An ecommerce website in Sri Lanka closes that gap: customers browse, choose and check out on their own, at any hour, without you typing out another price list.', 'compass-digital' ),
-				__( 'We build online stores that are fast and secure, because a slow or shaky checkout is where sales quietly leak away. Pages load quickly, the cart is simple, and the whole thing works beautifully on a phone — which is where most Sri Lankan shoppers buy. Selling online shouldn’t feel fragile, and ours doesn’t.', 'compass-digital' ),
-				__( 'Crucially, it’s set up for how Sri Lanka actually pays. We connect local payment gateways and cash on delivery, so checkout works for your customers from the first day instead of turning them away. Stock control is built in and genuinely easy, so what’s sold out online matches what’s sold out in real life.', 'compass-digital' ),
-				__( 'As WooCommerce developers in Sri Lanka we build on tools you can run yourself — add products, change prices, run an offer — without calling a developer for every change. And because it’s built to be found as well as to sell, your store has a real chance of ranking, not just existing. Ecommerce web design in Colombo that earns its keep.', 'compass-digital' ),
+				__( 'You’ve got products people want and enquiries landing in your WhatsApp — what’s missing is a proper way to take the order and get paid. An ecommerce website closes that gap: customers browse, choose and check out on their own, at any hour, without you typing out another price list.', 'compass-digital' ),
+				__( 'We build online stores that are fast and secure, because a slow or shaky checkout is where sales quietly leak away. Pages load quickly, the cart is simple, and the whole thing works beautifully on a phone — which is where most shoppers buy. Selling online shouldn’t feel fragile, and ours doesn’t.', 'compass-digital' ),
+				__( 'Crucially, it’s set up for how your customers actually pay. We connect the payment gateways they trust, and cash on delivery where it’s expected, so checkout works for your customers from the first day instead of turning them away. Stock control is built in and genuinely easy, so what’s sold out online matches what’s sold out in real life.', 'compass-digital' ),
+				__( 'As WooCommerce developers we build on tools you can run yourself — add products, change prices, run an offer — without calling a developer for every change. And because it’s built to be found as well as to sell, your store has a real chance of ranking, not just existing. Ecommerce web design that earns its keep.', 'compass-digital' ),
 			),
 			'pains'         => array(
 				array(
@@ -461,7 +461,7 @@ function compass_services_data() {
 				),
 				array(
 					'title' => __( 'Local payments', 'compass-digital' ),
-					'text'  => __( 'Local gateways and cash on delivery, set up for how Sri Lanka pays.', 'compass-digital' ),
+					'text'  => __( 'The gateways your customers trust, and cash on delivery where it’s expected.', 'compass-digital' ),
 				),
 				array(
 					'title' => __( 'Easy stock control', 'compass-digital' ),
@@ -475,7 +475,7 @@ function compass_services_data() {
 			'tech'          => array( 'WordPress + WooCommerce', 'Local payment gateways', 'Cash on delivery', 'Shipping & tax rules', 'Product SEO' ),
 			'deliverables'  => array(
 				__( 'A live online store on your own domain and hosting', 'compass-digital' ),
-				__( 'Payments, shipping and tax configured for Sri Lanka', 'compass-digital' ),
+				__( 'Payments, shipping and tax configured for your market', 'compass-digital' ),
 				__( 'Your products loaded and stock control set up', 'compass-digital' ),
 				__( 'Training so you can run and grow the store yourself', 'compass-digital' ),
 			),
@@ -490,7 +490,7 @@ function compass_services_data() {
 			'faqs'          => array(
 				array(
 					'q' => __( 'Which payment methods can my store accept?', 'compass-digital' ),
-					'a' => __( 'We connect local Sri Lankan payment gateways for cards and online payment, and we can add cash on delivery too. Your customers pay the way they’re comfortable, which means fewer abandoned carts at checkout.', 'compass-digital' ),
+					'a' => __( 'We connect the payment gateways your customers already trust for cards and online payment, and we can add cash on delivery too. Your customers pay the way they’re comfortable, which means fewer abandoned carts at checkout.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'Can I manage products and stock myself?', 'compass-digital' ),
@@ -515,21 +515,21 @@ function compass_services_data() {
 		'custom-software'                => array(
 			'tax_name'      => 'Custom software',
 			'service_type'  => 'Custom software development',
-			'title'         => __( 'Custom Software Development in Sri Lanka | Compass', 'compass-digital' ),
-			'meta'          => __( 'Bespoke business software built in Sri Lanka — dependable systems built around how your team actually works. Request a quote.', 'compass-digital' ),
+			'title'         => __( 'Custom Software Development | Compass Digital', 'compass-digital' ),
+			'meta'          => __( 'Bespoke business software — dependable systems built around how your team actually works. Request a quote.', 'compass-digital' ),
 			'eyebrow'       => __( 'Custom software', 'compass-digital' ),
 			'headline'      => __( 'Software built around how your team actually works.', 'compass-digital' ),
-			'lede'          => __( 'Bespoke business software developed in Sri Lanka — dependable systems shaped around your real workflow, so the tool fits the team instead of the team bending around the tool.', 'compass-digital' ),
+			'lede'          => __( 'Bespoke business software — dependable systems shaped around your real workflow, so the tool fits the team instead of the team bending around the tool.', 'compass-digital' ),
 			'who'           => array(
 				__( 'Businesses outgrowing spreadsheets and off-the-shelf tools that don’t quite fit.', 'compass-digital' ),
 				__( 'Teams stitching several apps together by hand and losing time to it.', 'compass-digital' ),
 				__( 'Owners who want a dependable system and a developer who stays.', 'compass-digital' ),
 			),
 			'body'          => array(
-				__( 'Most businesses reach a point where the usual tools stop fitting. The spreadsheet has become a monster, three different apps don’t talk to each other, and someone spends half a day re-typing the same numbers. Custom software development in Sri Lanka exists for exactly that moment: a system built around how your team actually works, not how a generic product assumes you should.', 'compass-digital' ),
-				__( 'We start by understanding the real workflow — the steps, the exceptions, the bits everyone complains about — before writing a line of code. As a software company in Colombo we’d rather build the right smaller thing than an impressive system nobody uses. Bespoke software in Sri Lanka only pays off if it removes work, so that’s the test we hold it to.', 'compass-digital' ),
+				__( 'Most businesses reach a point where the usual tools stop fitting. The spreadsheet has become a monster, three different apps don’t talk to each other, and someone spends half a day re-typing the same numbers. Custom software development exists for exactly that moment: a system built around how your team actually works, not how a generic product assumes you should.', 'compass-digital' ),
+				__( 'We start by understanding the real workflow — the steps, the exceptions, the bits everyone complains about — before writing a line of code. As a software team we’d rather build the right smaller thing than an impressive system nobody uses. Bespoke software only pays off if it removes work, so that’s the test we hold it to.', 'compass-digital' ),
 				__( 'What we build is dependable and genuinely yours. Clean, documented code, your data in your hands, and no lock-in to a black box you can’t escape. Business software development should leave you freer, not more dependent, so we hand over properly and you own what we make.', 'compass-digital' ),
-				__( 'And we don’t vanish. Good software grows with the business, so our software developers in Sri Lanka stay on to support it, fix it and extend it as you change. You get a system that fits today and can keep fitting tomorrow — and a team that’s still there when you need them.', 'compass-digital' ),
+				__( 'And we don’t vanish. Good software grows with the business, so our developers stay on to support it, fix it and extend it as you change. You get a system that fits today and can keep fitting tomorrow — and a team that’s still there when you need them.', 'compass-digital' ),
 			),
 			'pains'         => array(
 				array(

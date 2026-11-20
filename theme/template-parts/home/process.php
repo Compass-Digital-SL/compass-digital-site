@@ -26,7 +26,7 @@ $steps = array(
 	),
 );
 ?>
-<section class="home-section process" id="process" aria-labelledby="process-title">
+<section class="home-section process" id="process" aria-labelledby="process-title" data-waypoint data-label="<?php esc_attr_e( 'Process', 'compass-digital' ); ?>">
 	<div class="container">
 		<div class="section-header" data-reveal>
 			<span class="section-header__eyebrow"><?php esc_html_e( 'How we work', 'compass-digital' ); ?></span>

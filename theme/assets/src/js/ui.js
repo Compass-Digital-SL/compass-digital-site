@@ -105,8 +105,28 @@ export function initPainSelector(root = document) {
   activate(byId.has(initial) ? initial : panels[0].id);
 }
 
+/** "Where we work": show the visitor's own local time and time zone. */
+export function initLocalTime(root = document) {
+  const time = root.querySelector("[data-local-time]");
+  if (!time) return;
+  const zoneEl = root.querySelector("[data-local-zone]");
+  let zone = "";
+  try {
+    zone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+  } catch {
+    /* older browsers: keep the plain label */
+  }
+  const draw = () => {
+    time.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+  draw();
+  window.setInterval(draw, 30000);
+  if (zone && zoneEl) zoneEl.textContent = `${zone.replace(/_/g, " ")}. We plan calls around it.`;
+}
+
 export function initUI(root = document) {
   initAccordions(root);
   initTabs(root);
   initPainSelector(root);
+  initLocalTime(root);
 }

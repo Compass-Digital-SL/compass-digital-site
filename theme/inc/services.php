@@ -68,7 +68,7 @@ function compass_services_head() {
 	if ( $service ) {
 		$description = $service['meta'];
 	} elseif ( compass_is_services_hub() ) {
-		$description = __( 'Websites, SEO, POS systems, apps, ecommerce and custom software — built and supported by one Sri Lankan team. Quote on request.', 'compass-digital' );
+		$description = __( 'Websites, SEO, POS systems, apps, ecommerce and custom software — built and supported by one team. Quote on request.', 'compass-digital' );
 	}
 
 	if ( $description ) {
@@ -134,10 +134,7 @@ function compass_service_schema( $service, $url ) {
 			'name'  => get_bloginfo( 'name' ),
 			'url'   => home_url( '/' ),
 		),
-		'areaServed'      => array(
-			'@type' => 'Country',
-			'name'  => 'Sri Lanka',
-		),
+		'areaServed'      => 'Worldwide',
 		'hasOfferCatalog' => array(
 			'@type'           => 'OfferCatalog',
 			'name'            => wp_strip_all_tags( $service['eyebrow'] ),

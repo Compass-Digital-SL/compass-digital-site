@@ -13,52 +13,91 @@
 }
 
 /* -------------------------------------------------------------- Hero --- */
+
+/* The shared inner-page header (services, industries, work, company pages,
+   insights, quote, legal): editorial title over a soft light field. */
 .service-hero {
-  padding-block: var(--space-16) var(--space-12);
-  background: var(--surface-2);
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) clamp(4rem, 3rem + 5vw, 7rem);
   border-bottom: 1px solid var(--border);
 }
 
+.service-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -40% -10% auto 45%;
+  height: 140%;
+  background:
+    radial-gradient(closest-side, var(--glow-b), transparent),
+    radial-gradient(50% 40% at 80% 20%, var(--glow-a), transparent);
+  filter: blur(30px);
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent, #000 35%);
+}
+
+.service-hero .breadcrumbs {
+  padding: 0;
+  margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+}
+
 .service-hero__inner {
-  max-width: 54rem;
-  margin-top: var(--space-6);
+  max-width: 62rem;
 }
 
 .service-hero__eyebrow {
-  color: var(--accent);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 var(--space-6);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin-bottom: var(--space-2);
+  color: var(--text-subtle);
+}
+
+.service-hero__eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .service-hero__title {
-  font-size: var(--fs-2xl);
-  margin-bottom: var(--space-4);
+  font-size: clamp(2.6rem, 1.4rem + 4.6vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0 0 var(--space-8);
+  max-width: 16ch;
 }
 
 .service-hero__lede {
-  color: var(--text-muted);
-  font-size: var(--fs-lg);
-  max-width: 40ch;
+  color: var(--text-body);
+  font-size: var(--fs-lede);
+  line-height: 1.55;
+  max-width: 46ch;
+  margin: 0;
 }
 
 .service-hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-  margin-bottom: 0;
+  gap: var(--space-3);
+  margin: var(--space-8) 0 0;
 }
 
 /* ------------------------------------------------------------- Body --- */
 .service-body {
-  padding-block: var(--space-16);
+  padding-block: var(--section) calc(var(--section) * 0.5);
 }
 
 .service-section {
-  padding-block: var(--space-12);
+  padding-block: calc(var(--section) * 0.75);
   border-top: 1px solid var(--border);
   scroll-margin-top: 5rem;
 }
@@ -202,16 +241,20 @@
 }
 
 .service-step {
-  padding-top: var(--space-4);
-  border-top: 2px solid var(--border-strong);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-strong);
+}
+
+.service-step:first-child {
+  border-top-color: var(--accent);
 }
 
 .service-step__num {
   display: block;
-  font-family: var(--font-serif);
-  font-size: var(--fs-lg);
-  color: var(--accent);
-  margin-bottom: var(--space-2);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  color: var(--text-subtle);
+  margin-bottom: var(--space-8);
 }
 
 .service-step__title {
@@ -238,11 +281,11 @@
 }
 
 .service-tech__subtitle {
-  font-size: var(--fs-base);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  margin-bottom: var(--space-4);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-subtle);
+  margin-bottom: var(--space-6);
 }
 
 .service-tags {
@@ -282,7 +325,15 @@
 
 /* ----------------------------------------------------------- Pricing --- */
 .service-pricing {
-  padding: var(--space-8);
+  padding: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  margin-block: calc(var(--section) * 0.5);
+  background:
+    radial-gradient(70% 90% at 100% 0%, var(--glow-b), transparent 60%),
+    var(--surface-2);
+}
+
+.service-section.service-pricing {
+  border-top: 1px solid var(--border);
 }
 
 .service-pricing__inner {
@@ -384,6 +435,8 @@
 /* --------------------------------------------------------------- CTA --- */
 .service-cta {
   text-align: center;
+  padding-block: var(--section);
+  border-top: 1px solid var(--border);
 }
 
 .service-cta__inner {
@@ -392,7 +445,10 @@
 }
 
 .service-cta__inner h2 {
-  font-size: var(--fs-xl);
+  font-size: clamp(2.4rem, 1.4rem + 4vw, 4.5rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
 }
 
 .service-cta__inner p {

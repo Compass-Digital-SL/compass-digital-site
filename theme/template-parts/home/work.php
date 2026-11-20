@@ -35,7 +35,7 @@ if ( ! $work->have_posts() ) {
 	return;
 }
 ?>
-<section class="home-section work" id="work" aria-labelledby="work-title">
+<section class="home-section work" id="work" aria-labelledby="work-title" data-waypoint data-label="<?php esc_attr_e( 'Work', 'compass-digital' ); ?>">
 	<div class="container">
 		<div class="work__header section-header" data-reveal>
 			<div>

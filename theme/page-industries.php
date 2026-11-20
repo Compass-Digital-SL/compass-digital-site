@@ -26,7 +26,7 @@ $industry_labels = compass_industry_labels();
 			<div class="service-hero__inner" data-reveal>
 				<p class="service-hero__eyebrow"><?php esc_html_e( 'Industries', 'compass-digital' ); ?></p>
 				<h1 class="service-hero__title"><?php esc_html_e( 'Built for your line of work, not a one-size-fits-all template.', 'compass-digital' ); ?></h1>
-				<p class="service-hero__lede"><?php esc_html_e( 'Retail, restaurants, travel, ecommerce and growing businesses each have their own headaches. We know them, and we build the websites, POS and software that solve them — for Sri Lankan businesses.', 'compass-digital' ); ?></p>
+				<p class="service-hero__lede"><?php esc_html_e( 'Retail, restaurants, travel, ecommerce and growing businesses each have their own headaches. We know them, and we build the websites, POS and software that solve them, wherever you are.', 'compass-digital' ); ?></p>
 				<p class="service-hero__actions">
 					<a class="btn btn--primary" href="<?php echo esc_url( compass_quote_url() ); ?>"><?php esc_html_e( 'Request a quote', 'compass-digital' ); ?></a>
 					<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/services/' ) ); ?>"><?php esc_html_e( 'Browse services', 'compass-digital' ); ?></a>

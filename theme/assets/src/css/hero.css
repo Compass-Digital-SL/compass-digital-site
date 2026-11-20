@@ -1,404 +1,273 @@
-/* Compass Digital — hero ("The Expedition") + motion primitives.
-   Tokens only (see docs/DESIGN.md). Animates transform / opacity exclusively.
-   All motion lives behind prefers-reduced-motion: no-preference; the static
-   layout is the reduced-motion equivalent. */
+/* Compass Digital — home hero (premium v2).
+   Oversized editorial headline + fine-line compass rose. The layout-critical
+   rules (size, grid, title scale) also live in assets/critical.css so the first
+   paint is stable; this file adds the detail, light field and motion. */
 
-/* ---------------------------------------------------------------- Scene --- */
-.hero--expedition {
+.hero.hero--v2 {
   position: relative;
-  min-height: calc(100svh - 4.5rem);
-  display: grid;
-  align-items: center;
-  overflow: clip;
-  padding-block: var(--space-16) var(--space-12);
-  background:
-    radial-gradient(
-      120% 90% at 85% 10%,
-      color-mix(in srgb, var(--color-teal) 10%, transparent),
-      transparent 60%
-    ),
-    var(--surface);
   isolation: isolate;
+  overflow: clip;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: min(100svh, 62rem);
+  margin-top: calc(-1 * (var(--header-h) + 0.75rem)); /* run under the floating header */
+  padding: calc(var(--header-h) + clamp(3rem, 8vh, 6rem)) 0 0;
 }
 
-/* Decorative drifting glow, parallax layer (transform set by JS). */
-.hero__field {
+/* ---- Light field: two slow-drifting soft glows + film grain ---- */
+.hero__light {
   position: absolute;
-  inset: -10%;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.hero__light span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.hero__light-a {
+  width: 60vw;
+  height: 60vw;
+  max-width: 900px;
+  max-height: 900px;
+  right: -15vw;
+  top: -20vw;
+  background: radial-gradient(closest-side, var(--glow-a), transparent);
+}
+
+.hero__light-b {
+  width: 45vw;
+  height: 45vw;
+  max-width: 680px;
+  max-height: 680px;
+  right: 8vw;
+  top: 10vh;
+  background: radial-gradient(closest-side, var(--glow-b), transparent);
+}
+
+.hero--v2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(
-      40% 40% at 25% 70%,
-      color-mix(in srgb, var(--color-brass) 12%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      35% 35% at 80% 30%,
-      color-mix(in srgb, var(--color-navy-700) 60%, transparent),
-      transparent 70%
-    );
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.hero__inner {
-  width: 100%;
-  max-width: var(--wide-width);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-  display: grid;
-  gap: var(--space-12);
-  align-items: center;
+@media (prefers-reduced-motion: no-preference) {
+  .hero__light-a { animation: hero-drift-a 22s var(--ease-in-out) infinite alternate; }
+  .hero__light-b { animation: hero-drift-b 28s var(--ease-in-out) infinite alternate; }
 }
 
-@media (width >= 60rem) {
-  .hero__inner {
-    grid-template-columns: 1.05fr 1fr;
-    gap: var(--space-16);
+@keyframes hero-drift-a {
+  to { transform: translate(-6vw, 5vh) scale(1.08); }
+}
+
+@keyframes hero-drift-b {
+  to { transform: translate(5vw, -4vh) scale(0.94); }
+}
+
+/* ---- Compass rose ---- */
+.hero__rose {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: max(-14vw, -220px);
+  width: min(78vw, 980px);
+  height: auto;
+  transform: translateY(-46%);
+  color: var(--text);
+  pointer-events: none;
+}
+
+.hero__ticks line {
+  stroke-opacity: 0.22;
+}
+
+.hero__ticks .is-major {
+  stroke-opacity: 0.5;
+}
+
+.hero__labels {
+  fill: currentcolor;
+  fill-opacity: 0.38;
+  stroke: none;
+  font: 400 11px var(--font-sans);
+  letter-spacing: 2px;
+  text-anchor: middle;
+}
+
+.hero__needle-n { fill: var(--accent-fill); }
+
+.hero__needle-s {
+  fill: currentcolor;
+  fill-opacity: 0.85;
+}
+
+.hero__hub {
+  fill: var(--bg);
+  stroke: currentcolor;
+  stroke-opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__ring--a {
+    transform-origin: 400px 400px;
+    animation: hero-spin 240s linear infinite;
+  }
+
+  .hero__ring--b {
+    transform-origin: 400px 400px;
+    animation: hero-spin 160s linear infinite reverse;
   }
 }
 
-/* ----------------------------------------------------------------- Copy --- */
-.hero__title {
-  font-size: clamp(2.5rem, 1.6rem + 4.5vw, 5rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 0 0 var(--space-6);
-  text-wrap: balance;
+@keyframes hero-spin {
+  to { transform: rotate(360deg); }
 }
 
-.hero__word {
+/* ---- Copy ---- */
+.hero__inner {
+  align-self: center;
+  width: 100%;
+  max-width: calc(var(--wide-width) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.hero__title {
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-hero);
+  font-weight: 300;
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+  max-width: 11ch;
+}
+
+.hero__line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.hero__line > span {
   display: inline-block;
 }
 
-.hero__subline {
-  font-size: var(--fs-lg);
-  color: var(--text-muted);
-  max-width: 28ch;
+.hero__lede {
+  max-width: 40ch;
   margin: 0 0 var(--space-8);
+  font-size: var(--fs-lede);
+  line-height: 1.55;
+  color: var(--text-body);
 }
 
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
-  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-8);
 }
 
-.hero__scroll-hint {
-  position: absolute;
-  left: 50%;
-  bottom: var(--space-6);
-  transform: translateX(-50%);
-  font-size: var(--fs-sm);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-/* -------------------------------------------------------------- Compass --- */
-.hero__compass {
-  position: relative;
-  aspect-ratio: 1;
-  width: min(100%, 30rem);
-  margin-inline: auto;
-  display: grid;
-  place-items: center;
-  container-type: size;
-}
-
-.compass {
-  width: 72%;
-  height: 72%;
-  overflow: visible;
-  filter: drop-shadow(0 20px 48px rgb(5, 12, 20, 0.6));
-}
-
-.compass__face-stop--top {
-  stop-color: color-mix(in srgb, var(--color-navy) 70%, #fff 8%);
-}
-
-.compass__face-stop--bottom {
-  stop-color: color-mix(in srgb, var(--color-ink) 80%, var(--color-navy));
-}
-
-.compass__ring {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
-  opacity: 0.85;
-}
-
-.compass__ring--inner {
-  stroke: var(--border-strong);
-  stroke-width: 1;
-  opacity: 0.6;
-}
-
-.compass__tick {
-  stroke: color-mix(in srgb, var(--color-ivory) 35%, transparent);
-  stroke-width: 1;
-}
-
-.compass__tick--major {
-  stroke: var(--accent);
-  stroke-width: 1.5;
-}
-
-.compass__cardinal {
-  fill: var(--text-muted);
-  font-family: var(--font-serif);
-  font-size: 13px;
-  text-anchor: middle;
-  dominant-baseline: middle;
-}
-
-.compass__cardinal--n {
-  fill: var(--accent);
-}
-
-/* Needle rotates about the face centre; transform-box keeps the origin in the
-   SVG's own coordinate space. */
-.compass__needle {
-  transform-box: view-box;
-  transform-origin: 100px 100px;
-}
-
-.compass__needle-n {
-  fill: var(--accent);
-}
-
-.compass__needle-s {
-  fill: color-mix(in srgb, var(--color-ivory) 55%, transparent);
-}
-
-.compass__hub {
-  fill: var(--surface-sunken);
-  stroke: var(--accent);
-  stroke-width: 1.5;
-}
-
-.compass__hub-dot {
-  fill: var(--accent);
-}
-
-/* -------------------------------------------------------------- Bearings -- */
-.bearings {
-  position: absolute;
-  inset: 0;
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
   margin: 0;
-  padding: 0;
-  list-style: none;
+  font-size: var(--fs-sm);
+  color: var(--text-subtle);
 }
 
-.bearing {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  /* Place on the ring, then counter-rotate so the label stays upright. */
-
-  /* Place on the ring using the compass's own size (cqmin), then counter-rotate
-     so the label stays upright. */
-  transform: rotate(var(--bearing-angle)) translateY(-42cqmin)
-    rotate(calc(-1 * var(--bearing-angle)));
+.hero__meta b {
+  color: var(--text);
+  font-weight: 500;
 }
 
-.bearing__link {
+.hero__bearing {
+  font-variant-numeric: tabular-nums;
+}
+
+.hero__bearing b {
+  color: var(--accent);
+}
+
+/* ---- Spec strip ---- */
+.hero__spec-wrap {
+  width: 100%;
+  max-width: calc(var(--wide-width) + 2 * var(--gutter));
+  margin: clamp(3rem, 8vh, 5rem) auto 0;
+  padding-inline: var(--gutter);
+}
+
+.hero__spec {
   display: grid;
-  gap: 0.1em;
-  justify-items: center;
-  width: max-content;
-  max-width: 8rem;
-  padding: var(--space-2) var(--space-3);
-  transform: translate(-50%, -50%);
-  text-align: center;
-  text-decoration: none;
-  color: var(--text-muted);
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  transition:
-    color var(--dur-fast) var(--ease),
-    border-color var(--dur-fast) var(--ease),
-    background-color var(--dur-fast) var(--ease),
-    transform var(--dur-mid) var(--ease);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--border);
 }
 
-.bearing__label {
-  font-family: var(--font-serif);
-  font-size: var(--fs-base);
-  font-weight: 600;
-  color: var(--text);
+.hero__spec > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6) var(--space-8) 0;
 }
 
-.bearing__desc {
+.hero__spec > div + div {
+  padding-left: var(--space-6);
+  border-left: 1px solid var(--border);
+}
+
+.hero__spec dt {
   font-size: var(--fs-sm);
-  color: var(--text-muted);
+  color: var(--text-subtle);
+  max-width: 22ch;
+  line-height: 1.45;
 }
 
-.bearing__link:hover,
-.bearing__link:focus-visible {
+.hero__spec-n {
+  margin: 0;
+  font: 300 clamp(2.2rem, 1.6rem + 2vw, 3.4rem)/1 var(--font-serif);
   color: var(--text);
-  border-color: var(--glass-border);
-  background: var(--glass-bg);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-/* Lit when the needle points at this bearing. */
-.bearing.is-active .bearing__link {
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  box-shadow: 0 0 1.5rem color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-.bearing.is-active .bearing__label {
+.hero__spec-n small {
+  font-size: 0.5em;
   color: var(--accent);
+  margin-left: 0.1em;
 }
 
-/* On narrow screens the ring stays, but bearings become a readable list below
-   it so nothing is cramped or overlapping. */
-@media (width <= 47.99rem) {
-  .hero--expedition {
-    min-height: 0;
-  }
+@media (width < 900px) {
+  .hero__spec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero__spec > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .hero__spec > div:nth-child(n + 3) { border-top: 1px solid var(--border); }
+}
 
-  .hero__scroll-hint {
-    display: none;
-  }
-
-  .hero__compass {
-    display: block;
-    width: 100%;
-    aspect-ratio: auto;
-    container-type: normal;
-  }
-
-  .hero__compass .compass {
-    display: block;
-    width: min(16rem, 70vw);
-    height: auto;
-    aspect-ratio: 1;
-    margin-inline: auto;
-  }
-
-  .bearings {
-    position: static;
-    inset: auto;
-    margin-top: var(--space-8);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-  }
-
-  .bearing {
-    position: static;
-    transform: none;
-  }
-
-  .bearing__link {
-    transform: none;
-    width: 100%;
-    max-width: none;
-    justify-items: start;
-    text-align: start;
-    border-color: var(--border);
-    background: var(--surface-2);
+@media (width < 700px) {
+  .hero__rose {
+    right: -45vw;
+    top: 30%;
+    width: 120vw;
+    opacity: 0.55;
   }
 }
 
-/* --------------------------------------------- Motion toggle (touch opt-in) */
-.hero__motion-toggle {
-  position: absolute;
-  bottom: -2.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--space-2) var(--space-4);
-  font: inherit;
-  font-size: var(--fs-sm);
-  color: var(--accent);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
+@media (width < 480px) {
+  .hero__spec > div { padding-block: var(--space-6); }
+  .hero__spec > div + div { padding-left: var(--space-4); }
 }
 
-/* -------------------------------------------------- Reusable motion base -- */
+/* Entrance animations live in assets/critical.css so they start with the first
+   paint and never replay when this deferred stylesheet arrives. */
 
-/* Scroll reveal — hidden until .is-revealed. Gated on JS being enabled so that
-   with scripting off the content is simply shown (no reveal can ever fire). */
-@media (scripting: enabled) {
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(1.25rem);
-    transition:
-      opacity var(--dur-slow) var(--ease-out),
-      transform var(--dur-slow) var(--ease-out);
-    transition-delay: var(--reveal-delay, 0ms);
-    will-change: opacity, transform;
-  }
-}
-
-[data-reveal].is-revealed {
-  opacity: 1;
-  transform: none;
-}
-
-/* Letter reveal — each char eases up in a stagger. */
-.hero__char {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(0.6em);
-}
-
-[data-reveal-letters].is-revealed .hero__char {
-  animation: hero-char var(--dur-slow) var(--ease-out) forwards;
-  animation-delay: calc(var(--char-index) * 28ms);
-}
-
-@keyframes hero-char {
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Cursor glow — follows the pointer, pure decoration. */
-.cursor-glow {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 32rem;
-  height: 32rem;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(
-    calc(var(--glow-x, 50vw) - 50%),
-    calc(var(--glow-y, 50vh) - 50%),
-    0
-  );
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--color-brass) 10%, transparent),
-    transparent
-  );
-  transition: opacity var(--dur-mid) var(--ease);
-}
-
-.cursor-glow.is-active {
-  opacity: 1;
-}
-
-/* -------------------------------------------- Reduced-motion: static scene */
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal],
-  .hero__char {
-    opacity: 1;
-    transform: none;
-    transition: none;
-    animation: none;
-  }
-
-  .hero__field,
-  .cursor-glow {
-    display: none;
-  }
+/* The heading readout follows a mouse; touch visitors never move the needle. */
+@media (hover: none) {
+  .hero__bearing { display: none; }
 }

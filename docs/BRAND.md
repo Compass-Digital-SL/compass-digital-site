@@ -4,7 +4,10 @@
 - **Name:** Compass Digital
 - **Tagline:** Find your way forward.
 - **Descriptor:** Websites, SEO and POS systems.
-- **Who we are:** A Sri Lankan software and digital services firm.
+- **Who we are:** A software and digital services firm working with clients worldwide
+  (remote by default, calls in the client's time zone). Copy does not say where the
+  company is based (owner decision, Task 24); the registered address appears only on
+  the legal pages and in structured data.
 
 ## Services
 1. Website design and development
@@ -21,17 +24,18 @@
 - Ecommerce brands
 - Corporates and SMEs
 
-## Palette
-| Token  | Hex       | Typical use                          |
-|--------|-----------|--------------------------------------|
-| Navy   | `#0F2A43` | Primary brand, headers, dark surfaces |
-| Brass  | `#C9A24B` | Accent, highlights, compass motifs   |
-| Ivory  | `#F6F2EA` | Page background, light surfaces      |
-| Teal   | `#2F7F86` | Secondary accent, links, focus       |
-| Ink    | `#1B1F24` | Body text                            |
+## Palette (v2, Task 24)
+| Token       | Hex       | Typical use                                   |
+|-------------|-----------|-----------------------------------------------|
+| Near-black  | `#0A0C10` | Page (dark theme)                             |
+| Ivory       | `#F6F2EA` | Headings on dark; `#F5F3EE` is the light page |
+| Ink         | `#12151B` | Headings on light                             |
+| Teal        | `#1E8A8A` | The one accent (shaded per theme for AA)      |
+| Logo red    | (logo only) | The compass needle in the wordmark          |
 
-Contrast must meet WCAG 2.2 AA. Check every text/background pair before use
-(brass on ivory is likely too low for body text — use for decoration or large text only after checking).
+The navy/brass palette from Task 6 is retired. Visitors can re-tint the accent
+(six presets); every generated shade is checked for AA. Full token table and
+measured contrast: `docs/DESIGN.md`.
 
 ## Mission
 Help businesses find their way online with websites, search visibility and POS systems
