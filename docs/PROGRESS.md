@@ -56,12 +56,27 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - Worldwide `contactPoint`, proper titles for every page, GA4 CSP wildcards,
   `interest-cohort` and `X-Powered-By` removed, comments closed.
 - CI runs `npm run seo:audit` (broken links fail the build); crawler decodes `&#038;`.
+- **PR #29 CI fix**: phpcs failed on two one-line keyed arrays (`front-page.php`,
+  `header/branding.php`); fixed on `task/24-premium-redesign`.
+- **Load performance** (owner's DevTools Lighthouse showed `NO_FCP`: that run was a
+  background tab; headless Lighthouse paints at 1.0 s). The real problem it hid:
+  when the deferred main stylesheet landed, every element with a `transition`
+  animated from its critical-CSS style to its final style (hundreds of layout
+  transitions). Now `html.css-pending` disables transitions until the sheet has
+  applied. Header scroll handler reads layout before writing and no longer reads it
+  at start-up; consent.js is `defer`. Mobile Lighthouse (local) 0.71 → 0.90–0.95,
+  TBT 860 → ~190 ms, LCP 2.1 → 1.1 s, CLS 0.
 
 **Decisions**
 - Fallback titles live in `inc/seo.php` at priority 20 and only fill gaps left by
   the section filters.
 - Form pages send `no-store` from the theme rather than relying on the host's
   cache exclusions alone.
+- The transition guard is JS-scoped (class set by the inline head script), so
+  JS-off visitors keep transitions; window `load` is the fallback that clears it.
+- Left as a design call: the hero's ever-spinning SVG rings and long entrance
+  fades keep Speed Index noisy (4–7 s locally); local TTFB is 2–4 s (wp-env with
+  WP_DEBUG), so staging numbers will differ.
 
 **Next**
 - Merge Task 24 then this branch; Task 22 (Go-live). Design call on the 360px hero
