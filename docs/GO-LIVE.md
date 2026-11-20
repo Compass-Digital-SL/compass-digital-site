@@ -90,18 +90,21 @@ and the drafts render. Before launch:
 
 Hardening ships in `mu-plugins/compass-security.php` (headers, CSP Report-Only,
 XML-RPC off, file-editor off, user-enumeration blocked, login throttle,
-`security.txt`). Still server/account-side:
+`security.txt`). These are all **done at/after go-live**, not in local dev — they
+need the real host, HTTPS and the production admin account:
 
-- [ ] **Serve over HTTPS** — HSTS activates only on TLS (`is_ssl()`); confirm the
-  cert and a http→https redirect at the host.
-- [ ] **Watch CSP in Report-Only on staging** with real traffic (consent
-  accepted + declined, a form submit, every page type). Add a reporting endpoint
-  if you want the violations collected. Then **enforce** by adding
+- [ ] **At first deploy — serve over HTTPS.** HSTS activates only on TLS
+  (`is_ssl()`); confirm the cert and a http→https redirect at the host.
+- [ ] **On staging, then at go-live — enforce CSP.** On staging, let CSP run in
+  Report-Only with real traffic (consent accepted + declined, a form submit,
+  every page type); add a reporting endpoint if you want the violations
+  collected. Once the run is clean, **enforce** by adding
   `define( 'COMPASS_CSP_ENFORCE', true );` to `wp-config.php`. Do not enforce
-  before a clean observation run — the CSP still allows `'unsafe-inline'` and
-  should be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
-- [ ] **Enable two-factor authentication** on the admin account and keep a single
-  Administrator (Editors for everyone else). _`docs/SECURITY.md` §3._
+  before that observation run — the CSP still allows `'unsafe-inline'` and should
+  be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
+- [ ] **Right after go-live — enable two-factor authentication** on the production
+  admin account and keep a single Administrator (Editors for everyone else).
+  _`docs/SECURITY.md` §3._
 - [ ] Set a **monitored security contact** (the `security.txt` reads the firm
   email from `compass-contact.php`).
 - [ ] After deploy, **re-scan headers** on the live URL (securityheaders.com /
