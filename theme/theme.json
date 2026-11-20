@@ -14,11 +14,11 @@
 			"defaultPalette": false,
 			"defaultGradients": false,
 			"palette": [
-				{ "slug": "navy", "color": "#0F2A43", "name": "Navy" },
-				{ "slug": "brass", "color": "#C9A24B", "name": "Brass" },
+				{ "slug": "near-black", "color": "#0A0C10", "name": "Near-black" },
 				{ "slug": "ivory", "color": "#F6F2EA", "name": "Ivory" },
-				{ "slug": "teal", "color": "#2F7F86", "name": "Teal" },
-				{ "slug": "ink", "color": "#1B1F24", "name": "Ink" }
+				{ "slug": "ink", "color": "#12151B", "name": "Ink" },
+				{ "slug": "teal", "color": "#1C8282", "name": "Teal" },
+				{ "slug": "muted", "color": "#8E96A3", "name": "Muted" }
 			]
 		},
 		"typography": {

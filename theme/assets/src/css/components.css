@@ -3,6 +3,7 @@
    Plain CSS classes, token-driven, works in the dark and light themes. */
 
 /* ---------------------------------------------------------------- Eyebrow */
+
 /* Small uppercase label with an accent dot. Used above section headings. */
 .eyebrow,
 .section-header__eyebrow {
@@ -240,6 +241,7 @@ textarea.field__control {
 }
 
 /* ---------------------------------------------------------------- Section header */
+
 /* Editorial: eyebrow, big light serif heading, lede beside it on wide screens. */
 .section-header {
   display: grid;
@@ -390,6 +392,7 @@ textarea.field__control {
 .tabs__panel[hidden] { display: none; }
 
 /* ---------------------------------------------------------------- Raised band */
+
 /* Formerly an ivory "light section"; in v2 a quietly raised band that works in
    both themes (kept under the old class name so existing templates resolve). */
 .section--light {
@@ -421,6 +424,7 @@ textarea.field__control {
 }
 
 /* ---------------------------------------------------------------- Service card */
+
 /* Numbered link card used by the Services and Industries hubs. */
 .service-card {
   display: flex;

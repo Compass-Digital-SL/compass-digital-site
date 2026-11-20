@@ -22,6 +22,7 @@ html.has-overlay {
 }
 
 /* ------------------------------------------------------------------ Header */
+
 /* A floating "island": transparent over the page at the top, glass once
    scrolled, tucked away while scrolling down and back on the way up. */
 .site-header {
@@ -330,7 +331,16 @@ html.has-overlay {
     border-color: transparent;
   }
 
-  .header-actions__navigate-label,
+  /* Icon-only: the label stays in the accessibility tree as the button's name. */
+  .header-actions__navigate-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   .header-actions__navigate .header-actions__key {
     display: none;
   }
@@ -839,6 +849,7 @@ html.has-overlay {
 }
 
 /* ------------------------------------------------------------- Scroll rail */
+
 /* Right-middle section dots in a glass pill; the label shows on hover/focus. */
 .scroll-rail {
   display: none;
@@ -1193,6 +1204,7 @@ html.has-overlay {
 }
 
 /* ------------------------------------------------------- Cookie consent */
+
 /* The bar itself comes from the compass-core plugin; the theme turns it into a
    floating glass card that matches the header island. */
 .compass-consent {

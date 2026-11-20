@@ -160,6 +160,7 @@ hr {
 }
 
 /* --- Layout primitives --- */
+
 /* Direct children of <main> get the centred column by default (zero
    specificity via :where, so any page wrapper can opt out). Page templates
    whose wrapper holds its own .container run full-bleed so their heroes and

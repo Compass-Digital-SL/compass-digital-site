@@ -24,6 +24,8 @@
 - [x] 21 CD pipeline
 - [ ] 22 Go-live
 - [ ] 23 Post-launch
+- [x] 24 Premium redesign (v2 design system, worldwide positioning)
+- [ ] 25 Sinhala language version (future: real /si/ URLs + hreflang, native review)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -41,6 +43,51 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 24 — Premium redesign (2026-11-20)
+**Done**
+- **Design system v2** (`tokens.css`, `docs/DESIGN.md`): near-black dark-first theme
+  plus a light theme (system preference or header toggle), teal accent, big light
+  Fraunces headings, hairline structure. Every text pair measured AA in both themes.
+- **Visitor controls**: theme toggle and a tiny accent picker (6 presets, each shade
+  auto-adjusted to AA), remembered in the visitor's browser and re-applied before first
+  paint (`inc/theme-mode.php`, `js/theme-mode.js`).
+- **Header/footer**: floating glass island header (hides on scroll down), quiet
+  Ctrl/⌘ K search pill, theme-aware wordmark from the official logo files, footer
+  sitemap without a street address, bottom scroll-progress bar, right-middle section
+  rail, cookie bar as a floating card.
+- **Home**: approved mockup built 1:1 — editorial hero with a pointer-following compass
+  needle, pain selector (list + sticky panel), numbered services list, industry tiles,
+  process, promise + guarantees, "Where we work" (visitor's local time), split FAQ, big
+  CTA. Replaces the Task 8 "Expedition" hero.
+- **Inner pages**: shared page header restyled; every template inherits the new
+  components; 404 redesigned; card image placeholders; duplicate breadcrumbs removed.
+- **Worldwide positioning**: Sri Lanka / Colombo targeting removed from all copy, meta
+  titles/descriptions and share images; schema `areaServed` = Worldwide. Legal pages
+  keep their Sri Lankan law references; the registered address stays in schema only.
+- **Fixes found on the way**: hidden menus overriding `[hidden]`, consent accept button
+  contrast, quote form stealing focus on load, 320px reflow on Contact.
+- Checks: stylelint + eslint clean; build OK (CSS 15.2KB gz, main JS 5KB gz, home HTML
+  22KB gz); Playwright + axe all 84 Chromium tests pass; no PHP notices on any page
+  (checked via Novamira). Firefox/WebKit could not launch locally (CI runs them);
+  phpcs is blocked by the local shell policy (CI runs it).
+
+**Decisions**
+- The theme wordmark takes priority over the Customizer logo (a single uploaded image
+  cannot switch between dark and light).
+- No italic Fraunces face is shipped; heading emphasis is teal and upright. Adding the
+  italic file later is a one-file change (`assets/fonts/README.md`).
+- Hero spec numbers replace the duplicate counters in the Proof section.
+- Sinhala is deferred to Task 25 (needs real `/si/` pages, not a text swap).
+
+**Owner must do**
+- Delete the placeholder text "This will be the landing page" from the Home page in the
+  editor (it renders under the home sections).
+- Decide the quote form budget currency (still LKR) for worldwide clients.
+- Replace the sample insights/case studies (they still mention Sri Lanka) before launch.
+
+**Next**
+- Task 22 (Go-live) as planned; Task 25 when the Sinhala copy is reviewed.
 
 ### Fix — CI + deploy green after Task 20 (2026-11-20)
 **Done**

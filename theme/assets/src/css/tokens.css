@@ -14,14 +14,14 @@
   --bg: #0a0c10;            /* page */
   --bg-2: #0f1217;          /* raised band / footer */
   --bg-3: #151922;          /* cards */
-  --ink: #f6f2ea;           /* headings — 17.3:1 on --bg */
-  --ink-body: #c9ced6;      /* running text — 12.5:1 */
-  --ink-muted: #a9b0bb;     /* secondary text — 8.6:1 on --bg, 7.7:1 on --bg-3 */
-  --ink-subtle: #8e96a3;    /* labels / meta only — 6.3:1 on --bg, 5.6:1 on --bg-3 */
+  --ink: #f6f2ea;           /* headings — 17.5:1 on --bg */
+  --ink-body: #c9ced6;      /* running text — 12.4:1 */
+  --ink-muted: #a9b0bb;     /* secondary text — 9.0:1 on --bg, 8.0:1 on --bg-3 */
+  --ink-subtle: #8e96a3;    /* labels / meta only — 6.6:1 on --bg, 5.9:1 on --bg-3 */
 
   /* Accent (teal by default; the visitor's pick overrides these four) */
-  --accent: #309393;        /* accent text, rules, icons — 5.4:1 on --bg */
-  --accent-2: #64aeae;      /* links, hover text — 7.8:1 on --bg */
+  --accent: #309393;        /* accent text, rules, icons — 5.3:1 on --bg, 4.8:1 on --bg-3 */
+  --accent-2: #64aeae;      /* links, hover text — 7.7:1 on --bg */
   --accent-fill: #1c8282;   /* button fill — white label 4.6:1 */
   --accent-fill-2: #187070; /* button hover — white label 5.9:1 */
 
@@ -52,7 +52,7 @@
   --focus: var(--accent-2);
 
   --danger: #e4867a;        /* error borders */
-  --danger-text: #f0a79c;   /* error text — 9.6:1 on --bg */
+  --danger-text: #f0a79c;   /* error text — 10:1 on --bg */
 
   --border: color-mix(in srgb, var(--ink) 9%, transparent);
   --border-strong: color-mix(in srgb, var(--ink) 16%, transparent);
@@ -131,11 +131,11 @@
     --bg: #f5f3ee;
     --bg-2: #fff;
     --bg-3: #ece8e0;
-    --ink: #12151b;          /* 17.4:1 on --bg */
-    --ink-body: #3a414c;     /* 9.9:1 */
-    --ink-muted: #4a515c;    /* 7.9:1 */
-    --ink-subtle: #5e6673;   /* 5.6:1 on --bg, 5.1:1 on --bg-3 */
-    --accent: #186e6e;       /* 5.4:1 on --bg */
+    --ink: #12151b;          /* 16.5:1 on --bg */
+    --ink-body: #3a414c;     /* 9.3:1 */
+    --ink-muted: #4a515c;    /* 7.2:1 */
+    --ink-subtle: #5e6673;   /* 5.2:1 on --bg, 4.7:1 on --bg-3 */
+    --accent: #186e6e;       /* 5.4:1 on --bg, 4.9:1 on --bg-3 */
     --accent-2: #135c5c;
     --accent-fill: #186e6e;  /* white label 6.0:1 */
     --accent-fill-2: #135a5a;
