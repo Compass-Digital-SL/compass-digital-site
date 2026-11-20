@@ -1,55 +1,91 @@
-/* Design tokens — single source of truth for runtime CSS.
-   Dark-first design system (see docs/DESIGN.md). Mirrors docs/BRAND.md + theme.json. */
+/* Design tokens v2 — single source of truth for runtime CSS.
+   Premium redesign (Task 24): near-black, dark-first, with a light theme and a
+   teal accent the visitor can re-tint. See docs/DESIGN.md for the contrast table.
+
+   Theme switching: dark values live on bare :root. Light values apply when the
+   visitor's system asks for light (and they have not picked dark), or when they
+   pick light with the header toggle (data-theme on <html>, set before first paint
+   by the inline script in inc/theme-mode.php). Both light blocks must stay equal. */
 
 :root {
-  /* --- Brand palette --- */
+  color-scheme: dark;
+
+  /* --- Raw palette (dark) --- */
+  --bg: #0a0c10;            /* page */
+  --bg-2: #0f1217;          /* raised band / footer */
+  --bg-3: #151922;          /* cards */
+  --ink: #f6f2ea;           /* headings — 17.3:1 on --bg */
+  --ink-body: #c9ced6;      /* running text — 12.5:1 */
+  --ink-muted: #a9b0bb;     /* secondary text — 8.6:1 on --bg, 7.7:1 on --bg-3 */
+  --ink-subtle: #8e96a3;    /* labels / meta only — 6.3:1 on --bg, 5.6:1 on --bg-3 */
+
+  /* Accent (teal by default; the visitor's pick overrides these four) */
+  --accent: #309393;        /* accent text, rules, icons — 5.4:1 on --bg */
+  --accent-2: #64aeae;      /* links, hover text — 7.8:1 on --bg */
+  --accent-fill: #1c8282;   /* button fill — white label 4.6:1 */
+  --accent-fill-2: #187070; /* button hover — white label 5.9:1 */
+
+  /* --- Legacy palette names (kept so older rules resolve to the new look) --- */
   --color-navy: #0f2a43;
-  --color-brass: #c9a24b;
-  --color-ivory: #f6f2ea;
-  --color-teal: #2f7f86;
-  --color-ink: #1b1f24;
+  --color-navy-700: #0b2033;
+  --color-ink: #0a0c10;
+  --color-ivory: var(--ink);
+  --color-brass: var(--accent);
+  --color-teal: var(--accent-fill);
+  --color-teal-300: var(--accent-2);
 
-  /* --- Derived --- */
-  --color-navy-700: #0b2033; /* darker navy — header / card base */
-  --color-teal-300: #5fb5bd; /* brightened teal — links/text on dark (AA) */
+  /* --- Semantic --- */
+  --surface: var(--bg);
+  --surface-2: var(--bg-3);
+  --surface-sunken: var(--bg-2);
+  --surface-light: #f6f2ea;
 
-  /* --- Semantic (dark base) --- */
-  --surface: var(--color-navy);
-  --surface-2: var(--color-navy-700);
-  --surface-sunken: var(--color-ink);
-  --surface-light: var(--color-ivory);
+  --text: var(--ink);
+  --text-body: var(--ink-body);
+  --text-muted: var(--ink-muted);
+  --text-subtle: var(--ink-subtle);
+  --text-on-light: #12151b;
 
-  --text: var(--color-ivory);
-  --text-muted: #b9c2cc;
-  --text-on-light: var(--color-ink);
+  --accent-text: #fff;      /* text on --accent-fill */
+  --secondary: var(--accent-2);
+  --link: var(--accent-2);
+  --focus: var(--accent-2);
 
-  --accent: var(--color-brass);
-  --accent-text: var(--color-navy); /* text on a brass fill */
-  --secondary: var(--color-teal-300);
-  --link: var(--color-teal-300);
-  --focus: var(--color-brass);
+  --danger: #e4867a;        /* error borders */
+  --danger-text: #f0a79c;   /* error text — 9.6:1 on --bg */
 
-  --border: color-mix(in srgb, var(--color-ivory) 14%, transparent);
-  --border-strong: color-mix(in srgb, var(--color-ivory) 24%, transparent);
+  --border: color-mix(in srgb, var(--ink) 9%, transparent);
+  --border-strong: color-mix(in srgb, var(--ink) 16%, transparent);
 
-  /* --- Glass (restrained: header, hover cards, command menu; ≤3 per viewport) --- */
-  --glass-bg: color-mix(in srgb, #fff 5%, transparent);
-  --glass-border: color-mix(in srgb, #fff 10%, transparent);
-  --glass-blur: 12px;
+  /* --- Atmosphere --- */
+  --glow-a: color-mix(in srgb, #1d4f7a 22%, transparent);
+  --glow-b: color-mix(in srgb, var(--accent-fill) 16%, transparent);
+  --shadow-color: rgb(0, 0, 0, 0.55);
+  --grain-opacity: 0.05;
+
+  /* --- Glass (header island, command menu, rail) --- */
+  --glass-bg: color-mix(in srgb, var(--bg) 62%, transparent);
+  --glass-border: var(--border-strong);
+  --glass-blur: 16px;
 
   /* --- Type families (generic keywords lowercased for Stylelint) --- */
   --font-sans: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", roboto, helvetica, arial, sans-serif;
   --font-serif: "Fraunces", "Fraunces Fallback", georgia, cambria, "Times New Roman", serif;
 
-  /* --- Fluid type scale --- */
+  /* --- Fluid type scale (editorial: big, light serif headings) --- */
+  --fs-xs: 0.75rem;
   --fs-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
   --fs-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
-  --fs-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --fs-xl: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
-  --fs-2xl: clamp(2.25rem, 1.8rem + 2.25vw, 3.75rem);
+  --fs-lede: clamp(1.06rem, 1rem + 0.35vw, 1.3rem);
+  --fs-lg: clamp(1.3rem, 1.1rem + 0.8vw, 1.8rem);
+  --fs-xl: clamp(2rem, 1.3rem + 2.8vw, 3.6rem);
+  --fs-2xl: clamp(2.5rem, 1.5rem + 4vw, 4.75rem);
+  --fs-hero: clamp(3.1rem, 1.4rem + 7.4vw, 8rem);
 
-  --lh-tight: 1.15;
-  --lh-base: 1.6;
+  --lh-tight: 1.06;
+  --lh-base: 1.65;
+  --tracking-display: -0.03em;
+  --tracking-label: 0.16em;
 
   /* --- Spacing (4px base) --- */
   --space-1: 0.25rem;
@@ -61,28 +97,89 @@
   --space-12: 3rem;
   --space-16: 4rem;
   --space-24: 6rem;
+  --section: clamp(5rem, 3rem + 8vw, 9rem);
 
   /* --- Layout --- */
   --content-width: 720px;
-  --wide-width: 1120px;
-  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2rem);
+  --wide-width: 1200px;
+  --gutter: clamp(1.25rem, 0.5rem + 2.5vw, 2rem);
 
   /* --- Radii --- */
   --radius-sm: 0.375rem;
-  --radius: 0.625rem;
-  --radius-lg: 1rem;
+  --radius: 0.75rem;
+  --radius-lg: 1.25rem;
   --radius-pill: 999px;
 
-  /* --- Elevation (soft, cool) --- */
-  --shadow-1: 0 1px 2px rgb(5, 12, 20, 0.4);
-  --shadow-2: 0 8px 24px -8px rgb(5, 12, 20, 0.55);
-  --shadow-3: 0 20px 48px -12px rgb(5, 12, 20, 0.6);
+  /* --- Elevation --- */
+  --shadow-1: 0 1px 2px var(--shadow-color);
+  --shadow-2: 0 12px 28px -14px var(--shadow-color);
+  --shadow-3: 0 28px 60px -24px var(--shadow-color);
 
   /* --- Motion --- */
   --dur-fast: 150ms;
   --dur-mid: 300ms;
   --dur-slow: 600ms;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
+
+/* Light theme — system preference (unless the visitor picked dark). */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f5f3ee;
+    --bg-2: #fff;
+    --bg-3: #ece8e0;
+    --ink: #12151b;          /* 17.4:1 on --bg */
+    --ink-body: #3a414c;     /* 9.9:1 */
+    --ink-muted: #4a515c;    /* 7.9:1 */
+    --ink-subtle: #5e6673;   /* 5.6:1 on --bg, 5.1:1 on --bg-3 */
+    --accent: #186e6e;       /* 5.4:1 on --bg */
+    --accent-2: #135c5c;
+    --accent-fill: #186e6e;  /* white label 6.0:1 */
+    --accent-fill-2: #135a5a;
+    --surface-2: var(--bg-2);
+    --surface-sunken: var(--bg-3);
+    --link: var(--accent);
+    --secondary: var(--accent);
+    --focus: var(--accent);
+    --glow-a: color-mix(in srgb, #1d4f7a 10%, transparent);
+    --glow-b: color-mix(in srgb, var(--accent-fill) 10%, transparent);
+    --shadow-color: rgb(18, 21, 27, 0.18);
+    --grain-opacity: 0.035;
+    --glass-bg: color-mix(in srgb, var(--bg) 72%, transparent);
+  --danger: #b42318;
+  --danger-text: #b42318; /* 5.9:1 on --bg */
+  }
+}
+
+/* Light theme — picked with the header toggle. Keep equal to the block above. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f3ee;
+  --bg-2: #fff;
+  --bg-3: #ece8e0;
+  --ink: #12151b;
+  --ink-body: #3a414c;
+  --ink-muted: #4a515c;
+  --ink-subtle: #5e6673;
+  --accent: #186e6e;
+  --accent-2: #135c5c;
+  --accent-fill: #186e6e;
+  --accent-fill-2: #135a5a;
+  --surface-2: var(--bg-2);
+  --surface-sunken: var(--bg-3);
+  --link: var(--accent);
+  --secondary: var(--accent);
+  --focus: var(--accent);
+  --glow-a: color-mix(in srgb, #1d4f7a 10%, transparent);
+  --glow-b: color-mix(in srgb, var(--accent-fill) 10%, transparent);
+  --shadow-color: rgb(18, 21, 27, 0.18);
+  --grain-opacity: 0.035;
+  --glass-bg: color-mix(in srgb, var(--bg) 72%, transparent);
+  --danger: #b42318;
+  --danger-text: #b42318; /* 5.9:1 on --bg */
+}
+
+:root[data-theme="dark"] { color-scheme: dark; }

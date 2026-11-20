@@ -4,6 +4,7 @@
 import "../css/main.css";
 import { initUI } from "./ui.js";
 import { initNavigation } from "./command-menu.js";
+import { initThemeMode } from "./theme-mode.js";
 
 // Lazy-load motion so its bundle is fetched only on pages that use it, and the
 // heavier hero module only on the home page.
@@ -51,6 +52,7 @@ function initQuote() {
 }
 
 function boot() {
+  initThemeMode();
   initNavigation();
   initUI();
   initMotion();
