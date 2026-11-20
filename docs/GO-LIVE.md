@@ -73,6 +73,40 @@ approval). Full secret inventory in **`docs/SECRETS.md`**; restore steps in
     launch. _Source: Task 17 (owner decision, 2026-11-19); supersedes the Task 16
     "revisit areaServed" note._
 
+## Legal pages (Task 20 — owner)
+
+The Pages exist (`privacy`, `terms`, `cookie-policy`, each assigned its template)
+and the drafts render. Before launch:
+
+- [ ] **Read and confirm the three legal pages** — `/privacy/`, `/terms/`,
+  `/cookie-policy/` — and **fill every `[…]` placeholder**: registered company
+  name + address (from Site Settings / `mu-plugins/compass-contact.php`), the
+  data-retention period, the rights/complaint route, and the governing law.
+- [ ] **Have them legally reviewed** for every jurisdiction you serve (Sri Lanka
+  PDPA No. 9 of 2022, and any others). The drafts are a starting point, not legal
+  advice. _Source: Task 20, `docs/SECURITY.md` §6._
+
+## Security — headers, CSP and accounts (Task 20 — owner)
+
+Hardening ships in `mu-plugins/compass-security.php` (headers, CSP Report-Only,
+XML-RPC off, file-editor off, user-enumeration blocked, login throttle,
+`security.txt`). Still server/account-side:
+
+- [ ] **Serve over HTTPS** — HSTS activates only on TLS (`is_ssl()`); confirm the
+  cert and a http→https redirect at the host.
+- [ ] **Watch CSP in Report-Only on staging** with real traffic (consent
+  accepted + declined, a form submit, every page type). Add a reporting endpoint
+  if you want the violations collected. Then **enforce** by adding
+  `define( 'COMPASS_CSP_ENFORCE', true );` to `wp-config.php`. Do not enforce
+  before a clean observation run — the CSP still allows `'unsafe-inline'` and
+  should be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
+- [ ] **Enable two-factor authentication** on the admin account and keep a single
+  Administrator (Editors for everyone else). _`docs/SECURITY.md` §3._
+- [ ] Set a **monitored security contact** (the `security.txt` reads the firm
+  email from `compass-contact.php`).
+- [ ] After deploy, **re-scan headers** on the live URL (securityheaders.com /
+  Mozilla Observatory).
+
 ## Performance — server caching (Task 18)
 
 Static theme assets are long-cached by a committed `theme/assets/.htaccess`
