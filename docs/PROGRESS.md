@@ -46,17 +46,18 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
-### Compass watermark — visibility + position fix (2026-11-20)
-**Done** (task/30)
-- The needle looked static because the watermark sat *behind* content (`z-index: 0`) and the
-  pages' opaque section backgrounds hid it. Switched it to a faint overlay **above** content
-  (`z-index: 2`, below `--z-header: 50` so the sticky header/nav/chat stay on top),
-  `pointer-events: none`, `aria-hidden`.
-- Repositioned from the bottom corner to **centre-right, cropped off the right edge**
-  (`top: 50%; right: -14vmin; 64vmin`), matching the sketch; opacity 0.07.
-- Removed the now-unneeded `.site-main / .site-footer` z-index rule.
-- Verified in a local static-server harness: needle rotates smoothly 0° → −540° across the
-  scroll and stays visible over opaque sections.
+### CI site-audit warnings — meta descriptions + heading order (2026-11-20)
+**Done** (task/28)
+- Cleared the non-blocking audit warnings left after the broken-link fix.
+- **Meta descriptions**: added `compass_meta_description()` branches for the quote page
+  (`page-get-a-quote.php`) and the three legal pages (privacy / terms / cookie-policy),
+  which previously fell through to the empty-tagline fallback. Mirrors the title
+  gap-filler's `is_page_template()` detection.
+- **Heading order**: `/work/` jumped `h1 → h3` (hero title, then work-card titles). Added a
+  visually-hidden `<h2>Case studies</h2>` (`.screen-reader-text`) before the grid so the
+  cards' `h3`s nest correctly. No visual change.
+- The remaining audit lines are query-string duplicates of these same pages; all resolve
+  once the base page is fixed. No errors were present (build was already green).
 
 ### Scroll-driven compass watermark (2026-11-20)
 **Done** (task/29)
