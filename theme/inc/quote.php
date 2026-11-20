@@ -249,3 +249,18 @@ add_filter(
 	10,
 	2
 );
+
+/**
+ * Pages that carry the quote/contact form (a nonce that expires) or show a
+ * per-visit result must never be served from a page cache: a stale nonce makes
+ * every submission fail with "session expired". nocache_headers() sends
+ * no-store headers that host and plugin caches respect.
+ */
+add_action(
+	'template_redirect',
+	function () {
+		if ( is_page_template( array( 'page-contact.php', 'page-get-a-quote.php', 'page-thank-you.php' ) ) ) {
+			nocache_headers();
+		}
+	}
+);

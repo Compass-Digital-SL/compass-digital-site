@@ -121,7 +121,8 @@ still server-side:
   changes, and quote/thank-you pages are per-visit). If a full-page cache plugin
   or host cache is enabled, set HTML `Cache-Control` to roughly
   `public, max-age=0, s-maxage=600, must-revalidate` (short shared cache, always
-  revalidate) and **exclude** `/get-a-quote/` and `/thank-you/` from caching.
+  revalidate) and **exclude** `/get-a-quote/`, `/contact/` and `/thank-you/` from caching
+  (they carry the form nonce; the theme also sends `no-store` on them).
 - [ ] **Nginx hosts only:** `.htaccess` is ignored. Add the equivalent to the
   server block:
   ```nginx
