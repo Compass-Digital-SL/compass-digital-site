@@ -153,6 +153,9 @@ jobs:
       - name: Playwright smoke + axe
         run: npm run test:e2e
 
+      - name: SEO crawl (broken links, titles, H1s, alt)
+        run: npm run seo:audit
+
       - name: Lighthouse CI (budgets)
         run: npm run lhci
 

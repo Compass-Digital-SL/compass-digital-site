@@ -45,6 +45,9 @@ function normalise( href, from ) {
 	if ( ! href ) {
 		return null;
 	}
+	// Hrefs come from raw HTML: decode the ampersand entities WordPress emits
+	// (esc_url() writes & as &#038;), or "?a=1&#038;b=2" parses as a fragment.
+	href = href.replace( /&(?:amp|#0*38|#x0*26);/gi, '&' );
 	let url;
 	try {
 		url = new URL( href, from );
