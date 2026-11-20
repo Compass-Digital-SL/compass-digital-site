@@ -1,0 +1,43 @@
+/* Compass watermark — a faint, fixed compass behind the page content whose
+   needle rotates as the reader scrolls (see js/motion.js initScrollCompass).
+   Decorative only; kept behind .site-main / .site-footer so it never lowers
+   text contrast. Not rendered on the home page. */
+
+.compass-watermark {
+  position: fixed;
+  right: -8vmin;
+  bottom: -8vmin;
+  width: 52vmin;
+  height: 52vmin;
+  z-index: 0;
+  color: var(--ink);
+  opacity: 0.05;
+  pointer-events: none;
+  user-select: none;
+}
+
+.compass-watermark__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Only the needle group rotates; transform-box keeps the pivot at its own
+   centre (which is the compass centre, 50,50 in the viewBox). */
+.compass-watermark__needle {
+  transform: rotate(var(--compass-rot, 0deg));
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compass-watermark__needle {
+    transform: none;
+  }
+}
+
+@media print {
+  .compass-watermark {
+    display: none;
+  }
+}

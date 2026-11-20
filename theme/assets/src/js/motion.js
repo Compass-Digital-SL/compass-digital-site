@@ -257,3 +257,45 @@ export function initParallax(root = document) {
     if (io) io.disconnect();
   };
 }
+
+/**
+ * Rotate a decorative compass needle anti-clockwise in proportion to how far
+ * the page is scrolled. The needle carries [data-compass-needle]; rotation is
+ * written to a CSS custom property so the compositor does the work (transform
+ * only). One rAF-batched write per scroll frame. Under reduced motion the
+ * needle is left at rest — the whole effect is purely decorative.
+ *
+ * @param {Element} el Watermark root ([data-compass]).
+ * @returns {() => void} teardown
+ */
+export function initScrollCompass(el) {
+  if (!el || prefersReducedMotion()) return () => {};
+
+  const needle = el.querySelector("[data-compass-needle]") || el;
+  // Total travel across the full scrollable range. Negative = anti-clockwise.
+  const turn = Number(el.dataset.compassTurn || 540);
+  let ticking = false;
+
+  const update = () => {
+    ticking = false;
+    const doc = document.documentElement;
+    const scrollable = Math.max(1, doc.scrollHeight - window.innerHeight);
+    const progress = Math.min(Math.max(window.scrollY / scrollable, 0), 1);
+    needle.style.setProperty("--compass-rot", `${(-progress * turn).toFixed(2)}deg`);
+  };
+
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+
+  return () => {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onScroll);
+  };
+}
