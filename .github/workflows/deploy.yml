@@ -88,7 +88,10 @@ jobs:
   # ---------------------------------------------------------------------------
   staging:
     name: Deploy to staging
-    if: github.ref == 'refs/heads/main'
+    # Skipped (not failed) until hosting exists: set the repository variable
+    # STAGING_URL to switch staging deploys on. Job-level `if` can only see
+    # repository variables, not environment ones.
+    if: github.ref == 'refs/heads/main' && vars.STAGING_URL != ''
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -126,7 +129,8 @@ jobs:
   # ---------------------------------------------------------------------------
   production:
     name: Deploy to production
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Skipped until the repository variable PRODUCTION_URL is set.
+    if: startsWith(github.ref, 'refs/tags/v') && vars.PRODUCTION_URL != ''
     needs: build
     runs-on: ubuntu-latest
     environment:

@@ -47,6 +47,9 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - **Deploy workflow rejected at parse time** (0 s runs): `environment.url` used
   `secrets.*`, which GitHub forbids there. Now `vars.STAGING_URL` /
   `vars.PRODUCTION_URL` (documented in `docs/SECRETS.md`).
+- **Deploy jobs gated on those repo variables**: no hosting yet, so staging /
+  production jobs are skipped (not failed) until `STAGING_URL` /
+  `PRODUCTION_URL` exist. Build still runs on every push to main.
 - **CSP console errors** (all smoke "no console errors" tests): a Report-Only
   policy with no reporting endpoint logs an error in Chromium/WebKit. Added
   `report-uri` + `report-to csp` + `Reporting-Endpoints` header pointing at a new
@@ -62,7 +65,8 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - Report endpoint logs to `error_log` only — no DB table, nothing to clean up.
 
 **Next**
-- Owner: add `STAGING_URL` / `PRODUCTION_URL` as environment variables.
+- Owner, after buying hosting: add `STAGING_URL` / `PRODUCTION_URL` as
+  repository variables (this switches deploys on) plus the SSH/path secrets.
 - Review `CSP report:` lines in the staging error log before enforcing CSP.
 
 ### Task 20 — Security and legal (2026-11-19)
