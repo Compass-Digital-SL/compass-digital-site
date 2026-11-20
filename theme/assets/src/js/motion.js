@@ -269,7 +269,9 @@ export function initParallax(root = document) {
  * @returns {() => void} teardown
  */
 export function initScrollCompass(el) {
-  if (!el || prefersReducedMotion()) return () => {};
+  // No reduced-motion guard: the needle tracks scroll position directly (like a
+  // scrollbar), so it is a progress indicator, not an autonomous animation.
+  if (!el) return () => {};
 
   const needle = el.querySelector("[data-compass-needle]") || el;
   // Total travel across the full scrollable range. Negative = anti-clockwise.

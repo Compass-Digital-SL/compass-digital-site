@@ -46,15 +46,18 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
-### Compass watermark — corner reposition + size (2026-11-20)
+### Compass watermark — scroll gauge, right-middle half-face (2026-11-20)
 **Done** (task/28)
-- The needle appears static only under `prefers-reduced-motion` (the preview pane forces it);
-  the rotation code is correct and runs for normal visitors. Left the reduced-motion guard
-  intact (accessibility rule 6).
-- The watermark was 64vmin centred on the right edge (~64% of a phone's width), overlapping the
-  headline and body copy. Shrank to **40vmin** and tucked into the **bottom-right corner**
-  bleeding off both edges (`right: -12vmin; bottom: -12vmin`), so it no longer covers or gets
-  covered by reading content. Opacity, z-index, pointer-events unchanged.
+- Reworked the watermark into a **scroll-position gauge**: a half-compass pinned to the
+  **right-middle edge** showing only the left half of the face (`top: 50%; right: -21vmin;
+  42vmin; translateY(-50%)`), over the gutter so it clears body copy. Opacity 0.1.
+- The needle now **tracks scroll directly** (0° → −540° across the page). Dropped the
+  `prefers-reduced-motion` guard in both the CSS and `initScrollCompass()`: a position
+  indicator driven by the user's own scrolling is not autonomous animation (same reasoning as
+  a scrollbar), so it keeps working under reduced motion. No transitions/easing — one rAF
+  write per scroll frame.
+- Earlier this task it was briefly 64vmin centre-right (overlapped content) then 40vmin
+  bottom-corner; superseded by the gauge above.
 
 ### CI site-audit warnings — meta descriptions + heading order (2026-11-20)
 **Done** (task/28)
