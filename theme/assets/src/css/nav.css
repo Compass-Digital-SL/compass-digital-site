@@ -275,8 +275,16 @@ html.has-overlay {
   color: var(--text-muted);
 }
 
+/* The input border is removed; the focus ring lives on the search row so a
+   keyboard user always sees where focus is (WCAG 2.4.7 / 2.4.11). */
 .command-menu__input:focus {
   outline: none;
+}
+
+.command-menu__search:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .command-menu__close {
