@@ -67,7 +67,10 @@ $updated   = gmdate( 'j F Y' );
 			<p><?php esc_html_e( 'With your consent, we use Google Analytics 4 to understand how the site is used — which pages are visited and how people move through them — so we can improve it. Analytics loads only after you accept cookies in the banner, and you can decline or change your choice at any time through “Cookie preferences” in the footer. If you decline, no analytics cookies are set.', 'compass-digital' ); ?></p>
 			<p><?php esc_html_e( 'Analytics data is handled by Google and may be processed outside Sri Lanka. See our Cookie Policy for the specific cookies and durations.', 'compass-digital' ); ?></p>
 
-			<h3><?php esc_html_e( 'Technical information', 'compass-digital' ); ?></h3>
+			<h3><?php esc_html_e( 'Chat assistant (only with your consent)', 'compass-digital' ); ?></h3>
+				<p><?php esc_html_e( 'The site offers an optional AI chat assistant to answer questions and help you start an enquiry. It appears only after you accept cookies in the banner. When you send a message, that message and the conversation are processed on our behalf by Google (the Gemini API) to generate a reply; they may be processed outside Sri Lanka. Please do not enter sensitive personal data in the chat — for a real quote, use the quote form, which collects only what we need. We do not use chat messages for advertising, and you can decline the assistant by declining cookies.', 'compass-digital' ); ?></p>
+
+				<h3><?php esc_html_e( 'Technical information', 'compass-digital' ); ?></h3>
 			<p><?php esc_html_e( 'Like most websites, our server and security measures briefly process technical details such as your IP address and browser type to keep the site secure and working (for example, to limit spam and abuse on the forms). This is a legitimate interest in protecting the site and is not used to identify you.', 'compass-digital' ); ?></p>
 			<p><?php esc_html_e( 'The forms use a honeypot, a timing check and, where enabled, Cloudflare Turnstile to block spam. Turnstile is a privacy-friendly check that does not track you across sites.', 'compass-digital' ); ?></p>
 
@@ -75,7 +78,7 @@ $updated   = gmdate( 'j F Y' );
 			<p><?php esc_html_e( 'We keep quote and contact enquiries only as long as needed to deal with them and for a reasonable period afterwards for our records, then delete them. [Confirm the retention period you want, e.g. 24 months.] You can ask us to delete your enquiry sooner.', 'compass-digital' ); ?></p>
 
 			<h2><?php esc_html_e( 'Who we share it with', 'compass-digital' ); ?></h2>
-			<p><?php esc_html_e( 'We share your information only with the services that help us run the site and respond to you: our website hosting provider, our email delivery provider, and — with your consent — Google Analytics. Each handles data on our behalf under their own terms. We do not sell your data or share it for third-party marketing.', 'compass-digital' ); ?></p>
+			<p><?php esc_html_e( 'We share your information only with the services that help us run the site and respond to you: our website hosting provider, our email delivery provider, and — with your consent — Google Analytics and the Google Gemini chat assistant. Each handles data on our behalf under their own terms. We do not sell your data or share it for third-party marketing.', 'compass-digital' ); ?></p>
 
 			<h2><?php esc_html_e( 'Your rights', 'compass-digital' ); ?></h2>
 			<p><?php esc_html_e( 'You can ask us for a copy of the information we hold about you, ask us to correct or delete it, or withdraw your consent to analytics. To do any of these, email us at the address above and we will respond within a reasonable time. [Confirm the rights and complaint route under the applicable law — e.g. Sri Lanka’s Personal Data Protection Act, No. 9 of 2022, and any other jurisdiction you serve.]', 'compass-digital' ); ?></p>

@@ -27,6 +27,7 @@
 - [x] 24 Premium redesign (v2 design system, worldwide positioning)
 - [ ] 25 Sinhala language version (future: real /si/ URLs + hreflang, native review)
 - [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
+- [x] 27 AI sales-assistant chatbot (Gemini proxy + lazy vanilla widget)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -44,6 +45,45 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 27 — AI sales-assistant chatbot (2026-11-20)
+**Done**
+- **Server-side proxy** (the API key never reaches the browser): REST route
+  `compass/v1/chat` in Compass Core (`includes/chat.php`). Requires a same-origin
+  `wp_rest` nonce, per-IP rate limit via transients (20 msg / 10 min), max message
+  length 1000, history capped at 12 turns, rejects non-chat payloads. Returns plain
+  text `{reply,state}`; graceful fallback to the quote form on error/quota/no-key.
+- **Provider adapter** (`includes/chat-providers.php`) — one module to swap. Default
+  Google **Gemini** free tier (`gemini-2.0-flash`). Key read server-side via
+  `compass_core_secret('gemini_api_key')` → constant `COMPASS_GEMINI_API_KEY` or
+  Site Settings. Swap to Groq/Workers AI by adding one function + the
+  `compass_chat_provider` filter.
+- **Knowledge** in an editable data file (`data/chat-knowledge.php`, filterable):
+  persona/voice from BRAND.md, services, industries, curated FAQ, and a strict
+  **pricing stance** (never invents prices — routes money questions to the quote).
+- **Widget**: vanilla-JS chat, **lazy-loaded via dynamic import on first open**
+  (`theme/assets/src/js/chat.js` + `css/chat.css` → their own Vite chunk, 2.2 KB +
+  1.6 KB gz). Initial budgets untouched (main JS 5.3 KB gz, main CSS 15.3 KB gz).
+  Built from design tokens only (glass panel, Fraunces heading, teal accent, pill
+  buttons), focus-trapped, ESC to close, honours `prefers-reduced-motion`, WCAG 2.2 AA.
+- **Consent + privacy**: launcher appears only after cookie consent (`consent.js`
+  now fires `compass:consent-granted`); privacy page gained an "AI chat assistant"
+  section noting messages are processed by Google (Gemini).
+
+**Decisions**
+- Gating chat on the existing analytics-cookie consent (simplest honest gate; chat
+  sends messages off-site to Google, so it is opt-in like analytics).
+- Launcher markup + its tiny CSS are printed by PHP (token-based inline, like the
+  consent bar) so only the heavy panel is deferred; nothing ships on load but a button.
+- Model output is escaped then auto-linked client-side; only our own error copy is
+  trusted HTML. Safety thresholds BLOCK_ONLY_HIGH, max 400 output tokens.
+
+**Next / owner action**
+- Set the Gemini key: add `define('COMPASS_GEMINI_API_KEY','…');` to wp-config.php
+  (preferred) or paste it in Settings → Compass → AI assistant. Free key from Google
+  AI Studio. Until set, the assistant and its launcher stay hidden.
+- Confirm the free-tier limits suit expected traffic; tune the per-IP rate limit in
+  `includes/chat.php` if needed. Review `data/chat-knowledge.php` wording.
 
 ### Task 26 — Audit fixes after the redesign (2026-11-20)
 **Done** (full list in `docs/AUDIT.md`, "Re-audit" section)
