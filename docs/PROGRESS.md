@@ -66,6 +66,12 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   applied. Header scroll handler reads layout before writing and no longer reads it
   at start-up; consent.js is `defer`. Mobile Lighthouse (local) 0.71 → 0.90–0.95,
   TBT 860 → ~190 ms, LCP 2.1 → 1.1 s, CLS 0.
+- **Pain-selector CLS**: the pain section shipped all panels stacked for no-JS,
+  then JS added `.is-enhanced` + `[hidden]` after load, collapsing a tall column
+  to one panel (a large post-load shift Lighthouse mis-attributed to the web font).
+  The collapsed one-panel layout is now also applied at first paint via `html.js`
+  (flag set in the pre-paint head script), so JS-on never shifts; JS-off still
+  shows every panel. CSS-only + one classList line; no change to `ui.js`.
 
 **Decisions**
 - Fallback titles live in `inc/seo.php` at priority 20 and only fill gaps left by

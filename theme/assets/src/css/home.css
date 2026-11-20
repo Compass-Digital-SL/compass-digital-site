@@ -101,7 +101,29 @@
 }
 
 /* Panels: all shown by default (anchored sections, no JS). JS enhances into a
-   one-at-a-time swap via .is-enhanced + [hidden]. */
+   one-at-a-time swap via .is-enhanced + [hidden].
+
+   To avoid a layout shift when that enhancement runs after load, the final
+   (collapsed, one-panel) state is also applied at first paint whenever JS is
+   available — keyed on `html.js`, set before paint in inc/theme-mode.php. With
+   JS off there is no `.js` class, so every panel stays visible. */
+html.js .pain__panel:not(:first-child) {
+  display: none;
+}
+
+html.js .pain__nav li:first-child .pain__card {
+  color: var(--text);
+  padding-left: var(--space-6);
+}
+
+html.js .pain__nav li:first-child .pain__card::before {
+  height: 60%;
+}
+
+html.js .pain__nav li:first-child .pain__card-tag {
+  color: var(--accent);
+}
+
 .pain__panels {
   display: grid;
   gap: var(--space-6);
@@ -164,13 +186,15 @@
 }
 
 @media (width >= 900px) {
-  .pain.is-enhanced .pain__layout {
+  .pain.is-enhanced .pain__layout,
+  html.js .pain .pain__layout {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: var(--space-16);
     align-items: start;
   }
 
-  .pain.is-enhanced .pain__panels {
+  .pain.is-enhanced .pain__panels,
+  html.js .pain .pain__panels {
     position: sticky;
     top: 6rem;
   }
