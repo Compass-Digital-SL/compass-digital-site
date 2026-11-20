@@ -50,6 +50,46 @@ function compass_is_contact_page() {
 }
 
 /**
+ * Titles for the pages no section filter covers (home, contact, quote, legal,
+ * utility pages), so none falls back to the bare "Page – Site name" default.
+ * Runs after the section filters (priority 20) and only fills a gap.
+ *
+ * @param string $title Title from earlier filters ('' = WordPress default).
+ * @return string
+ */
+function compass_fallback_document_title( $title ) {
+	if ( '' !== $title ) {
+		return $title;
+	}
+
+	$brand = __( 'Compass Digital', 'compass-digital' );
+
+	if ( is_front_page() ) {
+		return __( 'Compass Digital — Websites, SEO & POS Systems', 'compass-digital' );
+	}
+	if ( compass_is_contact_page() ) {
+		return __( 'Contact Us — Talk to a Real Person | Compass Digital', 'compass-digital' );
+	}
+	if ( is_page_template( 'page-get-a-quote.php' ) ) {
+		return __( 'Get a Free Quote | Compass Digital', 'compass-digital' );
+	}
+	if ( is_404() ) {
+		/* translators: %s: brand name. */
+		return sprintf( __( 'Page not found | %s', 'compass-digital' ), $brand );
+	}
+	if ( is_search() ) {
+		/* translators: 1: search query, 2: brand name. */
+		return sprintf( __( 'Search: %1$s | %2$s', 'compass-digital' ), get_search_query(), $brand );
+	}
+	if ( is_page() ) {
+		return single_post_title( '', false ) . ' | ' . $brand;
+	}
+
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'compass_fallback_document_title', 20 );
+
+/**
  * Resolve the meta description for the current request.
  *
  * Mirrors the copy that the per-section head printers used before they were
@@ -477,8 +517,9 @@ function compass_organization_schema() {
 	if ( ! empty( $details['email'] ) ) {
 		$contact_point['email'] = $details['email'];
 	}
-	$contact_point['areaServed']        = 'LK';
-	$contact_point['availableLanguage'] = array( 'en', 'si', 'ta' );
+	// Worldwide positioning (Task 24); English only until Task 25 adds Sinhala.
+	$contact_point['areaServed']        = 'Worldwide';
+	$contact_point['availableLanguage'] = array( 'en' );
 	$org['contactPoint']                = $contact_point;
 
 	$social = compass_social_profiles();

@@ -183,6 +183,23 @@ function compass_core_setting_fields() {
 			'section' => 'quote',
 			'help'    => __( 'The address auto-replies and notifications are sent from. Defaults to the contact email.', 'compass-core' ),
 		),
+
+		// --- AI assistant (sixth section). The API key can instead be a PHP
+		// constant (COMPASS_GEMINI_API_KEY) so it lives in wp-config.php / the
+		// environment, never the database. Leave the key blank to switch the
+		// assistant off entirely.
+		'gemini_api_key'   => array(
+			'label'   => __( 'Gemini API key', 'compass-core' ),
+			'type'    => 'password',
+			'section' => 'chat',
+			'help'    => __( 'Google AI Studio API key (free tier). Leave blank to turn the chat assistant off. Prefer the COMPASS_GEMINI_API_KEY constant in wp-config.php.', 'compass-core' ),
+		),
+		'gemini_model'     => array(
+			'label'   => __( 'Gemini model', 'compass-core' ),
+			'type'    => 'text',
+			'section' => 'chat',
+			'help'    => __( 'Defaults to gemini-2.0-flash. Only change if you know the model is available on your key.', 'compass-core' ),
+		),
 	);
 }
 
@@ -273,10 +290,20 @@ function compass_core_register_settings() {
 		'compass-site-settings'
 	);
 
+	add_settings_section(
+		'compass_core_chat',
+		__( 'AI assistant', 'compass-core' ),
+		function () {
+			echo '<p>' . esc_html__( 'The chat assistant that greets visitors and routes leads to the quote form. The API key can also be a PHP constant (COMPASS_GEMINI_API_KEY). Messages are processed by Google (Gemini); the launcher only appears after cookie consent.', 'compass-core' ) . '</p>';
+		},
+		'compass-site-settings'
+	);
+
 	$section_map = array(
 		'quote'     => 'compass_core_quote',
 		'local'     => 'compass_core_local',
 		'analytics' => 'compass_core_analytics',
+		'chat'      => 'compass_core_chat',
 	);
 
 	foreach ( compass_core_setting_fields() as $key => $field ) {

@@ -36,6 +36,12 @@ add_action(
 		remove_action( 'wp_head', 'wlwmanifest_link' );
 		remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 		remove_action( 'wp_head', 'feed_links_extra', 3 );
+		// Comments are off site-wide, so do not advertise an empty comments feed.
+		add_filter( 'feed_links_show_comments_feed', '__return_false' );
+		// No template renders comments, so refuse them too (closes the
+		// wp-comments-post.php spam door).
+		add_filter( 'comments_open', '__return_false', 20 );
+		add_filter( 'pings_open', '__return_false', 20 );
 		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10 );
 
 		// REST API and oEmbed discovery links in <head> and headers.

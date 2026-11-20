@@ -94,6 +94,12 @@
     granted = true;
     whenIdle(loadGA);
     firePageEvent();
+    /* Let opt-in features (e.g. the chat launcher) react without a reload. */
+    try {
+      window.dispatchEvent(new CustomEvent("compass:consent-granted"));
+    } catch (e) {
+      /* no CustomEvent — the feature falls back to its own storage read */
+    }
   }
 
   /* --- Consent bar --- */

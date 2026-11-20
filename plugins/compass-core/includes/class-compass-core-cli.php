@@ -476,7 +476,7 @@ class Compass_Core_CLI {
 	 * @return string
 	 */
 	private function article_website_cost() {
-		$website = esc_url( home_url( '/services/website-design-development/' ) );
+		$website = esc_url( home_url( '/services/website-design-and-development/' ) );
 		$quote   = esc_url( home_url( '/get-a-quote/' ) );
 		return '
 <p>It is the first question almost everyone asks, and the hardest one to get a straight answer to. Ask three companies what a website costs in Sri Lanka and you will get three wildly different numbers, usually with no explanation attached. This guide gives you the honest version: what you are actually paying for, what pushes the price up or down, and how to avoid the two mistakes that cost people the most.</p>

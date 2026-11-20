@@ -102,7 +102,10 @@ function compass_core_enqueue_consent() {
 		plugins_url( 'assets/consent.js', COMPASS_CORE_FILE ),
 		array(),
 		$ver,
-		true
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
 	);
 
 	$config = array(

@@ -117,7 +117,12 @@ add_action(
 add_action(
 	'wp_head',
 	function () {
-		$critical = compass_asset_contents( 'src/css/tokens.css' ) . compass_asset_contents( 'critical.css' );
+		// Built + minified by Vite (vite.config.js criticalCss). The source pair is
+		// only a dev fallback: assets/src is not shipped in the deploy artifact.
+		$critical = compass_asset_contents( 'dist/critical.css' );
+		if ( '' === $critical ) {
+			$critical = compass_asset_contents( 'src/css/tokens.css' ) . compass_asset_contents( 'critical.css' );
+		}
 		if ( '' === trim( $critical ) ) {
 			return;
 		}
@@ -192,7 +197,7 @@ add_filter(
 		}
 		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- The style is enqueued; this filter only rewrites its tag to load non-blocking.
 		return sprintf(
-			'<link rel="preload" as="style" href="%1$s" media="%2$s" onload="this.onload=null;this.rel=\'stylesheet\'">' . "\n"
+			'<link rel="preload" as="style" href="%1$s" media="%2$s" onload="this.onload=null;this.rel=\'stylesheet\';window.compassCssReady&&compassCssReady()" onerror="window.compassCssReady&&compassCssReady()">' . "\n"
 			. '<noscript><link rel="stylesheet" href="%1$s" media="%2$s"></noscript>' . "\n",
 			esc_url( $href ),
 			esc_attr( $media )

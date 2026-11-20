@@ -1,6 +1,49 @@
 # Pre-launch audit — Compass Digital
 
-_Date: 2026-11-19. Full review of code, security, SEO, performance, features,
+## Re-audit after the v2 redesign (2026-11-20, Task 26)
+
+Run against the local site after Task 24. Lint, build and all 84 Chromium e2e/axe
+tests were already green; these gaps were found by crawling and probing instead.
+
+**Fixed in Task 26**
+- [x] **Broken main-menu links (4 × 404)** — `inc/nav.php` used old slugs
+  (`website-design-development`, `restaurants-cafes`, `travel-tourism`,
+  `corporates-smes`). Also fixed in the seeded "website cost" article.
+- [x] **Login name leak** — `/?author=1` was canonical-redirected to
+  `/author/admin/` before the block ran. Now blocked at priority 1, author
+  archives redirect home for guests, author links point home.
+- [x] **Critical CSS missing in production** — it was read from `assets/src`,
+  which the deploy artifact excludes. Vite now writes a minified
+  `assets/dist/critical.css` (tokens + critical layer, no comments).
+- [x] **Stale form nonce under page cache** — `/contact/` also carries the form;
+  contact, quote and thank-you now send `no-store`; GO-LIVE cache rule updated.
+- [x] **Schema** — Organization `contactPoint.areaServed` `LK` → `Worldwide`;
+  `availableLanguage` English only (Sinhala/Tamil were not offered).
+- [x] **Titles** — home, contact, quote, legal, 404, search and thank-you had the
+  default "Page – site name"; services hub ended in "| Compass".
+- [x] **CSP** — GA4 hosts widened to Google's documented wildcards
+  (`*.google-analytics.com`, `*.analytics.google.com`), else analytics breaks
+  the day CSP is enforced.
+- [x] **Headers** — dropped the obsolete `interest-cohort` (console error on every
+  page); removed `X-Powered-By`.
+- [x] **Comments** — no comments feed advertised; comments/pings closed (no
+  template shows them, but `wp-comments-post.php` accepted them).
+- [x] **CI** — `npm run seo:audit` now runs after the e2e tests, so a broken
+  internal link fails the build. The crawler now decodes `&#038;` in hrefs (it
+  reported false `?service=x&` redirects).
+
+**Still open**
+- Hero compass needle overlaps the intro text at 360px; on phones the cookie card
+  + bottom bar cover ~40% of the first screen (design call).
+- Footer column-title links are 15px tall (pass on spacing, but tight).
+- `docs/SEO.md` keyword map still targets "Sri Lanka" while the site is worldwide.
+- Organization `logo` comes from the Customizer logo only — keep it set.
+- Owner: placeholder home text, LKR budgets, sample work/testimonials, social
+  URLs, legal `[…]` placeholders, `docs/GROWTH.md`, real Lighthouse on staging.
+
+---
+
+_Original audit date: 2026-11-19. Full review of code, security, SEO, performance, features,
 accessibility, UI/UX and the outstanding owner ("You do") actions from the build
 playbook. Read alongside `docs/PROGRESS.md` (task log) and `docs/GO-LIVE.md`
 (server-side owner steps)._

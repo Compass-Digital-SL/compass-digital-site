@@ -1,0 +1,290 @@
+/*
+ * AI chat assistant — panel UI.
+ *
+ * Loaded only inside the lazy chat chunk (imported by js/chat.js), so none of
+ * this touches the initial CSS budget. Built entirely from design tokens so the
+ * panel reads as part of the site: glass surface like the header island, hairline
+ * borders, Fraunces heading, Inter body, the teal accent, pill buttons, teal
+ * focus ring. All motion sits behind prefers-reduced-motion.
+ */
+
+.compass-chat {
+  position: fixed;
+  z-index: 996;
+  right: clamp(1rem, 2vw, 1.5rem);
+  bottom: calc(clamp(1rem, 2vw, 1.5rem) + 3.5rem);
+  width: min(23rem, calc(100vw - 2rem));
+  max-height: min(34rem, calc(100vh - 7rem));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text, #f6f2ea);
+  background: var(--glass-bg, color-mix(in srgb, var(--bg, #0a0c10) 72%, transparent));
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong, rgb(246, 242, 234, 0.24));
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: var(--shadow-2, 0 20px 50px -20px rgb(5, 12, 20, 0.7));
+}
+
+.compass-chat[hidden] {
+  display: none;
+}
+
+/* --- Header --- */
+.compass-chat__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-4, 1rem);
+  border-bottom: 1px solid var(--border, rgb(246, 242, 234, 0.12));
+}
+
+.compass-chat__avatar {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-pill, 999px);
+  background: color-mix(in srgb, var(--accent, #309393) 22%, transparent);
+  color: var(--accent, #309393);
+}
+
+.compass-chat__title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.compass-chat__name {
+  font-family: var(--font-serif, "Fraunces", serif);
+  font-weight: 400;
+  font-size: var(--fs-lg, 1.2rem);
+  letter-spacing: -0.01em;
+  color: var(--text, #f6f2ea);
+}
+
+.compass-chat__status {
+  font-size: var(--fs-xs, 0.75rem);
+  color: var(--text-subtle, #8e96a3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.compass-chat__close {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-muted, #a9b0bb);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill, 999px);
+}
+
+.compass-chat__close:hover {
+  color: var(--text, #f6f2ea);
+  border-color: var(--border, rgb(246, 242, 234, 0.12));
+}
+
+.compass-chat__close:focus-visible {
+  outline: 2px solid var(--focus, #309393);
+  outline-offset: 2px;
+}
+
+/* --- Message log --- */
+.compass-chat__log {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--space-4, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  scrollbar-width: thin;
+}
+
+.compass-chat__msg {
+  max-width: 85%;
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border-radius: var(--radius, 0.75rem);
+  font-size: var(--fs-sm, 0.9rem);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.compass-chat__msg a {
+  color: var(--link, #64aeae);
+  text-underline-offset: 0.15em;
+}
+
+.compass-chat__msg--bot {
+  align-self: flex-start;
+  background: var(--surface-2, #0f1217);
+  border: 1px solid var(--border, rgb(246, 242, 234, 0.12));
+  border-bottom-left-radius: var(--radius-sm, 0.375rem);
+}
+
+.compass-chat__msg--user {
+  align-self: flex-end;
+  background: color-mix(in srgb, var(--accent, #309393) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent, #309393) 36%, transparent);
+  border-bottom-right-radius: var(--radius-sm, 0.375rem);
+}
+
+.compass-chat__msg--error {
+  align-self: stretch;
+  max-width: 100%;
+  background: color-mix(in srgb, var(--danger, #c23b3b) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger, #c23b3b) 40%, transparent);
+  color: var(--danger-text, #f3b7b7);
+}
+
+/* Typing indicator */
+.compass-chat__typing {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.compass-chat__typing span {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--text-subtle, #8e96a3);
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .compass-chat__typing span {
+    animation: compass-chat-blink 1.2s infinite ease-in-out both;
+  }
+
+  .compass-chat__typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .compass-chat__typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes compass-chat-blink {
+    0%,
+    80%,
+    100% {
+      opacity: 0.25;
+    }
+
+    40% {
+      opacity: 0.9;
+    }
+  }
+
+  .compass-chat {
+    animation: compass-chat-in var(--dur-mid, 300ms) var(--ease-out, ease);
+    transform-origin: bottom right;
+  }
+
+  @keyframes compass-chat-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* --- Composer --- */
+.compass-chat__form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem);
+  border-top: 1px solid var(--border, rgb(246, 242, 234, 0.12));
+}
+
+.compass-chat__input {
+  flex: 1 1 auto;
+  resize: none;
+  max-height: 6rem;
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  font: inherit;
+  font-size: var(--fs-sm, 0.9rem);
+  line-height: 1.5;
+  color: var(--text, #f6f2ea);
+  background: var(--surface-sunken, #151922);
+  border: 1px solid var(--border, rgb(246, 242, 234, 0.12));
+  border-radius: var(--radius, 0.75rem);
+}
+
+.compass-chat__input::placeholder {
+  color: var(--text-subtle, #8e96a3);
+}
+
+.compass-chat__input:focus-visible {
+  outline: 2px solid var(--focus, #309393);
+  outline-offset: 1px;
+  border-color: var(--accent, #309393);
+}
+
+.compass-chat__send {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  cursor: pointer;
+  color: var(--accent-text, #fff);
+  background: var(--accent-fill, #1c8282);
+  border: 1px solid var(--accent-fill, #1c8282);
+  border-radius: var(--radius-pill, 999px);
+}
+
+.compass-chat__send:hover {
+  background: var(--accent-fill-2, #187070);
+  border-color: var(--accent-fill-2, #187070);
+}
+
+.compass-chat__send:focus-visible {
+  outline: 2px solid var(--focus, #309393);
+  outline-offset: 2px;
+}
+
+.compass-chat__send[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.compass-chat__foot {
+  padding: 0 var(--space-4, 1rem) var(--space-3, 0.75rem);
+  margin: 0;
+  font-size: var(--fs-xs, 0.75rem);
+  color: var(--text-subtle, #8e96a3);
+  text-align: center;
+}
+
+.compass-chat__foot a {
+  color: var(--text-muted, #a9b0bb);
+}
+
+/* Screen-reader-only live region label */
+.compass-chat__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

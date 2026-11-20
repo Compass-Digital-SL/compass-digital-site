@@ -26,6 +26,8 @@
 - [ ] 23 Post-launch
 - [x] 24 Premium redesign (v2 design system, worldwide positioning)
 - [ ] 25 Sinhala language version (future: real /si/ URLs + hreflang, native review)
+- [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
+- [x] 27 AI sales-assistant chatbot (Gemini proxy + lazy vanilla widget)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -43,6 +45,108 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### CI site-audit fix — broken internal links (2026-11-20)
+**Done** (PR #31 / #64)
+- The CI "SEO crawl" step failed with 6 errors (3 broken internal links): `/cookie-policy/`,
+  `/insights/category/websites/`, `/insights/category/pos-payments/`. The 35 warnings
+  (missing meta/canonical, `h1→h3` skips, orphans) are non-blocking and were left.
+- **Cookie Policy page**: `scripts/setup.sh` seeded Privacy + Terms but not Cookie Policy,
+  so the footer link 404'd in CI. Added `create_page 'Cookie Policy'` (template auto-applies
+  by slug via `page-cookie-policy.php`).
+- **Insights category archives**: `wp compass seed` switches the permalink structure to
+  `/insights/%postname%/` in-memory, so the rewrite flush inside that process kept the old
+  `/` front and wrote category rules at `/category/<slug>/`. The front end boots with front
+  `/insights/`, emitting `/insights/category/<slug>/` links with no matching rule → 404
+  (`seo` only survived via a stray 301 guess to `/services/seo/`). Fix: a second
+  `wp rewrite flush --hard` in `setup.sh` **after** the seed — a fresh WP-CLI process boots
+  from the persisted structure, recomputes the `/insights/` front, and regenerates matching
+  category rules.
+- **Decision**: fix lives on `task/27` (which already contains all of `task/26`), so PR #31
+  carries both; PR #30 superseded and closed.
+- `.mockup-tmp/` (gitignored local scratch) removed.
+
+### Task 27 — AI sales-assistant chatbot (2026-11-20)
+**Done**
+- **Server-side proxy** (the API key never reaches the browser): REST route
+  `compass/v1/chat` in Compass Core (`includes/chat.php`). Requires a same-origin
+  `wp_rest` nonce, per-IP rate limit via transients (20 msg / 10 min), max message
+  length 1000, history capped at 12 turns, rejects non-chat payloads. Returns plain
+  text `{reply,state}`; graceful fallback to the quote form on error/quota/no-key.
+- **Provider adapter** (`includes/chat-providers.php`) — one module to swap. Default
+  Google **Gemini** free tier (`gemini-2.0-flash`). Key read server-side via
+  `compass_core_secret('gemini_api_key')` → constant `COMPASS_GEMINI_API_KEY` or
+  Site Settings. Swap to Groq/Workers AI by adding one function + the
+  `compass_chat_provider` filter.
+- **Knowledge** in an editable data file (`data/chat-knowledge.php`, filterable):
+  persona/voice from BRAND.md, services, industries, curated FAQ, and a strict
+  **pricing stance** (never invents prices — routes money questions to the quote).
+- **Widget**: vanilla-JS chat, **lazy-loaded via dynamic import on first open**
+  (`theme/assets/src/js/chat.js` + `css/chat.css` → their own Vite chunk, 2.2 KB +
+  1.6 KB gz). Initial budgets untouched (main JS 5.3 KB gz, main CSS 15.3 KB gz).
+  Built from design tokens only (glass panel, Fraunces heading, teal accent, pill
+  buttons), focus-trapped, ESC to close, honours `prefers-reduced-motion`, WCAG 2.2 AA.
+- **Consent + privacy**: launcher appears only after cookie consent (`consent.js`
+  now fires `compass:consent-granted`); privacy page gained an "AI chat assistant"
+  section noting messages are processed by Google (Gemini).
+
+**Decisions**
+- Gating chat on the existing analytics-cookie consent (simplest honest gate; chat
+  sends messages off-site to Google, so it is opt-in like analytics).
+- Launcher markup + its tiny CSS are printed by PHP (token-based inline, like the
+  consent bar) so only the heavy panel is deferred; nothing ships on load but a button.
+- Model output is escaped then auto-linked client-side; only our own error copy is
+  trusted HTML. Safety thresholds BLOCK_ONLY_HIGH, max 400 output tokens.
+
+**Next / owner action**
+- Set the Gemini key: add `define('COMPASS_GEMINI_API_KEY','…');` to wp-config.php
+  (preferred) or paste it in Settings → Compass → AI assistant. Free key from Google
+  AI Studio. Until set, the assistant and its launcher stay hidden.
+- Confirm the free-tier limits suit expected traffic; tune the per-IP rate limit in
+  `includes/chat.php` if needed. Review `data/chat-knowledge.php` wording.
+
+### Task 26 — Audit fixes after the redesign (2026-11-20)
+**Done** (full list in `docs/AUDIT.md`, "Re-audit" section)
+- Main-menu 404s fixed (4 wrong slugs in `inc/nav.php`, plus the seeded article).
+- Login-name leak via `?author=N` → `/author/<login>/` closed; author archives off
+  for guests.
+- Critical CSS now built to `assets/dist/critical.css` (minified) — the deploy
+  excluded `assets/src`, so production would have lost the inlined tokens.
+- `no-store` on contact/quote/thank-you (form nonce vs page cache).
+- Worldwide `contactPoint`, proper titles for every page, GA4 CSP wildcards,
+  `interest-cohort` and `X-Powered-By` removed, comments closed.
+- CI runs `npm run seo:audit` (broken links fail the build); crawler decodes `&#038;`.
+- **PR #29 CI fix**: phpcs failed on two one-line keyed arrays (`front-page.php`,
+  `header/branding.php`); fixed on `task/24-premium-redesign`.
+- **Load performance** (owner's DevTools Lighthouse showed `NO_FCP`: that run was a
+  background tab; headless Lighthouse paints at 1.0 s). The real problem it hid:
+  when the deferred main stylesheet landed, every element with a `transition`
+  animated from its critical-CSS style to its final style (hundreds of layout
+  transitions). Now `html.css-pending` disables transitions until the sheet has
+  applied. Header scroll handler reads layout before writing and no longer reads it
+  at start-up; consent.js is `defer`. Mobile Lighthouse (local) 0.71 → 0.90–0.95,
+  TBT 860 → ~190 ms, LCP 2.1 → 1.1 s, CLS 0.
+- **Pain-selector CLS**: the pain section shipped all panels stacked for no-JS,
+  then JS added `.is-enhanced` + `[hidden]` after load, collapsing a tall column
+  to one panel (a large post-load shift Lighthouse mis-attributed to the web font).
+  The collapsed one-panel layout is now also applied at first paint via `html.js`
+  (flag set in the pre-paint head script), so JS-on never shifts; JS-off still
+  shows every panel. CSS-only + one classList line; no change to `ui.js`.
+
+**Decisions**
+- Fallback titles live in `inc/seo.php` at priority 20 and only fill gaps left by
+  the section filters.
+- Form pages send `no-store` from the theme rather than relying on the host's
+  cache exclusions alone.
+- The transition guard is JS-scoped (class set by the inline head script), so
+  JS-off visitors keep transitions; window `load` is the fallback that clears it.
+- Left as a design call: the hero's ever-spinning SVG rings and long entrance
+  fades keep Speed Index noisy (4–7 s locally); local TTFB is 2–4 s (wp-env with
+  WP_DEBUG), so staging numbers will differ.
+
+**Next**
+- Merge Task 24 then this branch; Task 22 (Go-live). Design call on the 360px hero
+  needle overlap and the phone cookie card.
 
 ### Task 24 — Premium redesign (2026-11-20)
 **Done**

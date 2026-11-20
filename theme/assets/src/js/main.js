@@ -51,6 +51,45 @@ function initQuote() {
   import("./quote.js").then((m) => m.initQuote());
 }
 
+// AI chat assistant. Only the launcher ships on load; the panel is a lazy chunk
+// fetched on first open. The launcher appears only after cookie consent.
+function initChat() {
+  const cfg = window.CompassChat;
+  const launcher = document.querySelector("[data-compass-chat]");
+  if (!cfg || !launcher) return;
+
+  function reveal() {
+    launcher.hidden = false;
+    launcher.setAttribute("aria-expanded", "false");
+  }
+
+  let consented = false;
+  try {
+    consented = localStorage.getItem(cfg.consent) === "granted";
+  } catch {
+    consented = false;
+  }
+  if (consented) {
+    reveal();
+  } else {
+    window.addEventListener("compass:consent-granted", reveal, { once: true });
+  }
+
+  let controller = null;
+  launcher.addEventListener("click", async () => {
+    if (!controller) {
+      launcher.setAttribute("aria-busy", "true");
+      try {
+        const m = await import("./chat.js");
+        controller = m.createChat(launcher, cfg);
+      } finally {
+        launcher.removeAttribute("aria-busy");
+      }
+    }
+    if (controller) controller.toggle();
+  });
+}
+
 function boot() {
   initThemeMode();
   initNavigation();
@@ -59,6 +98,7 @@ function boot() {
   initWork();
   initInsights();
   initQuote();
+  initChat();
 }
 
 if (document.readyState !== "loading") {
