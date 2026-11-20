@@ -17,9 +17,14 @@ get_header();
  * Compass rose geometry (800 x 800 viewBox, centre 400,400): a tick every 5°,
  * a longer tick and a bearing label every 30°, N/E/S/W at the cardinals.
  */
-$compass_ticks  = '';
-$compass_labels = '';
-$compass_cardinals = array( 0 => 'N', 90 => 'E', 180 => 'S', 270 => 'W' );
+$compass_ticks     = '';
+$compass_labels    = '';
+$compass_cardinals = array(
+	0   => 'N',
+	90  => 'E',
+	180 => 'S',
+	270 => 'W',
+);
 for ( $compass_d = 0; $compass_d < 360; $compass_d += 5 ) {
 	$compass_major = ( 0 === $compass_d % 30 );
 	$compass_a     = deg2rad( $compass_d - 90 );
