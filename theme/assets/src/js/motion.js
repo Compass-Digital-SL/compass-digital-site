@@ -275,7 +275,7 @@ export function initScrollCompass(el) {
 
   const needle = el.querySelector("[data-compass-needle]") || el;
   // Total travel across the full scrollable range. Negative = anti-clockwise.
-  const turn = Number(el.dataset.compassTurn || 540);
+  const turn = Number(el.dataset.compassTurn || 180);
   let ticking = false;
 
   const update = () => {
