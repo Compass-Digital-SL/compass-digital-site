@@ -22,7 +22,13 @@ $compass_has_wordmark  = is_readable( COMPASS_DIR . '/assets/brand/logo-white.we
 		<?php the_custom_logo(); ?>
 	<?php else : ?>
 		<a class="brand brand--<?php echo esc_attr( $compass_brand_context ); ?>" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-			<?php foreach ( array( 'white' => 'dark', 'black' => 'light' ) as $compass_ink => $compass_mode ) : ?>
+			<?php
+			$compass_logos = array(
+				'white' => 'dark',
+				'black' => 'light',
+			);
+			foreach ( $compass_logos as $compass_ink => $compass_mode ) :
+				?>
 				<img
 					class="brand__logo brand__logo--<?php echo esc_attr( $compass_mode ); ?>"
 					src="<?php echo esc_url( COMPASS_URI . '/assets/brand/logo-' . $compass_ink . '.webp' ); ?>"
