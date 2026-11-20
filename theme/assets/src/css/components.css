@@ -1,35 +1,72 @@
 /* Compass Digital — component layer (see docs/DESIGN.md).
-   Plain CSS classes, dark-first, token-driven. No hard-coded colours. */
+   Premium v2: pill buttons, hairline structure, editorial headings.
+   Plain CSS classes, token-driven, works in the dark and light themes. */
+
+/* ---------------------------------------------------------------- Eyebrow */
+/* Small uppercase label with an accent dot. Used above section headings. */
+.eyebrow,
+.section-header__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 var(--space-6);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.eyebrow::before,
+.section-header__eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  flex: none;
+}
 
 /* ---------------------------------------------------------------- Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  min-height: 2.75rem; /* ≥24px target with room */
-  padding: var(--space-3) var(--space-6);
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
   border: 1px solid transparent;
-  border-radius: var(--radius);
-  font: inherit;
-  font-weight: 600;
-  line-height: 1.2;
+  border-radius: var(--radius-pill);
+  font: 500 0.95rem/1 var(--font-sans);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
   transition:
-    transform var(--dur-fast) var(--ease),
-    background-color var(--dur-fast) var(--ease),
-    border-color var(--dur-fast) var(--ease);
+    transform var(--dur-mid) var(--ease),
+    background-color var(--dur-mid) var(--ease),
+    border-color var(--dur-mid) var(--ease),
+    color var(--dur-mid) var(--ease),
+    box-shadow var(--dur-mid) var(--ease);
 }
+
 .btn:active { transform: translateY(1px); }
 
+.btn--sm {
+  min-height: 2.5rem;
+  padding: 0 1.1rem;
+  font-size: 0.875rem;
+}
+
 .btn--primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-text);
+  box-shadow: 0 10px 30px -12px color-mix(in srgb, var(--accent-fill) 70%, transparent);
 }
 
 .btn--primary:hover {
-  background: color-mix(in srgb, var(--accent) 88%, white);
+  background: var(--accent-fill-2);
+  color: var(--accent-text);
 }
 
 .btn--ghost {
@@ -39,58 +76,65 @@
 }
 
 .btn--ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--text);
+  color: var(--text);
 }
+
+/* Arrow that nudges on hover (decorative). */
+.btn__arrow {
+  display: inline-block;
+  transition: transform var(--dur-mid) var(--ease);
+}
+
+.btn:hover .btn__arrow { transform: translateX(3px); }
 
 /* ---------------------------------------------------------------- Links */
 .link {
   color: var(--link);
-  text-decoration: none;
-  text-underline-offset: 0.15em;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--dur-mid) var(--ease);
 }
 
 .link:hover,
 .link:focus-visible {
-  text-decoration: underline;
+  text-decoration-color: currentcolor;
 }
-.link:active { color: var(--accent); }
 
 /* ---------------------------------------------------------------- Cards */
 .card {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-2);
-  padding: var(--space-6);
+  padding: var(--space-8);
+  transition:
+    border-color var(--dur-mid) var(--ease),
+    transform var(--dur-slow) var(--ease),
+    box-shadow var(--dur-slow) var(--ease);
 }
-.card__title { margin-bottom: var(--space-2); }
+
+.card__title { margin-bottom: var(--space-3); }
 
 .card__text {
   color: var(--text-muted);
   margin-bottom: 0;
 }
 
-/* Glass hover card — glass is restrained (header, hover cards, command menu) */
+/* "Glass" cards are now quiet hairline cards that lift on hover. */
 .card--glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-1);
-  transition:
-    transform var(--dur-mid) var(--ease-out),
-    box-shadow var(--dur-mid) var(--ease-out),
-    border-color var(--dur-mid) var(--ease-out);
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  border: 1px solid var(--border);
 }
 
-@supports (backdrop-filter: blur(1px)) {
-  .card--glass { backdrop-filter: blur(var(--glass-blur)); }
+.card--glass:hover {
+  border-color: var(--border-strong);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .card--glass:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-3);
-    border-color: var(--glass-border);
   }
 }
 
@@ -98,35 +142,44 @@
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-teal);
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: 1.4;
+  color: var(--text-body);
+  line-height: 1.3;
+  text-decoration: none;
+  transition: border-color var(--dur-mid) var(--ease), color var(--dur-mid) var(--ease);
+}
+
+a.tag:hover {
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 /* ---------------------------------------------------------------- Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-3);
+  padding: 0.3rem 0.75rem;
   border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
-  font-weight: 600;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.06em;
   line-height: 1.3;
-  background: var(--border);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text);
 }
 
-.badge--brass {
-  background: var(--accent);
+.badge--brass,
+.badge--accent {
+  background: var(--accent-fill);
   color: var(--accent-text);
 }
 
 .badge--teal {
-  background: var(--color-teal-300);
-  color: var(--color-ink);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--text);
 }
 
 /* ---------------------------------------------------------------- Form fields */
@@ -134,12 +187,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .field__label {
-  font-weight: 600;
+  font-weight: 500;
   font-size: var(--fs-sm);
+  color: var(--text);
 }
 
 .field__hint {
@@ -149,99 +203,159 @@
 
 .field__control {
   width: 100%;
-  min-height: 2.75rem;
-  padding: var(--space-3) var(--space-4);
+  min-height: 3rem;
+  padding: 0.8rem 1rem;
   background: var(--surface-sunken);
   color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   font: inherit;
-  transition: border-color var(--dur-fast) var(--ease);
+  transition:
+    border-color var(--dur-mid) var(--ease),
+    background-color var(--dur-mid) var(--ease);
 }
-.field__control::placeholder { color: var(--text-muted); }
+
+.field__control::placeholder { color: var(--text-subtle); }
+
+.field__control:hover { border-color: color-mix(in srgb, var(--text) 30%, transparent); }
 
 .field__control:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 1px;
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
   border-color: var(--accent);
 }
 
 textarea.field__control {
-  min-height: 7rem;
+  min-height: 8rem;
   resize: vertical;
 }
 
 .field--error .field__control {
-  border-color: #e4867a;
+  border-color: var(--danger);
 }
 
 .field__error {
-  color: #f0a79c;
+  color: var(--danger-text);
   font-size: var(--fs-sm);
 }
 
 /* ---------------------------------------------------------------- Section header */
+/* Editorial: eyebrow, big light serif heading, lede beside it on wide screens. */
 .section-header {
-  max-width: 48rem;
-  margin-bottom: var(--space-8);
+  display: grid;
+  gap: var(--space-6) var(--space-16);
+  align-items: end;
+  max-width: none;
+  margin-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+}
+
+.section-header > * {
+  margin: 0;
 }
 
 .section-header__eyebrow {
-  display: inline-block;
-  margin-bottom: var(--space-2);
-  color: var(--accent);
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  justify-self: start;
+}
+
+.section-header h2,
+.section-header h1 {
+  max-width: 18ch;
 }
 
 .section-header__lede {
-  color: var(--text-muted);
-  font-size: var(--fs-lg);
-  margin-bottom: 0;
+  color: var(--text-body);
+  font-size: var(--fs-lede);
+  line-height: 1.55;
+  max-width: 36ch;
+}
+
+@media (width >= 900px) {
+  .section-header {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+
+  .section-header__eyebrow {
+    grid-column: 1 / -1;
+  }
+
+  .section-header__lede {
+    justify-self: end;
+  }
 }
 
 /* ---------------------------------------------------------------- Accordion */
+.accordion {
+  border-top: 1px solid var(--border);
+}
+
 .accordion__item {
   border-bottom: 1px solid var(--border);
 }
 
+.accordion__heading {
+  margin: 0;
+  font-size: inherit;
+}
+
 .accordion__trigger {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-6);
   width: 100%;
-  padding: var(--space-4) 0;
+  padding: var(--space-6) 0;
   background: transparent;
   border: 0;
   color: var(--text);
-  font: inherit;
-  font-weight: 600;
+  font: 400 clamp(1.1rem, 1rem + 0.45vw, 1.35rem)/1.35 var(--font-serif);
   text-align: left;
   cursor: pointer;
+  transition: color var(--dur-mid) var(--ease);
 }
 
+.accordion__trigger:hover { color: var(--accent); }
+
+/* Plus that turns into a minus. */
 .accordion__icon {
+  position: relative;
   flex: none;
-  width: 1rem;
-  height: 1rem;
-  border-right: 2px solid var(--accent);
-  border-bottom: 2px solid var(--accent);
-  transform: rotate(45deg);
-  transition: transform var(--dur-mid) var(--ease);
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  transition:
+    border-color var(--dur-mid) var(--ease),
+    transform var(--dur-slow) var(--ease);
 }
+
+.accordion__icon::before,
+.accordion__icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 1.5px;
+  margin: -0.75px 0 0 -6px;
+  background: currentcolor;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.accordion__icon::after { transform: rotate(90deg); }
 
 .accordion__trigger[aria-expanded="true"] .accordion__icon {
-  transform: rotate(-135deg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
+.accordion__trigger[aria-expanded="true"] .accordion__icon::after { transform: rotate(0deg); }
+
 .accordion__panel {
-  padding: 0 0 var(--space-4);
-  color: var(--text-muted);
+  padding: 0 4rem var(--space-6) 0;
+  color: var(--text-body);
+  max-width: 62ch;
 }
+
 .accordion__panel[hidden] { display: none; }
 
 /* ---------------------------------------------------------------- Tabs */
@@ -250,7 +364,7 @@ textarea.field__control {
   flex-wrap: wrap;
   gap: var(--space-2);
   border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
 }
 
 .tabs__tab {
@@ -261,37 +375,47 @@ textarea.field__control {
   margin-bottom: -1px;
   color: var(--text-muted);
   font: inherit;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
+
 .tabs__tab:hover { color: var(--text); }
 
 .tabs__tab[aria-selected="true"] {
-  color: var(--accent);
+  color: var(--text);
   border-bottom-color: var(--accent);
 }
+
 .tabs__panel[hidden] { display: none; }
 
-/* ---------------------------------------------------------------- Light section */
+/* ---------------------------------------------------------------- Raised band */
+/* Formerly an ivory "light section"; in v2 a quietly raised band that works in
+   both themes (kept under the old class name so existing templates resolve). */
 .section--light {
-  background: var(--surface-light);
-  color: var(--text-on-light);
+  background: var(--surface-sunken);
+  color: var(--text);
 }
 
 .section--light .card {
-  background: #fff;
-  color: var(--text-on-light);
+  background: var(--surface-2);
+  color: var(--text);
 }
 
-.section--light .card__text,
-.section--light .section-header__lede { color: #4a5560; }
-
-.section--light .btn--ghost {
-  color: var(--text-on-light);
-  border-color: rgb(0, 0, 0, 0.2);
+/* ---------------------------------------------------------------- Pill list */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.section--light .link { color: #1f6168; } /* darkened teal — AA on ivory + white */
 
-/* Brass fails AA as small text on ivory; use a dark-brass accent on light. */
-.section--light .section-header__eyebrow { color: #7a5e1f; }
+.pills > li {
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-body);
+}

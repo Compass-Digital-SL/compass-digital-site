@@ -1,5 +1,7 @@
 /* Compass Digital — front-end entry stylesheet.
-   Dark-first base layer + design-system components (see docs/DESIGN.md). */
+   Premium v2 base layer + design-system components (see docs/DESIGN.md).
+   The same base rules are inlined first in assets/critical.css; keep the two in
+   step so nothing shifts when this deferred bundle arrives. */
 
 /* Fonts are served as a static, un-hashed stylesheet (see assets/fonts/fonts.css)
    so preload hrefs stay stable. Only tokens + app CSS go through Vite. */
@@ -29,11 +31,20 @@ html {
 body {
   margin: 0;
   background: var(--surface);
-  color: var(--text);
+  color: var(--text-body);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: var(--lh-base);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color var(--dur-slow) var(--ease),
+    color var(--dur-slow) var(--ease);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--text);
 }
 
 h1,
@@ -41,22 +52,54 @@ h2,
 h3,
 h4 {
   font-family: var(--font-serif);
+  color: var(--text);
   line-height: var(--lh-tight);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  letter-spacing: -0.025em;
   margin: 0 0 var(--space-4);
+  text-wrap: balance;
 }
 
-h1 { font-size: var(--fs-2xl); }
+h1 {
+  font-size: var(--fs-2xl);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+}
+
 h2 { font-size: var(--fs-xl); }
-h3 { font-size: var(--fs-lg); }
-h4 { font-size: var(--fs-base); }
+
+h3 {
+  font-size: var(--fs-lg);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-size: var(--fs-base);
+  letter-spacing: 0;
+}
+
+/* Emphasis in headings: accent colour, upright (the self-hosted Fraunces has no
+   italic face, and a synthesised slant looks cheap). */
+h1 em,
+h2 em,
+h3 em {
+  font-style: normal;
+  font-synthesis: none;
+  color: var(--accent);
+}
 
 p { margin: 0 0 var(--space-4); }
 
+strong,
+b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 a {
   color: var(--link);
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.2em;
 }
 
 img {
@@ -64,16 +107,22 @@ img {
   height: auto;
 }
 
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-12) 0;
+}
+
 /* Accessible skip link */
 .skip-link {
   position: absolute;
   left: var(--space-2);
   top: -3rem;
-  z-index: 100;
+  z-index: 200;
   padding: var(--space-2) var(--space-4);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-text);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   transition: top var(--dur-fast) var(--ease);
 }
 
@@ -81,11 +130,15 @@ img {
   top: var(--space-2);
 }
 
-/* Visible focus for keyboard users — brass ring */
+/* Visible focus for keyboard users */
 :focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .screen-reader-text {
@@ -102,16 +155,15 @@ img {
 
 /* --- Layout primitives --- */
 .container,
-.site-header__inner,
 .site-footer__inner,
 .site-main > * {
-  max-width: var(--wide-width);
+  max-width: calc(var(--wide-width) + 2 * var(--gutter));
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
 
 .container--narrow {
-  max-width: var(--content-width);
+  max-width: calc(var(--content-width) + 2 * var(--gutter));
 }
 
 .grid {
@@ -124,8 +176,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-block: var(--space-4);
+  min-height: 3.5rem;
+  margin-inline: auto;
 }
 
 .hero {
@@ -133,12 +185,12 @@ img {
 }
 
 .site-footer {
-  margin-top: var(--space-16);
+  margin-top: 0;
   background: var(--surface-sunken);
-  color: var(--text);
-  padding-block: var(--space-8);
+  border-top: 1px solid var(--border);
+  color: var(--text-body);
+  padding-block: clamp(4rem, 3rem + 4vw, 6.5rem) var(--space-8);
 }
-.site-footer a { color: var(--link); }
 
 @media (prefers-reduced-motion: reduce) {
   * {

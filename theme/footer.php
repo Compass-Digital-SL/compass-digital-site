@@ -19,8 +19,8 @@ $compass_columns = array( $compass_map['services'], $compass_map['industries'], 
 	<div class="site-footer__inner">
 		<div class="site-footer__top">
 			<div class="site-footer__brand-col">
-				<p class="site-footer__brand"><?php bloginfo( 'name' ); ?></p>
-				<p class="site-footer__tagline"><?php esc_html_e( 'Find your way forward.', 'compass-digital' ); ?></p>
+				<?php get_template_part( 'template-parts/header/branding', null, array( 'context' => 'footer' ) ); ?>
+				<p class="site-footer__tagline"><?php esc_html_e( 'Websites, SEO and POS systems for businesses worldwide.', 'compass-digital' ); ?></p>
 				<ul class="site-footer__contact">
 					<?php if ( ! empty( $compass_contact['phone'] ) ) : ?>
 						<li>
@@ -35,9 +35,7 @@ $compass_columns = array( $compass_map['services'], $compass_map['industries'], 
 					<?php if ( ! empty( $compass_contact['email'] ) ) : ?>
 						<li><a href="mailto:<?php echo esc_attr( $compass_contact['email'] ); ?>"><?php echo esc_html( $compass_contact['email'] ); ?></a></li>
 					<?php endif; ?>
-					<?php if ( ! empty( $compass_contact['address'] ) ) : ?>
-						<li class="site-footer__address"><?php echo esc_html( $compass_contact['address'] ); ?></li>
-					<?php endif; ?>
+					<?php // No street address in the footer: the business is positioned worldwide (Task 24). ?>
 				</ul>
 
 				<?php
@@ -89,6 +87,7 @@ $compass_columns = array( $compass_map['services'], $compass_map['industries'], 
 					<span class="site-footer__reg"><?php esc_html_e( 'Reg. No.', 'compass-digital' ); ?> <?php echo esc_html( $compass_contact['reg_no'] ); ?></span>
 				<?php endif; ?>
 			</p>
+			<p class="site-footer__motto"><?php esc_html_e( 'Find your way forward.', 'compass-digital' ); ?></p>
 		</div>
 	</div>
 </footer>
