@@ -19,13 +19,157 @@
 - [x] 16 Technical SEO
 - [x] 17 Local SEO and analytics
 - [x] 18 Performance
-- [ ] 19 Accessibility and QA
-- [ ] 20 Security and legal
-- [ ] 21 CD pipeline
+- [x] 19 Accessibility and QA
+- [x] 20 Security and legal
+- [x] 21 CD pipeline
 - [ ] 22 Go-live
 - [ ] 23 Post-launch
 
+## Pre-launch audit (2026-11-19)
+
+Full code / security / SEO / performance / features / a11y / UX review and the
+outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
+- ~~Blocks launch: Task 20 (Security & legal) is not started~~ **Done** — security
+  headers + CSP (Report-Only), WP hardening, `security.txt`, and drafted
+  Privacy/Terms/Cookie pages. See the Task 20 log entry and `docs/SECURITY.md`.
+- Also outstanding: Task 22 (go-live), Task 23 (`docs/GROWTH.md`), the decided
+  **worldwide positioning** copy/schema pass, and real Lighthouse numbers
+  (never measured locally — Docker unavailable; capture on staging).
+- Owner "You do" actions (hosting/domain, GitHub secrets + environments, backup
+  bucket, `WP_ENVIRONMENT_TYPE=production`, Site Settings, replace sample
+  content, confirm legal pages) are collected in `docs/AUDIT.md` §10 and
+  `docs/GO-LIVE.md`.
+
 ## Log
+
+### Task 20 — Security and legal (2026-11-19)
+**Done**
+- **`mu-plugins/compass-security.php`** (must-use, survives theme/plugin swaps):
+  - Security headers on every front-end response — `X-Content-Type-Options`,
+    `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, `Permissions-Policy`
+    (geo/mic/cam/payment/USB/FLoC off), `Cross-Origin-Opener-Policy`, and
+    **HSTS only over TLS**.
+  - **CSP in Report-Only first** (`Content-Security-Policy-Report-Only`), allowing
+    self + GA4 + Turnstile; filterable (`compass_csp_directives` /
+    `compass_security_headers`). Flip to enforcing with
+    `define( 'COMPASS_CSP_ENFORCE', true )` after a clean staging run.
+  - **XML-RPC off** + pingback methods/header removed; **`DISALLOW_FILE_EDIT`**.
+  - **User-enumeration blocked** — `?author=N` redirect for guests, REST
+    `/wp/v2/users` removed for unauthenticated, oEmbed author stripped.
+  - **Login throttle** (5 fails / IP / 15 min) + generic login error.
+  - **`security.txt`** at `/.well-known/security.txt` (+ `/security.txt`), RFC 9116,
+    self-refreshing `Expires`.
+- **Legal pages, marked DRAFT for the owner's legal review**, matching what the
+  site actually collects (quote/contact form, GA4 after consent, email, spam
+  defences): `theme/page-privacy.php`, `theme/page-terms.php`,
+  `theme/page-cookie-policy.php` (+ `assets/src/css/legal.css`). Footer Legal
+  column now links the Cookie Policy. Placeholders (`[…]`) for registration
+  details, retention, rights/complaint route and governing law.
+- **`docs/SECURITY.md`** — headers rationale, CSP-tuning path, **least-privilege
+  roles**, **update policy**, and the owner server/account checklist.
+- **Verified (not changed):** the quote/contact form is already nonce-verified,
+  fully sanitised/escaped, honeypot + time-trap + rate-limit + optional Turnstile,
+  saved to a private CPT (Task 15) — no rework needed.
+
+**Decisions**
+- Hardening in **mu-plugins**, not the theme, so it cannot be switched off and
+  survives a theme change (per the pre-launch audit recommendation).
+- **CSP Report-Only first** with a temporary `'unsafe-inline'` for the inline
+  blocks (critical CSS, consent, JSON-LD, speculation rules); nonce + enforce is
+  the documented next step, not this task.
+- `DISALLOW_FILE_EDIT` defined in code (travels with the repo) rather than left to
+  wp-config.
+- Legal pages as **page templates** (slug-based, like the other pages) so the
+  owner creates empty Pages and assigns the template; copy lives in the repo.
+
+**Owner must do** — see `docs/SECURITY.md`:
+- Create Pages `privacy` / `terms` / `cookie-policy` and assign the templates;
+  **read, confirm and complete** the `[…]` placeholders; have them legally
+  reviewed.
+- Serve over HTTPS, enable 2FA on the single admin, keep one Administrator, watch
+  CSP Report-Only on staging then enforce, verify headers on the live URL.
+
+**Next**
+- Task 22 (Go-live): work `docs/GO-LIVE.md`, first staging deploy, tag `v1.0.0`.
+
+### Task 21 — Continuous deployment (2026-11-19)
+**Done**
+- **`.github/workflows/deploy.yml`** — push to `main` → **staging** (auto); push a
+  `v*.*.*` tag → **production** gated by the `production` GitHub Environment
+  (required reviewer = manual approval). One `build` job assembles the code-only
+  release (theme + `plugins/compass-core` + `mu-plugins`, excludes `node_modules`,
+  `assets/src`, `.vite`) and both environments deploy the **same artifact**.
+- **`.github/actions/ssh-deploy`** (composite) — rsync the release to
+  `releases/<ts-sha>`, flip the `current` symlink atomically, `wp cache flush` +
+  `rewrite flush`, smoke-test (`/` and `/get-a-quote/` return 200/3xx), run
+  Lighthouse (non-blocking), **auto-rollback** to the previous release on smoke
+  failure, and prune to the last **5** releases. Uploads and DB are never in the
+  artifact, so nothing but code moves.
+- **`.github/workflows/backup.yml`** — daily (02:15 UTC) + manual offsite backup:
+  `wp db export` (gzip) and an `uploads` tarball pushed to S3-compatible storage,
+  30-day retention. Read-only against the server.
+- **`docs/SECRETS.md`** — every secret **name** (SSH_HOST/USER/KEY/KNOWN_HOSTS,
+  STAGING_/PRODUCTION_ DEPLOY_PATH/WP_PATH/URL, TURNSTILE_*, SMTP_*, BACKUP_S3_*)
+  with purpose + where to add it; no values. **`docs/RESTORE.md`** — rollback +
+  DB/uploads restore guide and a restore-drill reminder. Owner action items added
+  to **`docs/GO-LIVE.md`** (Deployment pipeline + Backups).
+
+**Decisions**
+- **Symlink releases** (not in-place rsync) so rollback is an instant re-point and
+  the last 5 builds stay on disk. Web docroot must point at `<DEPLOY_PATH>/current`.
+- **Backups via a GitHub-scheduled workflow** as the dependable fallback; a
+  host-level cron is offered as optional belt-and-braces in GO-LIVE.
+- **Staging privacy** (noindex + Basic Auth) is a server/host setting, not code —
+  documented, not automated, since it depends on the host control panel.
+- Lighthouse on deploy is **non-blocking** (reports, never fails the deploy); the
+  smoke test is the hard gate that triggers rollback.
+
+**Owner must do (after buying hosting)** — see `docs/SECRETS.md` + `docs/GO-LIVE.md`:
+add every secret in GitHub, create the `staging`/`production` Environments (required
+reviewer on production), set up the deploy SSH key + `releases/` dir + `current`
+docroot, and create the offsite backup bucket.
+
+**Next**
+- Task 22 (Go-live): work the `docs/GO-LIVE.md` checklist, first real deploy, tag `v1.0.0`.
+
+### Task 19 — Accessibility, UX QA and device testing (2026-11-19)
+**Done**
+- **Full WCAG 2.2 AA audit** across every page (home, services hub + service, industries
+  hub + industry, work archive, about, process, FAQ, insights index + post, quote, contact,
+  thank-you, 404). Keyboard path, visible focus, screen-reader labels, contrast (already
+  measured in `docs/DESIGN.md`), form errors, reduced-motion, touch targets and 200 % zoom.
+- **Cross-browser + responsive Playwright suite** (`tests/e2e/a11y.spec.js`): added
+  **Firefox and WebKit** projects to `playwright.config.js` (was Chromium-only) and a new
+  spec that runs on all three — axe (critical/serious) at **360 px and 768 px** on every
+  page, **no horizontal overflow at 320 px** (reflow, WCAG 1.4.10), **200 % zoom** reflow,
+  the **skip link**, **visible keyboard focus** on header nav + command menu, **≥44 px**
+  mobile-bar touch targets, and **reduced-motion** rendering with no console errors.
+- **CI now installs all three browsers** (`.github/workflows/ci.yml`:
+  `playwright install --with-deps chromium firefox webkit`) so the cross-browser suite runs
+  on every PR.
+- **One real fix:** the command-menu search input removed its focus outline with no
+  replacement — added a `:focus-within` brass ring on `.command-menu__search`
+  (`theme/assets/src/css/nav.css`) so keyboard users always see focus (WCAG 2.4.7 / 2.4.11).
+- **UX review:** home passes the 5-second test (real-text H1 as LCP, clear lede, six labelled
+  service bearings, primary "Get a quote" CTA); every service is reachable in ≤3 clicks
+  (header nav / home bearings / mobile bar → hub → service); **no page is a dead end** —
+  each ends with a next-step CTA (service/industry/process/FAQ/services → "Request a quote",
+  contact → the form + WhatsApp, 404 → back-home + search).
+
+**Results**
+- **Chromium + WebKit: all green** locally (smoke + axe + the new a11y/responsive suite).
+- **Firefox:** the config + CI cover it, but it **could not launch on this Windows dev box**
+  (`browserType.launch: spawn UNKNOWN`, persists after `playwright install --force`) — an
+  environment/AV block, not a site issue. It runs in CI (Linux).
+
+**Decisions**
+- Kept the responsive axe matrix to **360/768 px** in the new spec; the existing smoke suite
+  already covers the default desktop width, so 1440 isn't duplicated.
+- Skip-link and focus tests use `.focus()` + polling rather than a `Tab` press: WebKit does
+  not Tab to links without full-keyboard-access, and the reveal has a CSS transition to settle.
+
+**Next**
+- Task 20 (Security + legal): WP hardening, security headers, legal pages.
 
 ### Task 18 — Performance (2026-11-19)
 **Done**

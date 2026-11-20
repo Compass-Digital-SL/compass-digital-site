@@ -1,0 +1,59 @@
+/* Compass Digital — legal pages (Privacy, Terms, Cookie Policy).
+   Reuses .service-hero / .service-prose; this layer adds only the
+   draft notice, metadata, cookie table and related links. */
+
+.legal-prose {
+  max-width: 72ch;
+}
+
+.legal-draft {
+  margin: 0 0 var(--space-5, 1.5rem);
+  padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
+  border: 1px solid var(--accent, #c9a24b);
+  border-left-width: 4px;
+  border-radius: var(--radius, 0.625rem);
+  background: color-mix(in srgb, var(--accent, #c9a24b) 10%, transparent);
+  font-size: var(--fs-sm, 0.9rem);
+  line-height: var(--lh-base, 1.6);
+}
+
+.legal-draft strong {
+  color: var(--accent, #c9a24b);
+}
+
+.legal-meta {
+  margin: 0 0 var(--space-6, 2rem);
+  color: var(--text-muted, #9fb2c2);
+  font-size: var(--fs-sm, 0.9rem);
+}
+
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-4, 1rem) 0 var(--space-6, 2rem);
+  font-size: var(--fs-sm, 0.9rem);
+}
+
+.legal-table th,
+.legal-table td {
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border, rgb(246, 242, 234, 0.14));
+}
+
+.legal-table thead th {
+  border-bottom: 2px solid var(--border-strong, rgb(246, 242, 234, 0.24));
+  font-weight: 600;
+}
+
+.legal-table code {
+  font-size: 0.95em;
+}
+
+.legal-related {
+  margin-top: var(--space-7, 2.5rem);
+  padding-top: var(--space-5, 1.5rem);
+  border-top: 1px solid var(--border, rgb(246, 242, 234, 0.14));
+  font-size: var(--fs-sm, 0.9rem);
+}

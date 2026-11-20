@@ -5,6 +5,38 @@ development. Collected here as tasks surface them, so nothing is forgotten at
 launch. Owned by **Task 21 (CD pipeline)** and **Task 22 (Go-live)**; tick each
 off there.
 
+## Deployment pipeline (Task 21 — owner, after buying hosting)
+
+CD is built: push to `main` → staging, a `vX.Y.Z` tag → production (manual
+approval). Full secret inventory in **`docs/SECRETS.md`**; restore steps in
+**`docs/RESTORE.md`**. You must do this once on GitHub + the host:
+
+- [ ] **Buy hosting + SSH access**, and create a staging subdomain/site
+  (e.g. `staging.compassdigital.lk`) alongside live.
+- [ ] **Add every secret** from `docs/SECRETS.md` in GitHub → Settings → Secrets
+  and variables → Actions. Paste values into GitHub only — never into chat.
+- [ ] **Create the GitHub Environments** `staging` and `production`; add a
+  **Required reviewer** (yourself) on `production` so tag deploys wait for approval.
+- [ ] **Create a deploy-only SSH key**, put its public half in the host's
+  `authorized_keys`, and `ssh-keyscan` the host for `SSH_KNOWN_HOSTS`.
+- [ ] **On the host:** create `<DEPLOY_PATH>/releases/`, point each site's docroot
+  at `<DEPLOY_PATH>/current` (the symlink the pipeline flips), and confirm `wp`
+  (WP-CLI) is on `PATH`.
+- [ ] **Password-protect staging** (HTTP Basic Auth / `.htpasswd`) and keep
+  `WP_ENVIRONMENT_TYPE=staging` so it stays noindex.
+- [ ] **First release:** merge to `main`, watch the **Deploy** workflow deploy to
+  staging, smoke-test + Lighthouse pass; then tag `v1.0.0`, approve the
+  `production` gate.
+
+## Backups (Task 21 — owner)
+
+- [ ] **Create an offsite bucket** (S3 / Backblaze B2 / Cloudflare R2 / Wasabi) and
+  add the `BACKUP_S3_*` secrets. The scheduled **Backup** workflow then runs daily
+  (02:15 UTC); trigger a first run manually to confirm it works.
+- [ ] _(Optional, belt-and-braces)_ also enable the **host's own** daily DB+files
+  backup if the plan includes one — independent of GitHub.
+- [ ] **Do a restore drill** into staging once backups exist (see `docs/RESTORE.md`).
+
 ## Environment
 
 - [ ] **Set `WP_ENVIRONMENT_TYPE`** on each host.
@@ -40,6 +72,40 @@ off there.
   - Best handled as its own small copy/positioning pass (its own branch) before
     launch. _Source: Task 17 (owner decision, 2026-11-19); supersedes the Task 16
     "revisit areaServed" note._
+
+## Legal pages (Task 20 — owner)
+
+The Pages exist (`privacy`, `terms`, `cookie-policy`, each assigned its template)
+and the drafts render. Before launch:
+
+- [ ] **Read and confirm the three legal pages** — `/privacy/`, `/terms/`,
+  `/cookie-policy/` — and **fill every `[…]` placeholder**: registered company
+  name + address (from Site Settings / `mu-plugins/compass-contact.php`), the
+  data-retention period, the rights/complaint route, and the governing law.
+- [ ] **Have them legally reviewed** for every jurisdiction you serve (Sri Lanka
+  PDPA No. 9 of 2022, and any others). The drafts are a starting point, not legal
+  advice. _Source: Task 20, `docs/SECURITY.md` §6._
+
+## Security — headers, CSP and accounts (Task 20 — owner)
+
+Hardening ships in `mu-plugins/compass-security.php` (headers, CSP Report-Only,
+XML-RPC off, file-editor off, user-enumeration blocked, login throttle,
+`security.txt`). Still server/account-side:
+
+- [ ] **Serve over HTTPS** — HSTS activates only on TLS (`is_ssl()`); confirm the
+  cert and a http→https redirect at the host.
+- [ ] **Watch CSP in Report-Only on staging** with real traffic (consent
+  accepted + declined, a form submit, every page type). Add a reporting endpoint
+  if you want the violations collected. Then **enforce** by adding
+  `define( 'COMPASS_CSP_ENFORCE', true );` to `wp-config.php`. Do not enforce
+  before a clean observation run — the CSP still allows `'unsafe-inline'` and
+  should be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
+- [ ] **Enable two-factor authentication** on the admin account and keep a single
+  Administrator (Editors for everyone else). _`docs/SECURITY.md` §3._
+- [ ] Set a **monitored security contact** (the `security.txt` reads the firm
+  email from `compass-contact.php`).
+- [ ] After deploy, **re-scan headers** on the live URL (securityheaders.com /
+  Mozilla Observatory).
 
 ## Performance — server caching (Task 18)
 

@@ -1,0 +1,92 @@
+name: Backup
+
+# Daily offsite backup of the LIVE site: database dump + uploads, pushed to
+# offsite object storage (S3-compatible). This is the GitHub-scheduled fallback
+# so a backup exists even before a host-level cron is configured; see
+# docs/SECRETS.md for the secret names and docs/RESTORE.md for how to restore.
+#
+# It only READS from the server (wp db export, rsync of uploads) and writes to
+# the offsite bucket. It never deploys code and never writes to the site.
+
+on:
+  schedule:
+    - cron: "15 2 * * *" # 02:15 UTC daily
+  workflow_dispatch: {} # allow a manual backup on demand
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Offsite DB + uploads backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Dump database and pull uploads
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          WP_PATH: ${{ secrets.PRODUCTION_WP_PATH }}
+        run: |
+          set -euo pipefail
+          SSH="ssh -i $HOME/.ssh/deploy_key -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o IdentitiesOnly=yes"
+          REMOTE="$SSH_USER@$SSH_HOST"
+          STAMP="$(date -u +%Y%m%d-%H%M%S)"
+          mkdir -p backup
+
+          # Database — dump on the host, gzip, pull down. Never committed anywhere.
+          $SSH "$REMOTE" "wp --path='$WP_PATH' db export - --single-transaction --quick --default-character-set=utf8mb4 | gzip -c" > "backup/db-$STAMP.sql.gz"
+
+          # Uploads — media only, mirrored into a dated tarball.
+          rsync -az -e "$SSH" "$REMOTE:$WP_PATH/wp-content/uploads/" "uploads/"
+          tar -czf "backup/uploads-$STAMP.tar.gz" uploads
+
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+
+      - name: Push offsite (S3-compatible)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.BACKUP_S3_REGION }}
+          S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          ENDPOINT_ARG=""
+          if [ -n "${S3_ENDPOINT:-}" ]; then ENDPOINT_ARG="--endpoint-url $S3_ENDPOINT"; fi
+          aws s3 cp "backup/db-$STAMP.sql.gz" "s3://$S3_BUCKET/db/db-$STAMP.sql.gz" $ENDPOINT_ARG
+          aws s3 cp "backup/uploads-$STAMP.tar.gz" "s3://$S3_BUCKET/uploads/uploads-$STAMP.tar.gz" $ENDPOINT_ARG
+
+      - name: Prune offsite backups older than 30 days
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.BACKUP_S3_REGION }}
+          S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+        run: |
+          set -euo pipefail
+          ENDPOINT_ARG=""
+          if [ -n "${S3_ENDPOINT:-}" ]; then ENDPOINT_ARG="--endpoint-url $S3_ENDPOINT"; fi
+          CUTOFF="$(date -u -d '30 days ago' +%Y-%m-%d)"
+          for prefix in db uploads; do
+            aws s3 ls "s3://$S3_BUCKET/$prefix/" $ENDPOINT_ARG | while read -r line; do
+              f_date="$(echo "$line" | awk '{print $1}')"
+              f_name="$(echo "$line" | awk '{print $4}')"
+              [ -z "$f_name" ] && continue
+              if [[ "$f_date" < "$CUTOFF" ]]; then
+                aws s3 rm "s3://$S3_BUCKET/$prefix/$f_name" $ENDPOINT_ARG
+              fi
+            done
+          done

@@ -1,0 +1,155 @@
+name: Deploy
+
+# Continuous deployment.
+#   - Merge/push to `main`      -> deploy to STAGING automatically.
+#   - Push a version tag v1.2.3 -> deploy to PRODUCTION after a manual approval
+#                                  in the `production` GitHub Environment.
+#
+# Only CODE ships (theme, plugins/compass-core, mu-plugins) via rsync over SSH
+# from the freshly built artifact. Uploads (wp-content/uploads) and the database
+# are NEVER touched. Each deploy lands in releases/<timestamp-sha> and the live
+# `current` symlink is flipped atomically, so rollback is an instant re-point.
+#
+# Every value this workflow needs is a GitHub Actions secret — names are listed
+# in docs/SECRETS.md. No secret value ever appears in this file or in logs.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+
+# Never run two deploys to the same environment at once; let a newer one wait
+# rather than clobber a release mid-flight.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "24"
+  KEEP_RELEASES: "5"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build the deployable code artifact ONCE. Same bytes go to staging and prod.
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build release artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            theme/package-lock.json
+
+      - name: Install npm dependencies (theme)
+        run: npm ci --prefix theme
+
+      - name: Build theme (Vite)
+        run: npm run build
+
+      - name: Assemble release tree (code only)
+        run: |
+          set -euo pipefail
+          mkdir -p release/wp-content/themes/compass \
+                   release/wp-content/plugins \
+                   release/wp-content/mu-plugins
+          # Theme: ship source + built dist, never node_modules or local config.
+          rsync -a --delete \
+            --exclude='node_modules' \
+            --exclude='assets/src' \
+            --exclude='.vite' \
+            theme/ release/wp-content/themes/compass/
+          # First-party plugin and must-use plugins.
+          rsync -a --delete plugins/compass-core/ release/wp-content/plugins/compass-core/
+          rsync -a mu-plugins/ release/wp-content/mu-plugins/
+          # A build marker the smoke test and rollback log can read.
+          echo "${{ github.sha }}" > release/RELEASE_SHA
+          echo "${{ github.ref_name }}" > release/RELEASE_REF
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: release
+          retention-days: 2
+          include-hidden-files: true
+
+  # ---------------------------------------------------------------------------
+  # STAGING — automatic on push to main. noindex + password protected server.
+  # ---------------------------------------------------------------------------
+  staging:
+    name: Deploy to staging
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ secrets.STAGING_URL }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/actions
+          sparse-checkout-cone-mode: false
+
+      - name: Download release artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: release
+          path: release
+
+      - name: Run deploy
+        uses: ./.github/actions/ssh-deploy
+        with:
+          ssh_host: ${{ secrets.SSH_HOST }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          ssh_key: ${{ secrets.SSH_KEY }}
+          ssh_known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          deploy_path: ${{ secrets.STAGING_DEPLOY_PATH }}
+          site_url: ${{ secrets.STAGING_URL }}
+          wp_path: ${{ secrets.STAGING_WP_PATH }}
+          keep_releases: ${{ env.KEEP_RELEASES }}
+
+  # ---------------------------------------------------------------------------
+  # PRODUCTION — only on a version tag, and only after manual approval.
+  # The `production` Environment must have a required reviewer configured.
+  # ---------------------------------------------------------------------------
+  production:
+    name: Deploy to production
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ secrets.PRODUCTION_URL }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/actions
+          sparse-checkout-cone-mode: false
+
+      - name: Download release artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: release
+          path: release
+
+      - name: Run deploy
+        uses: ./.github/actions/ssh-deploy
+        with:
+          ssh_host: ${{ secrets.SSH_HOST }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          ssh_key: ${{ secrets.SSH_KEY }}
+          ssh_known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          deploy_path: ${{ secrets.PRODUCTION_DEPLOY_PATH }}
+          site_url: ${{ secrets.PRODUCTION_URL }}
+          wp_path: ${{ secrets.PRODUCTION_WP_PATH }}
+          keep_releases: ${{ env.KEEP_RELEASES }}
