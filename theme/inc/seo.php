@@ -132,6 +132,14 @@ function compass_meta_description() {
 	} elseif ( is_singular( array( 'post', 'work' ) ) ) {
 		$id          = get_queried_object_id();
 		$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $id ) ), 30 );
+	} elseif ( is_page_template( 'page-get-a-quote.php' ) ) {
+		$description = __( 'Tell us what you need and get a free, no-obligation quote from Compass Digital — websites, SEO, POS systems, apps and custom software for businesses worldwide.', 'compass-digital' );
+	} elseif ( is_page_template( 'page-privacy.php' ) ) {
+		$description = __( 'How Compass Digital collects, uses and protects your personal data, and the choices and rights you have over it.', 'compass-digital' );
+	} elseif ( is_page_template( 'page-terms.php' ) ) {
+		$description = __( 'The terms that govern your use of the Compass Digital website and the services we provide.', 'compass-digital' );
+	} elseif ( is_page_template( 'page-cookie-policy.php' ) ) {
+		$description = __( 'What cookies the Compass Digital website uses, what they are for, and how you can control them in your browser.', 'compass-digital' );
 	} elseif ( is_singular() ) {
 		$id          = get_queried_object_id();
 		$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : '';

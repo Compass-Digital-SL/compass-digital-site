@@ -91,6 +91,7 @@ $archive_url     = get_post_type_archive_link( 'work' );
 		<?php endif; ?>
 
 		<?php if ( have_posts() ) : ?>
+			<h2 class="screen-reader-text"><?php esc_html_e( 'Case studies', 'compass-digital' ); ?></h2>
 			<div class="work-grid" data-work-grid data-reveal>
 				<?php
 				while ( have_posts() ) :
