@@ -65,30 +65,30 @@ function compass_meta_description() {
 	$company_tpl = function_exists( 'compass_current_company_template' ) ? compass_current_company_template() : '';
 
 	if ( is_front_page() ) {
-		$description = __( 'Sri Lankan web design, SEO and POS systems that are clear, fast and built around your business. Find your way forward. Request a free quote.', 'compass-digital' );
+		$description = __( 'Web design, SEO and POS systems for businesses worldwide, clear, fast and built around how you work. Find your way forward. Request a free quote.', 'compass-digital' );
 	} elseif ( $service ) {
 		$description = $service['meta'];
 	} elseif ( function_exists( 'compass_is_services_hub' ) && compass_is_services_hub() ) {
-		$description = __( 'Websites, SEO, POS systems, apps, ecommerce and custom software — built and supported by one Sri Lankan team. Quote on request.', 'compass-digital' );
+		$description = __( 'Websites, SEO, POS systems, apps, ecommerce and custom software — built and supported by one team. Quote on request.', 'compass-digital' );
 	} elseif ( $industry ) {
 		$description = $industry['meta'];
 	} elseif ( function_exists( 'compass_is_industries_hub' ) && compass_is_industries_hub() ) {
-		$description = __( 'Websites, POS, ecommerce and software built for Sri Lankan retail, restaurants, travel, ecommerce brands and SMEs. Quote on request.', 'compass-digital' );
+		$description = __( 'Websites, POS, ecommerce and software built for retail, restaurants, travel, ecommerce brands and SMEs worldwide. Quote on request.', 'compass-digital' );
 	} elseif ( $company_tpl ) {
 		$meta        = compass_company_meta();
 		$description = isset( $meta[ $company_tpl ] ) ? $meta[ $company_tpl ]['meta'] : '';
 	} elseif ( compass_is_contact_page() ) {
-		$description = __( 'Talk to Compass Digital about your website, SEO, POS or software. Based in Colombo, serving all of Sri Lanka. Request a free quote.', 'compass-digital' );
+		$description = __( 'Talk to Compass Digital about your website, SEO, POS or software. Working with clients worldwide. Request a free quote.', 'compass-digital' );
 	} elseif ( is_home() ) {
-		$description = __( 'Practical, jargon-free advice on websites, SEO, POS and selling online — written for Sri Lankan business owners by Compass Digital.', 'compass-digital' );
+		$description = __( 'Practical, jargon-free advice on websites, SEO, POS and selling online — written for business owners by Compass Digital.', 'compass-digital' );
 	} elseif ( is_category() || is_tag() ) {
 		$description = wp_strip_all_tags( get_the_archive_description() );
 		if ( ! $description ) {
 			/* translators: %s: term name. */
-			$description = sprintf( __( 'Insights on %s from Compass Digital — plain-language advice for Sri Lankan businesses.', 'compass-digital' ), wp_strip_all_tags( get_the_archive_title() ) );
+			$description = sprintf( __( 'Insights on %s from Compass Digital — plain-language advice for growing businesses.', 'compass-digital' ), wp_strip_all_tags( get_the_archive_title() ) );
 		}
 	} elseif ( is_post_type_archive( 'work' ) ) {
-		$description = __( 'Real case studies from Compass Digital — websites, SEO, POS and software for Sri Lankan businesses, with the problem, the work and the results.', 'compass-digital' );
+		$description = __( 'Real case studies from Compass Digital — websites, SEO, POS and software for businesses worldwide, with the problem, the work and the results.', 'compass-digital' );
 	} elseif ( is_singular( array( 'post', 'work' ) ) ) {
 		$id          = get_queried_object_id();
 		$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $id ) ), 30 );
@@ -517,8 +517,9 @@ function compass_website_schema() {
 /**
  * The LocalBusiness / ProfessionalService identity node.
  *
- * Address is Colombo; area served is all of Sri Lanka. Geo coordinates and
- * precise opening hours are finalised in Task 17 (Local SEO).
+ * The registered address stays in the schema (it is a fact about the business),
+ * but the area served is worldwide: Compass Digital works remotely with clients
+ * everywhere (Task 24 positioning).
  *
  * @return array<string,mixed>
  */
@@ -549,10 +550,7 @@ function compass_localbusiness_schema() {
 		'image'              => compass_og_image_url( 'og-home' ),
 		'parentOrganization' => array( '@id' => home_url( '/#organization' ) ),
 		'address'            => $address,
-		'areaServed'         => array(
-			'@type' => 'Country',
-			'name'  => 'Sri Lanka',
-		),
+		'areaServed'         => 'Worldwide',
 		'priceRange'         => '$$',
 	);
 

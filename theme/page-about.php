@@ -45,7 +45,7 @@ $team = array(
 			<div class="service-hero__inner" data-reveal>
 				<p class="service-hero__eyebrow"><?php esc_html_e( 'About us', 'compass-digital' ); ?></p>
 				<h1 class="service-hero__title"><?php esc_html_e( 'A digital partner you can actually reach.', 'compass-digital' ); ?></h1>
-				<p class="service-hero__lede"><?php esc_html_e( 'Compass Digital is a Sri Lankan software and digital services firm. We build websites, SEO, POS systems and custom software that are clear, dependable and built around how you work.', 'compass-digital' ); ?></p>
+				<p class="service-hero__lede"><?php esc_html_e( 'Compass Digital is a software and digital services firm working with clients worldwide. We build websites, SEO, POS systems and custom software that are clear, dependable and built around how you work.', 'compass-digital' ); ?></p>
 				<p class="service-hero__actions">
 					<a class="btn btn--primary" href="<?php echo esc_url( $quote_url ); ?>"><?php esc_html_e( 'Request a quote', 'compass-digital' ); ?></a>
 					<a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/process/' ) ); ?>"><?php esc_html_e( 'See how we work', 'compass-digital' ); ?></a>
@@ -62,10 +62,10 @@ $team = array(
 				<h2 id="story-title"><?php esc_html_e( 'Built because too many good businesses were being let down online.', 'compass-digital' ); ?></h2>
 			</div>
 			<div class="service-prose" data-reveal>
-				<p><?php esc_html_e( 'We started Compass Digital after watching the same story play out again and again: a Sri Lankan business owner pays for a website or a system, waits, and ends up with something slow, confusing, or half-finished — and a developer who stops replying. The work was never really theirs, and nobody explained anything in plain language.', 'compass-digital' ); ?></p>
+				<p><?php esc_html_e( 'We started Compass Digital after watching the same story play out again and again: a business owner pays for a website or a system, waits, and ends up with something slow, confusing, or half-finished — and a developer who stops replying. The work was never really theirs, and nobody explained anything in plain language.', 'compass-digital' ); ?></p>
 				<p><?php esc_html_e( 'We thought that was a low bar to clear. So we built a firm around the opposite: quote honestly, build the right thing once, explain it as we go, and stay reachable afterwards. Our name is the promise — a compass helps you find your way forward, and that is the job. Not the biggest build, the right next step.', 'compass-digital' ); ?></p>
 				<p><?php esc_html_e( 'We are a small, hands-on team, and we like it that way. You talk to the people doing the work, not an account manager relaying messages. We take on projects we can do well, say no to the ones we cannot, and treat your budget as if it were our own. That is not a slogan — it is just how we have chosen to run.', 'compass-digital' ); ?></p>
-				<p><?php esc_html_e( 'We work across the island, from Colombo to Kandy, Galle and Jaffna, and because we work remotely as standard, distance is never the reason something cannot get done. Whether you need a first website, a faster one, a POS that keeps up at the counter, or software built around your team, the starting point is the same conversation.', 'compass-digital' ); ?></p>
+				<p><?php esc_html_e( 'We work with clients all over the world, and because we work remotely as standard, distance is never the reason something cannot get done. Whether you need a first website, a faster one, a POS that keeps up at the counter, or software built around your team, the starting point is the same conversation.', 'compass-digital' ); ?></p>
 			</div>
 		</section>
 
@@ -145,7 +145,7 @@ compass_print_schema(
 		'@type'       => 'AboutPage',
 		'name'        => get_the_title(),
 		'url'         => $page_url,
-		'description' => 'A Sri Lankan software and digital services firm built on clarity, direction, craft and reliability.',
+		'description' => 'A software and digital services firm built on clarity, direction, craft and reliability.',
 		'publisher'   => array(
 			'@type' => 'Organization',
 			'name'  => get_bloginfo( 'name' ),

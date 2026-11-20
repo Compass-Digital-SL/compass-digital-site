@@ -216,7 +216,7 @@ get_header();
 			<?php
 			$faqs = array(
 				'How long does a website take?' => 'Most sites take four to eight weeks, depending on the number of pages and content readiness.',
-				'Do you offer SEO?'             => 'Yes — technical SEO, on-page and local SEO for Sri Lankan businesses.',
+				'Do you offer SEO?'             => 'Yes — technical SEO, on-page and local SEO for businesses worldwide.',
 				'Can you build a POS system?'   => 'We build POS systems for retail shops, restaurants and cafes.',
 			);
 			$i    = 0;
@@ -256,7 +256,7 @@ get_header();
 				<p>Fast, accessible websites built on a classic WordPress theme — no page builders.</p>
 			</div>
 			<div class="tabs__panel" role="tabpanel" id="sg-panel-2" aria-labelledby="sg-tab-2" hidden>
-				<p>Technical, on-page and local SEO that gets found in Sri Lanka.</p>
+				<p>Technical, on-page and local SEO that gets you found.</p>
 			</div>
 			<div class="tabs__panel" role="tabpanel" id="sg-panel-3" aria-labelledby="sg-tab-3" hidden>
 				<p>POS systems for shops, restaurants and cafes.</p>

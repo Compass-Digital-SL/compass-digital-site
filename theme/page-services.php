@@ -23,7 +23,7 @@ $compass_order = compass_services_order();
 			<?php get_template_part( 'template-parts/breadcrumbs' ); ?>
 			<div class="service-hero__inner" data-reveal>
 				<p class="service-hero__eyebrow"><?php esc_html_e( 'Services', 'compass-digital' ); ?></p>
-				<h1 class="service-hero__title"><?php esc_html_e( 'Everything your digital presence needs, from one Sri Lankan team.', 'compass-digital' ); ?></h1>
+				<h1 class="service-hero__title"><?php esc_html_e( 'Everything your business needs online, from one team.', 'compass-digital' ); ?></h1>
 				<p class="service-hero__lede"><?php esc_html_e( 'Websites, SEO, POS systems, apps, ecommerce and custom software — designed, built and supported by people who explain things in plain language. Pick what you need; we’ll join it up.', 'compass-digital' ); ?></p>
 				<p class="service-hero__actions">
 					<a class="btn btn--primary" href="<?php echo esc_url( compass_quote_url() ); ?>"><?php esc_html_e( 'Request a quote', 'compass-digital' ); ?></a>

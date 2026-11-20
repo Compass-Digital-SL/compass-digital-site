@@ -120,7 +120,7 @@ function compass_work_head() {
 	$description = '';
 
 	if ( is_post_type_archive( 'work' ) ) {
-		$description = __( 'Real case studies from Compass Digital — websites, SEO, POS and software for Sri Lankan businesses, with the problem, the work and the results.', 'compass-digital' );
+		$description = __( 'Real case studies from Compass Digital — websites, SEO, POS and software for businesses worldwide, with the problem, the work and the results.', 'compass-digital' );
 	} elseif ( is_singular( 'work' ) ) {
 		$description = has_excerpt() ? get_the_excerpt() : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', get_queried_object_id() ) ), 30 );
 	}

@@ -25,7 +25,7 @@ $categories   = compass_insights_categories();
 			<div class="service-hero__inner" data-reveal>
 				<p class="service-hero__eyebrow"><?php esc_html_e( 'Insights', 'compass-digital' ); ?></p>
 				<h1 class="service-hero__title"><?php esc_html_e( 'Plain advice on getting your business online.', 'compass-digital' ); ?></h1>
-				<p class="service-hero__lede"><?php esc_html_e( 'Practical, jargon-free guides on websites, SEO, POS and selling online — written for Sri Lankan business owners, not developers.', 'compass-digital' ); ?></p>
+				<p class="service-hero__lede"><?php esc_html_e( 'Practical, jargon-free guides on websites, SEO, POS and selling online — written for business owners, not developers.', 'compass-digital' ); ?></p>
 			</div>
 		</div>
 	</header>
@@ -102,7 +102,7 @@ compass_print_schema(
 		'@type'       => 'Blog',
 		'name'        => __( 'Compass Digital Insights', 'compass-digital' ),
 		'url'         => $insights_url,
-		'description' => __( 'Practical, jargon-free advice on websites, SEO, POS and selling online for Sri Lankan businesses.', 'compass-digital' ),
+		'description' => __( 'Practical, jargon-free advice on websites, SEO, POS and selling online for growing businesses.', 'compass-digital' ),
 		'publisher'   => array(
 			'@type' => 'Organization',
 			'name'  => get_bloginfo( 'name' ),

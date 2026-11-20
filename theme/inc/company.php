@@ -131,7 +131,7 @@ function compass_company_values() {
 }
 
 /**
- * The global FAQ: the questions Sri Lankan owners actually ask, grouped. Each
+ * The global FAQ: the questions business owners actually ask, grouped. Each
  * group has a label and a list of {q, a} pairs. The flat list of all pairs
  * drives the FAQPage JSON-LD.
  *
@@ -144,7 +144,7 @@ function compass_faq_groups() {
 			'faqs'  => array(
 				array(
 					'q' => __( 'Where are you based, and who do you work with?', 'compass-digital' ),
-					'a' => __( 'We are a Sri Lankan software and digital services firm based in Colombo, working with businesses across the island — retail shops, restaurants and cafes, tour operators, ecommerce brands, and corporates and SMEs. Because we work remotely as standard, we also help Sri Lankan-owned businesses overseas.', 'compass-digital' ),
+					'a' => __( 'We are a software and digital services firm working with businesses worldwide — retail shops, restaurants and cafes, tour operators, ecommerce brands, and corporates and SMEs. We work remotely as standard and schedule calls in your time zone.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'How do we get started?', 'compass-digital' ),
@@ -182,7 +182,7 @@ function compass_faq_groups() {
 			'faqs'  => array(
 				array(
 					'q' => __( 'Will my website work well on a phone?', 'compass-digital' ),
-					'a' => __( 'Yes. We design mobile-first and test on real devices, because most Sri Lankan visitors arrive on a phone. Pages are built to load in under two seconds and stay easy to use on a small screen.', 'compass-digital' ),
+					'a' => __( 'Yes. We design mobile-first and test on real devices, because most visitors arrive on a phone. Pages are built to load in under two seconds and stay easy to use on a small screen.', 'compass-digital' ),
 				),
 				array(
 					'q' => __( 'Can I update the website myself?', 'compass-digital' ),
@@ -237,8 +237,8 @@ function compass_faq_all() {
 function compass_company_meta() {
 	return array(
 		'page-about.php'   => array(
-			'title' => __( 'About Compass Digital — Your Digital Partner, Sri Lanka', 'compass-digital' ),
-			'meta'  => __( 'A Sri Lankan software and digital services firm built on clarity, craft and reliability. Meet the team behind Compass Digital.', 'compass-digital' ),
+			'title' => __( 'About Compass Digital — Your Digital Partner', 'compass-digital' ),
+			'meta'  => __( 'A software and digital services firm built on clarity, craft and reliability. Meet the team behind Compass Digital.', 'compass-digital' ),
 		),
 		'page-process.php' => array(
 			'title' => __( 'Our Process — How We Work | Compass Digital', 'compass-digital' ),
@@ -246,7 +246,7 @@ function compass_company_meta() {
 		),
 		'page-faq.php'     => array(
 			'title' => __( 'FAQ — Websites, SEO, POS & Software | Compass Digital', 'compass-digital' ),
-			'meta'  => __( 'Straight answers on cost, timelines, hosting, SEO, POS and support for Sri Lankan businesses — the questions owners actually ask.', 'compass-digital' ),
+			'meta'  => __( 'Straight answers on cost, timelines, hosting, SEO, POS and support — the questions business owners actually ask.', 'compass-digital' ),
 		),
 	);
 }

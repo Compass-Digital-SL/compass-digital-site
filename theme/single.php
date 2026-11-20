@@ -138,7 +138,7 @@ while ( have_posts() ) :
 			<section class="insight-cta" aria-labelledby="insight-cta-title">
 				<div class="insight-cta__inner">
 					<h2 id="insight-cta-title"><?php esc_html_e( 'Want this sorted for your business?', 'compass-digital' ); ?></h2>
-					<p><?php esc_html_e( 'We build websites, SEO, POS and software for Sri Lankan businesses — clear, fast and built around how you work. Tell us what you need.', 'compass-digital' ); ?></p>
+					<p><?php esc_html_e( 'We build websites, SEO, POS and software for businesses worldwide — clear, fast and built around how you work. Tell us what you need.', 'compass-digital' ); ?></p>
 					<p><a class="btn btn--primary" href="<?php echo esc_url( compass_quote_url() ); ?>"><?php esc_html_e( 'Request a quote', 'compass-digital' ); ?></a></p>
 				</div>
 			</section>
