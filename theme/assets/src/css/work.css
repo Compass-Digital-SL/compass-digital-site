@@ -146,8 +146,10 @@
 }
 
 .work-chip.is-active {
-  border-color: var(--accent);
-  background: var(--accent);
+  /* --accent-fill (not --accent) carries the white label at AA 4.6:1; --accent is
+     the lighter text/border teal and fails white at 3.67:1. */
+  border-color: var(--accent-fill);
+  background: var(--accent-fill);
   color: var(--accent-text);
 }
 

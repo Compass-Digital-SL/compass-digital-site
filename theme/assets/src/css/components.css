@@ -247,12 +247,10 @@ textarea.field__control {
    block below. */
 select.field__control {
   appearance: none;
-  -webkit-appearance: none;
   cursor: pointer;
   padding-right: 2.9rem;
   background-color: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
   border-color: var(--glass-border);
   background-image:
     linear-gradient(180deg, color-mix(in srgb, var(--ink) 7%, transparent), transparent 48%),
@@ -315,7 +313,6 @@ select.field__control:focus-visible {
   select.field__control::picker(select) {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-2);
