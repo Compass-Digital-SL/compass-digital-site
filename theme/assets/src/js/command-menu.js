@@ -194,9 +194,14 @@ function initHeaderShrink() {
   const progress = document.querySelector("[data-scroll-progress]");
   if (!header) return;
   let ticking = false;
-  let lastY = window.scrollY;
+  let lastY = null; // Set on the first frame: reading scrollY at start-up forces layout.
   function update() {
+    // Read every layout value first, then write: a class toggle before the
+    // scrollHeight read would force a synchronous reflow on every frame.
     const y = window.scrollY;
+    const max = progress ? document.documentElement.scrollHeight - window.innerHeight : 0;
+    if (lastY === null) lastY = y;
+
     header.classList.toggle("is-scrolled", y > 24);
     if (Math.abs(y - lastY) > 6) {
       // Never hide while a menu inside the header is open or focused.
@@ -205,7 +210,6 @@ function initHeaderShrink() {
       lastY = y;
     }
     if (progress) {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
       const k = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
       progress.style.setProperty("--progress", k.toFixed(4));
     }
@@ -221,7 +225,9 @@ function initHeaderShrink() {
     },
     { passive: true }
   );
-  update();
+  // First run in the next frame, not during module start-up (layout is not
+  // settled yet, so reading it here would force one).
+  requestAnimationFrame(update);
 }
 
 /** Upgrade header dropdowns: click toggles aria-expanded; outside click closes. */
