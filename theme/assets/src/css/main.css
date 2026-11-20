@@ -48,14 +48,6 @@ body {
   color: var(--text);
 }
 
-/* Keep page content above the fixed compass watermark (z-index: 0), so the
-   faint decoration never sits over text. Header is left untouched to preserve
-   its sticky behaviour. */
-.site-main,
-.site-footer {
-  position: relative;
-  z-index: 1;
-}
 
 h1,
 h2,

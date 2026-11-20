@@ -46,6 +46,18 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Compass watermark — visibility + position fix (2026-11-20)
+**Done** (task/30)
+- The needle looked static because the watermark sat *behind* content (`z-index: 0`) and the
+  pages' opaque section backgrounds hid it. Switched it to a faint overlay **above** content
+  (`z-index: 2`, below `--z-header: 50` so the sticky header/nav/chat stay on top),
+  `pointer-events: none`, `aria-hidden`.
+- Repositioned from the bottom corner to **centre-right, cropped off the right edge**
+  (`top: 50%; right: -14vmin; 64vmin`), matching the sketch; opacity 0.07.
+- Removed the now-unneeded `.site-main / .site-footer` z-index rule.
+- Verified in a local static-server harness: needle rotates smoothly 0° → −540° across the
+  scroll and stays visible over opaque sections.
+
 ### Scroll-driven compass watermark (2026-11-20)
 **Done** (task/29)
 - A faint (~5% opacity) fixed compass, pinned bottom-right and cropped, whose needle
