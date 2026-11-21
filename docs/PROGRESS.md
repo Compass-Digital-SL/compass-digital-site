@@ -28,6 +28,8 @@
 - [ ] 25 Sinhala language version (future: real /si/ URLs + hreflang, native review)
 - [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
 - [x] 27 AI sales-assistant chatbot (Gemini proxy + lazy vanilla widget)
+- [x] 33 Full audit + QA (findings F1–F12 in `docs/AUDIT.md` top section)
+- [ ] 34 Fix audit findings F1–F9 (form Turnstile guard, quote prefill, auto-reply, proxy IP, chat nonce/cap, secrets, CSP endpoint, site title)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -45,6 +47,25 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 33 — Full audit + QA (2026-11-21)
+**Done** (task/33) — docs only, no code changed.
+- Lint, build, PHPCS, Chromium e2e/axe (82/84), extra light-theme axe pass (16/16
+  clean), 68-URL crawl, manual QA of all interactive parts, endpoint probe, Site
+  Health, code review of form/chat/security. Full write-up: `docs/AUDIT.md` top.
+- **Top issue (F1):** the quote/contact form rejects every real submission locally —
+  Turnstile secret set, site key empty; the handler enforces on the secret alone.
+- Other headlines: quote prefill broken from industry pages/case studies (F2),
+  auto-reply can relay arbitrary text (F3), rate limits break behind a proxy (F4),
+  chat nonce stale under page cache (F5).
+
+**Decisions**
+- Audit only; fixes go in a follow-up task (34) so each lands as its own reviewed change.
+
+**Next / owner action**
+- Settings → Compass → Site Settings: add the Turnstile site key or clear the secret.
+- Settings → General: Site Title "Compass Digital".
+- Then Task 34 (code fixes F1–F9).
 
 ### Pain selector: panel blank for non-first choice (2026-11-20)
 **Done** (task/32)
