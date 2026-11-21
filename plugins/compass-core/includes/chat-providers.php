@@ -4,7 +4,7 @@
  *
  * The REST handler (chat.php) is provider-agnostic: it builds a system prompt
  * and a list of {role, text} turns, then calls compass_chat_complete(). To move
- * from Gemini to Groq, Cloudflare Workers AI, OpenAI, etc., add a matching
+ * from Gemini to Groq, OpenAI, etc., add a matching
  * `compass_chat_provider_<name>()` function and point the `compass_chat_provider`
  * filter (or the COMPASS_CHAT_PROVIDER constant) at it. Nothing else changes.
  *

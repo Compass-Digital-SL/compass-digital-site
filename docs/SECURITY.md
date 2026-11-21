@@ -35,7 +35,7 @@ plugin changes). Legal pages are in `docs`/the theme (see §6).
   (RFC 9116), with a contact email and a self-refreshing `Expires` date.
 
 The **quote/contact form** (the only public input) was already defended in Task
-15: nonce-verified, honeypot + time-trap, per-IP rate limit, optional Turnstile,
+15: nonce-verified, honeypot + time-trap, per-IP rate limit,
 every field sanitised and escaped, saved to a private CPT. No change needed —
 verified during this task.
 
@@ -50,8 +50,7 @@ JSON-LD schema, speculation rules).
 
 **Allowed origins:** Google Analytics / Tag Manager per Google's GA4 CSP guide
 (`*.googletagmanager.com`, `*.google-analytics.com`, `*.analytics.google.com` —
-the wildcards cover the regional collection hosts) and Cloudflare Turnstile
-(`challenges.cloudflare.com`). Images allow `self data:`; fonts are self-hosted.
+the wildcards cover the regional collection hosts). No frames are allowed. Images allow `self data:`; fonts are self-hosted.
 
 Tune with the `compass_csp_directives` filter (add origins) or
 `compass_security_headers` filter (whole header set).

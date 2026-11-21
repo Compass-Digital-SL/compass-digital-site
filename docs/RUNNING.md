@@ -52,7 +52,6 @@ Full background is in [README.md](../README.md).
 ## Turn on the real keys (when ready — Task 21)
 Add in **wp-admin → Settings → Site Settings → Quote & email**, or as
 `COMPASS_*` constants in `wp-config.php` (safest for secrets — never commit them):
-- [ ] **Cloudflare Turnstile** site key + secret (free bot protection)
 - [ ] **SMTP** host / port / user / password / encryption / from + notification email
 
 Until these are set, the form still works: spam falls back to the

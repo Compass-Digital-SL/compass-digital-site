@@ -27,18 +27,13 @@ $cf_args    = wp_parse_args(
 );
 $is_contact = 'contact' === $cf_args['form'];
 
-$services       = compass_quote_services();
-$industries     = compass_quote_industries();
-$timelines      = compass_quote_timelines();
-$budgets        = compass_quote_budgets();
-$methods        = compass_quote_contact_methods();
-$flash          = compass_quote_flash();
-$cf_errors      = $flash['errors'] ?? array();
-$turnstile_site = function_exists( 'compass_core_turnstile_enabled' ) && compass_core_turnstile_enabled() ? compass_core_secret( 'turnstile_site' ) : '';
-
-if ( $turnstile_site ) {
-	wp_enqueue_script( 'cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion, WordPress.WP.EnqueuedResourceParameters.NotInFooter -- third-party widget, versionless CDN URL.
-}
+$services   = compass_quote_services();
+$industries = compass_quote_industries();
+$timelines  = compass_quote_timelines();
+$budgets    = compass_quote_budgets();
+$methods    = compass_quote_contact_methods();
+$flash      = compass_quote_flash();
+$cf_errors  = $flash['errors'] ?? array();
 
 // Steps: labels for the (JS) progress indicator.
 $steps = array(
@@ -240,12 +235,6 @@ $steps = array(
 				<span class="field__error"><?php echo esc_html( $cf_errors['consent'] ); ?></span>
 			<?php endif; ?>
 		</div>
-
-		<?php if ( $turnstile_site ) : ?>
-			<div class="field">
-				<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( $turnstile_site ); ?>" data-theme="dark"></div>
-			</div>
-		<?php endif; ?>
 	</fieldset>
 
 	<div class="quote-actions">

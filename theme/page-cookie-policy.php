@@ -92,7 +92,7 @@ $updated  = gmdate( 'j F Y' );
 			<p><?php esc_html_e( 'These analytics cookies are set by Google only if you accept. See our Privacy Policy for how analytics data is handled, and Google’s own policies for more detail.', 'compass-digital' ); ?></p>
 
 			<h2><?php esc_html_e( 'Spam protection', 'compass-digital' ); ?></h2>
-			<p><?php esc_html_e( 'Where enabled, our forms use Cloudflare Turnstile to block spam. It may set a short-lived token to verify your browser, but it is a privacy-friendly check and does not track you across websites.', 'compass-digital' ); ?></p>
+			<p><?php esc_html_e( 'Our forms block spam with a hidden honeypot field, a timing check and a rate limit. None of these set cookies.', 'compass-digital' ); ?></p>
 
 			<h2><?php esc_html_e( 'Contact', 'compass-digital' ); ?></h2>
 			<p>

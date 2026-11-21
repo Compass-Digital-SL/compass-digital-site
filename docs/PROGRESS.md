@@ -29,7 +29,8 @@
 - [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
 - [x] 27 AI sales-assistant chatbot (Gemini proxy + lazy vanilla widget)
 - [x] 33 Full audit + QA (findings F1–F12 in `docs/AUDIT.md` top section)
-- [x] 34 Fix audit findings F1–F5 + F7 (Turnstile guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
+- [x] 34 Fix audit findings F1–F5 + F7 (spam-check guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
+- [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
 - [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
 
 ## Pre-launch audit (2026-11-19)
@@ -49,11 +50,23 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Task 36 — Remove third-party vendor ties (2026-11-21)
+**Done** (task/36)
+- Removed the CAPTCHA integration completely: settings fields, handler check and
+  verify call, form widget + script, CSP origins (`frame-src` is now `'none'`).
+  Spam defence is honeypot + time trap + per-IP rate limit.
+- Privacy + Cookie Policy copy updated to match (no third-party spam check).
+- Docs scrubbed of the CDN/CAPTCHA, domain registrar and hosting-platform names
+  (SECRETS, GO-LIVE, RUNNING, SECURITY, AUDIT, this log); proxy-IP note is generic.
+- GitHub: the repo had no related secrets, variables, environments or webhooks.
+
+**Decisions**
+- Owner decision: no Cloudflare, Namecheap or Vercel anywhere in the project.
+
 ### Task 34 — Audit fixes F1–F5, F7 (2026-11-21)
 **Done** (task/34)
-- **F1** `compass_core_turnstile_enabled()` (both keys required); the handler and
-  `quote-form.php` use it, so a half-configured Turnstile can no longer block every
-  lead. Locally the stray secret was also cleared in Site Settings.
+- **F1** Guarded the third-party spam check so a half-configured setup could not
+  block every lead (the integration was later removed entirely in Task 36).
 - **F2** `compass_quote_url( $service, $industry )`: industry pages link
   `?industry=<slug>`; case studies pass the service **term slug** (term names differ
   from form labels). Verified both pre-select.
@@ -74,8 +87,8 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   without a proxy in front would let anyone dodge the rate limits.
 
 **Next / owner action**
-- Before launch: add **both** Turnstile keys; set `COMPASS_CLIENT_IP_HEADER` if
-  behind Cloudflare (see `GO-LIVE.md` → Security).
+- Before launch: set `COMPASS_CLIENT_IP_HEADER` if behind a reverse proxy / CDN
+  (see `GO-LIVE.md` → Security).
 
 ### Task 33 — Full audit + QA (2026-11-21)
 **Done** (task/33) — docs only, no code changed.
@@ -83,7 +96,7 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   clean), 68-URL crawl, manual QA of all interactive parts, endpoint probe, Site
   Health, code review of form/chat/security. Full write-up: `docs/AUDIT.md` top.
 - **Top issue (F1):** the quote/contact form rejects every real submission locally —
-  Turnstile secret set, site key empty; the handler enforces on the secret alone.
+  a spam-check secret was set without its site key.
 - Other headlines: quote prefill broken from industry pages/case studies (F2),
   auto-reply can relay arbitrary text (F3), rate limits break behind a proxy (F4),
   chat nonce stale under page cache (F5).
@@ -92,7 +105,6 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - Audit only; fixes go in a follow-up task (34) so each lands as its own reviewed change.
 
 **Next / owner action**
-- Settings → Compass → Site Settings: add the Turnstile site key or clear the secret.
 - Settings → General: Site Title "Compass Digital".
 - Then Task 34 (code fixes F1–F9).
 
@@ -221,7 +233,7 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - **Provider adapter** (`includes/chat-providers.php`) — one module to swap. Default
   Google **Gemini** free tier (`gemini-2.0-flash`). Key read server-side via
   `compass_core_secret('gemini_api_key')` → constant `COMPASS_GEMINI_API_KEY` or
-  Site Settings. Swap to Groq/Workers AI by adding one function + the
+  Site Settings. Swap to another provider by adding one function + the
   `compass_chat_provider` filter.
 - **Knowledge** in an editable data file (`data/chat-knowledge.php`, filterable):
   persona/voice from BRAND.md, services, industries, curated FAQ, and a strict
@@ -380,7 +392,7 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
     (geo/mic/cam/payment/USB/FLoC off), `Cross-Origin-Opener-Policy`, and
     **HSTS only over TLS**.
   - **CSP in Report-Only first** (`Content-Security-Policy-Report-Only`), allowing
-    self + GA4 + Turnstile; filterable (`compass_csp_directives` /
+    self + GA4; filterable (`compass_csp_directives` /
     `compass_security_headers`). Flip to enforcing with
     `define( 'COMPASS_CSP_ENFORCE', true )` after a clean staging run.
   - **XML-RPC off** + pingback methods/header removed; **`DISALLOW_FILE_EDIT`**.
@@ -398,7 +410,7 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - **`docs/SECURITY.md`** — headers rationale, CSP-tuning path, **least-privilege
   roles**, **update policy**, and the owner server/account checklist.
 - **Verified (not changed):** the quote/contact form is already nonce-verified,
-  fully sanitised/escaped, honeypot + time-trap + rate-limit + optional Turnstile,
+  fully sanitised/escaped, honeypot + time-trap + rate-limit,
   saved to a private CPT (Task 15) — no rework needed.
 
 **Decisions**
@@ -439,7 +451,7 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `wp db export` (gzip) and an `uploads` tarball pushed to S3-compatible storage,
   30-day retention. Read-only against the server.
 - **`docs/SECRETS.md`** — every secret **name** (SSH_HOST/USER/KEY/KNOWN_HOSTS,
-  STAGING_/PRODUCTION_ DEPLOY_PATH/WP_PATH/URL, TURNSTILE_*, SMTP_*, BACKUP_S3_*)
+  STAGING_/PRODUCTION_ DEPLOY_PATH/WP_PATH/URL, SMTP_*, BACKUP_S3_*)
   with purpose + where to add it; no values. **`docs/RESTORE.md`** — rollback +
   DB/uploads restore guide and a restore-drill reminder. Owner action items added
   to **`docs/GO-LIVE.md`** (Deployment pipeline + Backups).
@@ -655,17 +667,15 @@ paste the Maps + reviews links and GA4/GSC IDs into Site Settings, set up Bing P
   short transient and redirects back with an accessible error summary (no typing lost); on success
   saves a private **`quote_request`** (`_compass_*` meta, services joined, status `new`), emails the
   owner a clean summary + sends the visitor an auto-reply, then redirects to **`/thank-you/`**.
-- **Spam defence**: honeypot (silent drop), min-time trap (<2s), per-IP rate limit (5 / 15 min), and
-  **Cloudflare Turnstile** — site/secret keys from Site Settings *or* PHP constants, **skipped
-  gracefully when unset**, so it works now and activates when keys are added (Task 21).
+- **Spam defence**: honeypot (silent drop), min-time trap (<2s), and per-IP rate limit (5 / 15 min).
 - **Contact page** (`theme/page-contact.php`): the same form (marked source `contact`, lands in the
   same Quote Requests), plus business details, a **pre-filled WhatsApp link** and a clear
   **one-business-day** response promise. Emits ContactPage + BreadcrumbList JSON-LD.
 - **Thank-you page** (`theme/page-thank-you.php`, noindex): confirmation + next steps + a
   `generate_lead` analytics event (dataLayer + gtag-safe) for Task 17. Seeded with its template by
   `wp compass seed` (`seed_quote_pages()`), which also assigns templates to Get-a-quote / Contact.
-- **Settings** (`includes/settings.php`): new **Quote & email** section — notification recipient,
-  Turnstile site/secret, and SMTP host/port/user/pass/encryption/from. Each value is overridable by a
+- **Settings** (`includes/settings.php`): new **Quote & email** section — notification recipient
+  and SMTP host/port/user/pass/encryption/from. Each value is overridable by a
   `COMPASS_*` constant (env/wp-config). SMTP is wired via `phpmailer_init`, used only when a host is set.
 - **Admin**: Quote Requests meta box + CSV export now also carry Industry, Timeline and Preferred
   contact.
@@ -680,12 +690,12 @@ paste the Maps + reviews links and GA4/GSC IDs into Site Settings, set up Bing P
   the existing `quote_request` CPT. The theme owns only presentation + the option lists.
 - Failed submits use a **random-token transient flash** (errors + input) rather than a session, so the
   form replays accessibly with no data loss and no reliance on cookies.
-- Turnstile + SMTP **degrade to off** when unconfigured, so the whole flow is testable before the owner
+- SMTP **degrades to off** when unconfigured, so the whole flow is testable before the owner
   supplies keys in Task 21 — no hard dependency on external services.
 
 **Next**
 - Task 16: Technical SEO.
-- **Owner (Task 21)**: add Turnstile keys + SMTP details in **Settings → Site Settings → Quote & email**
+- **Owner (Task 21)**: add SMTP details in **Settings → Site Settings → Quote & email**
   (or as `COMPASS_*` constants). After deploy, run `npm run wp:seed` once so `/thank-you/` exists.
 
 ### Task 14 — About / Process / FAQ / Insights (2026-11-18)
