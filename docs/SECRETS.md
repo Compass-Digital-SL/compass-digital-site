@@ -8,7 +8,7 @@ ever written here, in the workflows, or asked for in chat — you paste each val
 
 GitHub → the repo → **Settings → Secrets and variables → Actions**.
 
-- **Repository secrets** (used by every workflow): the SSH, Turnstile, SMTP and
+- **Repository secrets** (used by every workflow): the SSH, SMTP and
   backup secrets below.
 - **Environment secrets** (scoped per environment — create the environments
   first, see "Environments" at the end): the `STAGING_*` and `PRODUCTION_*`
@@ -50,20 +50,6 @@ Add under the matching environment (`staging` / `production`).
 > The web server's docroot should point at `<DEPLOY_PATH>/current` so flipping the
 > symlink switches the live code atomically. Set this up once on the host.
 
-## Turnstile (repository secrets)
-
-Cloudflare Turnstile protects the quote form (Task 15 / 20).
-
-| Name | What it is |
-|------|-----------|
-| `TURNSTILE_SITE_KEY` | Public site key (rendered in the form). |
-| `TURNSTILE_SECRET_KEY` | Secret key used server-side to verify the token. |
-
-> These are consumed by the site at runtime (via `wp-config.php` constants or
-> Site Settings on the server). They are listed here so every name lives in one
-> place; set the live values on the host, not only in GitHub, if the theme reads
-> them from `wp-config.php`.
-
 ## SMTP (repository secrets)
 
 Transactional email for quote notifications.
@@ -75,21 +61,21 @@ Transactional email for quote notifications.
 | `SMTP_USER` | SMTP username. |
 | `SMTP_PASS` | SMTP password / app password. |
 
-> Like Turnstile, these are site-runtime values — set them on the host
+> These are site-runtime values — set them on the host
 > (`wp-config.php` / mail plugin). Kept here so the full secret inventory is one list.
 
 ## Offsite backups (repository secrets)
 
 Used by `.github/workflows/backup.yml`. Any S3-compatible store works
-(AWS S3, Backblaze B2, Cloudflare R2, Wasabi).
+(AWS S3, Backblaze B2, Wasabi).
 
 | Name | What it is |
 |------|-----------|
 | `BACKUP_S3_BUCKET` | Bucket name backups are written to. |
 | `BACKUP_S3_ACCESS_KEY` | Access key ID. |
 | `BACKUP_S3_SECRET_KEY` | Secret access key. |
-| `BACKUP_S3_REGION` | Region (e.g. `us-east-1`; for R2 use `auto`). |
-| `BACKUP_S3_ENDPOINT` | Custom endpoint URL for non-AWS providers (e.g. `https://<acct>.r2.cloudflarestorage.com`). Leave **unset** for AWS S3. |
+| `BACKUP_S3_REGION` | Region (e.g. `us-east-1`). |
+| `BACKUP_S3_ENDPOINT` | Custom endpoint URL for non-AWS providers (e.g. `https://s3.us-west-004.backblazeb2.com`). Leave **unset** for AWS S3. |
 
 ## Environments (do this once, before the first deploy)
 

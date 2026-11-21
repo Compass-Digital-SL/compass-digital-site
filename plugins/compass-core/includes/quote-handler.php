@@ -4,7 +4,7 @@
  *
  * Receives the public form (both /get-a-quote/ and /contact/ post here),
  * validates on the server, defends against spam (honeypot, time trap, per-IP
- * rate limit, optional Cloudflare Turnstile), saves a private quote_request,
+ * rate limit), saves a private quote_request,
  * emails the owner a clean summary and the visitor an auto-reply, then redirects
  * to the thank-you page. On a validation error it flashes the messages + the
  * visitor's own input back to the form so nothing typed is lost.
@@ -56,15 +56,6 @@ function compass_core_handle_quote() {
 	$hits   = (int) get_transient( $ip_key );
 	if ( $hits >= 5 ) {
 		compass_core_quote_fail( $source, array( '_form' => __( 'Too many requests from your connection. Please try again in a few minutes.', 'compass-core' ) ), compass_core_quote_raw_input() );
-	}
-
-	// --- Turnstile (only when both keys are set, matching what the form renders).
-	$secret = compass_core_turnstile_enabled() ? compass_core_secret( 'turnstile_secret' ) : '';
-	if ( $secret ) {
-		$token = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ) : '';
-		if ( ! compass_core_verify_turnstile( $secret, $token ) ) {
-			compass_core_quote_fail( $source, array( '_form' => __( 'The spam check did not pass. Please tick the box and try again.', 'compass-core' ) ), compass_core_quote_raw_input() );
-		}
 	}
 
 	// --- Collect + validate.
@@ -360,57 +351,11 @@ function compass_core_first_name( $name ) {
 }
 
 /**
- * Is Turnstile fully configured?
+ * Best-effort client IP (used only for rate limiting).
  *
- * Both keys are required: the site key renders the widget, the secret verifies
- * it. With only one set, enforcing would reject every visitor (no widget to
- * tick), so the check is skipped until both are present.
- *
- * @return bool
- */
-function compass_core_turnstile_enabled() {
-	if ( ! function_exists( 'compass_core_secret' ) ) {
-		return false;
-	}
-	return '' !== compass_core_secret( 'turnstile_site' ) && '' !== compass_core_secret( 'turnstile_secret' );
-}
-
-/**
- * Verify a Cloudflare Turnstile token.
- *
- * @param string $secret Secret key.
- * @param string $token  Response token.
- * @return bool
- */
-function compass_core_verify_turnstile( $secret, $token ) {
-	if ( '' === $token ) {
-		return false;
-	}
-	$response = wp_remote_post(
-		'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-		array(
-			'timeout' => 5,
-			'body'    => array(
-				'secret'   => $secret,
-				'response' => $token,
-				'remoteip' => compass_core_client_ip(),
-			),
-		)
-	);
-	if ( is_wp_error( $response ) ) {
-		return false;
-	}
-	$body = json_decode( wp_remote_retrieve_body( $response ), true );
-	return is_array( $body ) && ! empty( $body['success'] );
-}
-
-/**
- * Best-effort client IP (used only for rate limiting + Turnstile).
- *
- * Behind Cloudflare or another reverse proxy REMOTE_ADDR is the proxy, so every
- * visitor would share one rate-limit bucket. Set COMPASS_CLIENT_IP_HEADER in
- * wp-config.php to the $_SERVER key the proxy fills (e.g. 'HTTP_CF_CONNECTING_IP'
- * or 'HTTP_X_FORWARDED_FOR'). Only do that when ALL traffic passes through that
+ * Behind a reverse proxy REMOTE_ADDR is the proxy, so every visitor would share
+ * one rate-limit bucket. Set COMPASS_CLIENT_IP_HEADER in wp-config.php to the
+ * $_SERVER key the proxy fills (e.g. 'HTTP_X_FORWARDED_FOR'). Only do that when ALL traffic passes through that
  * proxy — otherwise the header is spoofable. Filterable via compass_client_ip_header.
  *
  * @return string

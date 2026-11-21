@@ -30,7 +30,7 @@ approval). Full secret inventory in **`docs/SECRETS.md`**; restore steps in
 
 ## Backups (Task 21 — owner)
 
-- [ ] **Create an offsite bucket** (S3 / Backblaze B2 / Cloudflare R2 / Wasabi) and
+- [ ] **Create an offsite bucket** (S3 / Backblaze B2 / Wasabi) and
   add the `BACKUP_S3_*` secrets. The scheduled **Backup** workflow then runs daily
   (02:15 UTC); trigger a first run manually to confirm it works.
 - [ ] _(Optional, belt-and-braces)_ also enable the **host's own** daily DB+files
@@ -102,14 +102,12 @@ need the real host, HTTPS and the production admin account:
   `define( 'COMPASS_CSP_ENFORCE', true );` to `wp-config.php`. Do not enforce
   before that observation run — the CSP still allows `'unsafe-inline'` and should
   be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
-- [ ] **If the site sits behind Cloudflare or another reverse proxy** — tell the
-  rate limits (quote form, chat) where the real visitor IP is, or every visitor
-  shares one limit. In `wp-config.php`:
-  `define( 'COMPASS_CLIENT_IP_HEADER', 'HTTP_CF_CONNECTING_IP' );` (Cloudflare) or
-  `'HTTP_X_FORWARDED_FOR'` (other proxies). Only set it when **all** traffic goes
-  through that proxy — otherwise the header can be faked.
-- [ ] **Spam check** — add **both** Turnstile keys (site + secret) in Site Settings.
-  With only one set, the check stays off.
+- [ ] **If the site sits behind a reverse proxy / CDN** — tell the rate limits
+  (quote form, chat) where the real visitor IP is, or every visitor shares one
+  limit. In `wp-config.php`:
+  `define( 'COMPASS_CLIENT_IP_HEADER', 'HTTP_X_FORWARDED_FOR' );` (or the header
+  your proxy sets). Only set it when **all** traffic goes through that proxy —
+  otherwise the header can be faked.
 - [ ] **Right after go-live — enable two-factor authentication** on the production
   admin account and keep a single Administrator (Editors for everyone else).
   _`docs/SECURITY.md` §3._
@@ -122,7 +120,7 @@ need the real host, HTTPS and the production admin account:
 
 Static theme assets are long-cached by a committed `theme/assets/.htaccess`
 (`Cache-Control: public, max-age=31536000, immutable` for JS/CSS/fonts/images).
-That covers Apache/cPanel (Namecheap) hosting with no extra setup. Two things are
+That covers Apache/cPanel hosting with no extra setup. Two things are
 still server-side:
 
 - [ ] **HTML caching rule.** Pages must **not** be cached immutably (content

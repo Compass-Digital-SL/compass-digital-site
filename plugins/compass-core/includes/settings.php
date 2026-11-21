@@ -138,17 +138,6 @@ function compass_core_setting_fields() {
 			'section' => 'quote',
 			'help'    => __( 'Where new quote requests are emailed. Defaults to the site admin email.', 'compass-core' ),
 		),
-		'turnstile_site'   => array(
-			'label'   => __( 'Turnstile site key', 'compass-core' ),
-			'type'    => 'text',
-			'section' => 'quote',
-			'help'    => __( 'Cloudflare Turnstile site key. Leave blank to disable the spam widget.', 'compass-core' ),
-		),
-		'turnstile_secret' => array(
-			'label'   => __( 'Turnstile secret key', 'compass-core' ),
-			'type'    => 'password',
-			'section' => 'quote',
-		),
 		'smtp_host'        => array(
 			'label'   => __( 'SMTP host', 'compass-core' ),
 			'type'    => 'text',
@@ -205,7 +194,7 @@ function compass_core_setting_fields() {
 
 /**
  * A secret / configurable value, preferring a PHP constant over the stored
- * option so SMTP and Turnstile keys can be supplied via the environment.
+ * option so SMTP and API keys can be supplied via the environment.
  *
  * @param string $key Setting key.
  * @return string
@@ -285,7 +274,7 @@ function compass_core_register_settings() {
 		'compass_core_quote',
 		__( 'Quote &amp; email', 'compass-core' ),
 		function () {
-			echo '<p>' . esc_html__( 'Spam protection and email delivery for the quote form. SMTP and Turnstile keys can instead be set as PHP constants in wp-config.php (e.g. COMPASS_SMTP_PASS).', 'compass-core' ) . '</p>';
+			echo '<p>' . esc_html__( 'Email delivery for the quote form. SMTP details can instead be set as PHP constants in wp-config.php (e.g. COMPASS_SMTP_PASS).', 'compass-core' ) . '</p>';
 		},
 		'compass-site-settings'
 	);

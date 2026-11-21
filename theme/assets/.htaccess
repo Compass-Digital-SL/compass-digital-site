@@ -1,7 +1,7 @@
 # Long-cache the theme's static assets. Vite fingerprints JS/CSS filenames
 # (content hash), and the fonts/OG images are stable, so they can be cached
 # immutably for a year. Applies to this folder and its subfolders (dist/, fonts/,
-# og/). Apache only — cPanel/Namecheap hosting reads this. Nginx hosts set the
+# og/). Apache only — cPanel hosting reads this. Nginx hosts set the
 # equivalent in the server block (see docs/GO-LIVE.md).
 
 <IfModule mod_headers.c>

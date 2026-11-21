@@ -23,14 +23,10 @@ wizard validation all work.
 
 > **Task 34 fixed F1, F2, F3, F4, F5 and F7** (see the PROGRESS log). F6, F8–F12 remain open.
 
-**F1 — High — Quote/contact form rejects every real submission (local config, no code guard).**
-Site Settings has a Turnstile **secret** but no **site key**. The form only renders
-the widget when the site key is set (`theme/template-parts/quote-form.php:39`), but
-the handler enforces Turnstile whenever the secret is set
-(`plugins/compass-core/includes/quote-handler.php:62`). Result: every visitor gets
-"The spam check did not pass. Please tick the box" with no box to tick; both e2e
-quote tests fail for this reason. *Owner:* clear the secret or add the site key.
-*Code:* enforce (and render) only when **both** keys are present.
+**F1 — High — Quote/contact form rejected every real submission.** A third-party
+CAPTCHA was enforced server-side while its widget was not rendered, so every
+visitor failed the spam check. *Resolved:* the CAPTCHA integration was removed
+entirely (Task 36); the form relies on honeypot, time trap and rate limit.
 
 **F2 — Medium — Quote links from industry pages and case studies prefill nothing.**
 `page-industry.php:42` passes the industry name as `?service=` (never matches a
@@ -44,13 +40,13 @@ from the page data (terms "Travel and tourism", `restaurants-cafes` vs pages
 **F3 — Medium — Auto-reply echoes the visitor's free text to any address.**
 The visitor auto-reply quotes `message` back to the submitted email
 (`quote-handler.php:332`). Anyone can make the site mail arbitrary text to a third
-party from our domain (5 per 15 min per IP; Turnstile optional) — a spam relay that
+party from our domain (5 per 15 min per IP) — a spam relay that
 can hurt sender reputation. Fix: drop the message echo (keep services only).
 
-**F4 — Medium — Rate limits use `REMOTE_ADDR` only.** Behind Cloudflare or any
-reverse proxy every visitor shares the proxy IP, so the quote limit (5/15 min) and
-chat limit (20/10 min) become **site-wide**. Fix: trust `CF-Connecting-IP` /
-`X-Forwarded-For` only when the request comes from a known proxy range (decide once
+**F4 — Medium — Rate limits use `REMOTE_ADDR` only.** Behind any reverse
+proxy / CDN every visitor shares the proxy IP, so the quote limit (5/15 min) and
+chat limit (20/10 min) become **site-wide**. Fix: trust the proxy's client-IP
+header (e.g. `X-Forwarded-For`) only when the request comes from a known proxy range (decide once
 hosting is chosen); add a note to `GO-LIVE.md`.
 
 **F5 — Medium — Chat nonce goes stale under a page cache.** `wp_create_nonce('wp_rest')`
@@ -65,7 +61,7 @@ the free quota. Fix: a site-wide daily counter + keep history server-side or
 sign it.
 
 **F7 — Low — Secrets printed into the settings page source.** Password fields render
-the stored value (`settings.php:349`), so the Turnstile secret, SMTP password and
+the stored value (`settings.php:349`), so the SMTP password and
 Gemini key sit in the admin HTML. Fix: write-only fields (blank value + "Saved —
 leave empty to keep").
 
@@ -250,7 +246,7 @@ page.
 
 The **quote/contact form** — the main public input surface — is well defended:
 - Nonce verified; honeypot + <2s time trap (silent drop); per-IP rate limit
-  (5 / 15 min); optional Cloudflare Turnstile (degrades to off when unkeyed).
+  (5 / 15 min).
 - Every field sanitised (`sanitize_text_field`, `sanitize_email`,
   `sanitize_textarea_field`, `absint`), `wp_unslash` applied, server-side
   validation, `esc_url_raw` + same-origin check on the redirect `source`.
@@ -348,18 +344,18 @@ Grouped by when. Full server detail in `docs/GO-LIVE.md`, secrets in
 `docs/SECRETS.md`, local SEO in `docs/LOCAL-SEO.md`.
 
 ### Accounts / money (buy + create)
-- [ ] Buy the **domain** (Namecheap — noted, not Cloudflare) and **hosting**
+- [ ] Buy the **domain** and **hosting**
   (PHP 8.3, SSH, WP-CLI, daily backups, free SSL, LiteSpeed/Nginx, SG/India DC).
 - [ ] Create **GitHub Environments** `staging` + `production` (required reviewer
   on production) and add **every secret** from `docs/SECRETS.md` (SSH_*,
-  DEPLOY/WP paths, URLs, TURNSTILE_*, SMTP_*, BACKUP_S3_*) — in GitHub only.
+  DEPLOY/WP paths, URLs, SMTP_*, BACKUP_S3_*) — in GitHub only.
 - [ ] Create a **deploy-only SSH key**; on the host make `releases/` + point
   docroot at `current`.
-- [ ] Create the **offsite backup bucket** (S3/B2/R2/Wasabi) + run one manual
+- [ ] Create the **offsite backup bucket** (S3/B2/Wasabi) + run one manual
   backup + a restore drill.
 - [ ] Free accounts: **Search Console, GA4, Google Business Profile, Bing
   Webmaster** (playbook A7).
-- [ ] **Cloudflare Turnstile** keys + **SMTP** details → Site Settings (or
+- [ ] **SMTP** details → Site Settings (or
   `COMPASS_*` constants). Without SMTP, owner/auto-reply emails rely on host mail.
 
 ### Server / config at launch

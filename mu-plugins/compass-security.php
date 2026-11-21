@@ -214,9 +214,8 @@ add_filter(
  */
 function compass_security_csp_directives() {
 	// Google's documented GA4 hosts, including the regional collection endpoints.
-	$ga        = 'https://*.googletagmanager.com https://*.google-analytics.com';
-	$ga_conn   = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com';
-	$turnstile = 'https://challenges.cloudflare.com';
+	$ga      = 'https://*.googletagmanager.com https://*.google-analytics.com';
+	$ga_conn = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com';
 
 	$directives = array(
 		'default-src'     => "'self'",
@@ -224,12 +223,12 @@ function compass_security_csp_directives() {
 		'object-src'      => "'none'",
 		'frame-ancestors' => "'self'",
 		'form-action'     => "'self'",
-		'script-src'      => "'self' 'unsafe-inline' {$ga} {$turnstile}",
+		'script-src'      => "'self' 'unsafe-inline' {$ga}",
 		'style-src'       => "'self' 'unsafe-inline'",
 		'img-src'         => "'self' data: {$ga}",
 		'font-src'        => "'self'",
 		'connect-src'     => "'self' {$ga_conn}",
-		'frame-src'       => $turnstile,
+		'frame-src'       => "'none'",
 		'manifest-src'    => "'self'",
 		'report-uri'      => esc_url_raw( rest_url( 'compass/v1/csp-report' ) ),
 		'report-to'       => 'csp',

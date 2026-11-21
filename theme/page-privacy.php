@@ -72,7 +72,7 @@ $updated   = gmdate( 'j F Y' );
 
 				<h3><?php esc_html_e( 'Technical information', 'compass-digital' ); ?></h3>
 			<p><?php esc_html_e( 'Like most websites, our server and security measures briefly process technical details such as your IP address and browser type to keep the site secure and working (for example, to limit spam and abuse on the forms). This is a legitimate interest in protecting the site and is not used to identify you.', 'compass-digital' ); ?></p>
-			<p><?php esc_html_e( 'The forms use a honeypot, a timing check and, where enabled, Cloudflare Turnstile to block spam. Turnstile is a privacy-friendly check that does not track you across sites.', 'compass-digital' ); ?></p>
+			<p><?php esc_html_e( 'The forms use a hidden honeypot field, a timing check and a per-connection rate limit to block spam. None of these set cookies or track you.', 'compass-digital' ); ?></p>
 
 			<h2><?php esc_html_e( 'How long we keep it', 'compass-digital' ); ?></h2>
 			<p><?php esc_html_e( 'We keep quote and contact enquiries only as long as needed to deal with them and for a reasonable period afterwards for our records, then delete them. [Confirm the retention period you want, e.g. 24 months.] You can ask us to delete your enquiry sooner.', 'compass-digital' ); ?></p>
