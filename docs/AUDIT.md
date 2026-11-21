@@ -1,5 +1,117 @@
 # Pre-launch audit — Compass Digital
 
+## Full audit + QA (2026-11-21, Task 33)
+
+Run against the local site (`localhost:8888`, logged in + logged out), WP admin,
+and the code. Method: lint (JS/CSS), build, PHPCS, the Chromium e2e/axe suite, an
+extra axe pass in **light** theme (8 pages × 375/1280px), an in-browser crawl of
+68 internal URLs (status, titles, meta, canonicals, headings, alt, schema,
+duplicate ids), manual QA of every interactive piece, a probe for exposed
+endpoints, Site Health, and a code review of the form, chat and security code.
+
+**Green:** JS/CSS lint clean · build OK (main JS 5.2 KB gz, main CSS 15.8 KB gz —
+far inside the 90/40 KB budget) · CLS 0 · 82/84 e2e tests (the 2 failures are F1)
+· axe clean in dark *and* light theme · 0 broken internal links · one `h1` per page,
+no heading skips, no missing `alt`, valid JSON-LD everywhere · filtered `/work/`
+and `/get-a-quote/?…` canonicalise to the base page · no lead data reachable
+(`quote_request` not in REST, search or front end), `/wp-json/wp/v2/users` 404,
+`xmlrpc` 405, author enumeration redirects · PHP error log clean · nav sheet,
+command menu (K), dropdowns, theme toggle, pain selector, work filter and quote
+wizard validation all work.
+
+### Findings
+
+**F1 — High — Quote/contact form rejects every real submission (local config, no code guard).**
+Site Settings has a Turnstile **secret** but no **site key**. The form only renders
+the widget when the site key is set (`theme/template-parts/quote-form.php:39`), but
+the handler enforces Turnstile whenever the secret is set
+(`plugins/compass-core/includes/quote-handler.php:62`). Result: every visitor gets
+"The spam check did not pass. Please tick the box" with no box to tick; both e2e
+quote tests fail for this reason. *Owner:* clear the secret or add the site key.
+*Code:* enforce (and render) only when **both** keys are present.
+
+**F2 — Medium — Quote links from industry pages and case studies prefill nothing.**
+`page-industry.php:42` passes the industry name as `?service=` (never matches a
+service; the industry select is not set). `single-work.php:47` passes the *term*
+name ("Website design and development") but the form matches the service label
+("Website design & development"). Fix: industry pages link `?industry=<slug>`;
+case studies pass the service slug. Root cause is the term names/slugs drifting
+from the page data (terms "Travel and tourism", `restaurants-cafes` vs pages
+"Travel & tourism", `restaurants-and-cafes`) — align the taxonomy terms too.
+
+**F3 — Medium — Auto-reply echoes the visitor's free text to any address.**
+The visitor auto-reply quotes `message` back to the submitted email
+(`quote-handler.php:332`). Anyone can make the site mail arbitrary text to a third
+party from our domain (5 per 15 min per IP; Turnstile optional) — a spam relay that
+can hurt sender reputation. Fix: drop the message echo (keep services only).
+
+**F4 — Medium — Rate limits use `REMOTE_ADDR` only.** Behind Cloudflare or any
+reverse proxy every visitor shares the proxy IP, so the quote limit (5/15 min) and
+chat limit (20/10 min) become **site-wide**. Fix: trust `CF-Connecting-IP` /
+`X-Forwarded-For` only when the request comes from a known proxy range (decide once
+hosting is chosen); add a note to `GO-LIVE.md`.
+
+**F5 — Medium — Chat nonce goes stale under a page cache.** `wp_create_nonce('wp_rest')`
+is printed into every page (`chat.php:306`). Cached HTML older than 12–24 h makes
+every chat call fail the permission check. Fix: fetch a fresh nonce on first open
+(small uncached REST/admin-ajax call), or exclude pages from cache only when chat is on.
+
+**F6 — Low/Medium — Chat abuse surface.** Client-supplied history can include forged
+`assistant` turns, so the endpoint can be steered into a general free LLM proxy
+(12 × 1000 chars per call). No global daily cap — a distributed caller can drain
+the free quota. Fix: a site-wide daily counter + keep history server-side or
+sign it.
+
+**F7 — Low — Secrets printed into the settings page source.** Password fields render
+the stored value (`settings.php:349`), so the Turnstile secret, SMTP password and
+Gemini key sit in the admin HTML. Fix: write-only fields (blank value + "Saved —
+leave empty to keep").
+
+**F8 — Low — CSP report endpoint is an open log writer.** `compass/v1/csp-report`
+accepts unauthenticated POSTs and writes up to 2 KB per call to the PHP log with
+no rate limit. Fix: per-IP throttle or sample reports. Also, before enforcing the
+CSP: the logged-in admin bar needs `secure.gravatar.com` (img) and `data:` fonts
+(dashicons), or it breaks for admins.
+
+**F9 — Low — Site Title is the slug `compass-digital`.** It leaks into email subjects
+("[compass-digital] New quote request"), the email From name, the logo `alt`
+("compass-digital") and admin. Set Settings → General → Site Title to
+"Compass Digital". Also: the header logo is `loading="lazy"` though above the fold —
+make it eager.
+
+**F10 — Low — Local environment drift (check before launch).**
+- Permalinks are `/%year%/%monthnum%/%day%/%postname%/` locally, not
+  `/insights/%postname%/`; category archives sit at `/category/…`. Re-run the seed
+  or set it; add "permalink structure = `/insights/%postname%/`" to `GO-LIVE.md`.
+- Rank Math is in `.wp-env.json` but not installed; Novamira is active but not in
+  config — re-sync the env or update the config.
+- WordPress 7.1.5 is out (pinned 7.1.4). Hello Dolly + unused themes installed.
+- `debug.log` and `readme.html` are web-readable locally — make sure production
+  denies `wp-content/*.log` and `readme.html` at the server (Site Health flags it).
+- PHPCS: 78 "errors" are only CRLF line endings in the Windows working copy
+  (`core.autocrlf=true`; the repo is LF). Add a `.gitattributes` with
+  `* text=auto eol=lf` so PHPCS runs clean locally.
+
+**F11 — Low — SEO content details.** Case-study meta descriptions are 34–47 chars
+(aim 120–155); two insight posts have 170–179-char descriptions and titles of
+71/76 chars. The three insight posts still target "Sri Lanka" while the site is
+worldwide. Quote budgets are LKR-only.
+
+**F12 — Low — A11y polish.** Desktop Services/Industries dropdowns open on focus but
+keep `aria-expanded="false"`. Work and Insights filters update the grid without a
+live-region result count. Footer links are 15–20 px tall (pass 2.5.8 on spacing,
+tight on phones). The `Link: <…?p=12>; rel=shortlink` HTTP header is still sent
+(only the `<head>` tag was removed).
+
+**Not measured:** real Lighthouse/LCP. Local TTFB is 4–6 s (Docker on Windows +
+Query Monitor + debug), so lab numbers here would be meaningless — capture on staging.
+
+**Still open from earlier audits:** hero needle overlap at 360 px, cookie card +
+bottom bar covering the first screen, `docs/SEO.md` keywords, legal `[…]`
+placeholders, sample work/testimonials, Task 22/23.
+
+---
+
 ## Re-audit after the v2 redesign (2026-11-20, Task 26)
 
 Run against the local site after Task 24. Lint, build and all 84 Chromium e2e/axe
