@@ -39,7 +39,7 @@ if ( null === $industry ) {
 }
 
 $page_url  = get_permalink();
-$quote_url = compass_quote_url( $industry['eyebrow'] );
+$quote_url = compass_quote_url( '', $compass_slug );
 
 // Related work: case studies tagged with this industry's taxonomy term.
 $related_work = new WP_Query(

@@ -34,7 +34,7 @@ $budgets        = compass_quote_budgets();
 $methods        = compass_quote_contact_methods();
 $flash          = compass_quote_flash();
 $cf_errors      = $flash['errors'] ?? array();
-$turnstile_site = function_exists( 'compass_core_secret' ) ? compass_core_secret( 'turnstile_site' ) : '';
+$turnstile_site = function_exists( 'compass_core_turnstile_enabled' ) && compass_core_turnstile_enabled() ? compass_core_secret( 'turnstile_site' ) : '';
 
 if ( $turnstile_site ) {
 	wp_enqueue_script( 'cf-turnstile', 'https://challenges.cloudflare.com/turnstile/v0/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion, WordPress.WP.EnqueuedResourceParameters.NotInFooter -- third-party widget, versionless CDN URL.

@@ -29,7 +29,8 @@
 - [x] 26 Audit fixes after the redesign (see `docs/AUDIT.md` top section)
 - [x] 27 AI sales-assistant chatbot (Gemini proxy + lazy vanilla widget)
 - [x] 33 Full audit + QA (findings F1–F12 in `docs/AUDIT.md` top section)
-- [ ] 34 Fix audit findings F1–F9 (form Turnstile guard, quote prefill, auto-reply, proxy IP, chat nonce/cap, secrets, CSP endpoint, site title)
+- [x] 34 Fix audit findings F1–F5 + F7 (Turnstile guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
+- [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -47,6 +48,34 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 34 — Audit fixes F1–F5, F7 (2026-11-21)
+**Done** (task/34)
+- **F1** `compass_core_turnstile_enabled()` (both keys required); the handler and
+  `quote-form.php` use it, so a half-configured Turnstile can no longer block every
+  lead. Locally the stray secret was also cleared in Site Settings.
+- **F2** `compass_quote_url( $service, $industry )`: industry pages link
+  `?industry=<slug>`; case studies pass the service **term slug** (term names differ
+  from form labels). Verified both pre-select.
+- **F3** Visitor auto-reply no longer quotes the free-text message; submitted
+  `services[]` are limited to known options so no free text reaches either email.
+- **F4** `compass_core_client_ip()` reads an opt-in proxy header
+  (`COMPASS_CLIENT_IP_HEADER`, filter `compass_client_ip_header`), first IP,
+  validated; falls back to `REMOTE_ADDR`. GO-LIVE step added.
+- **F5** Chat fetches a fresh nonce from uncached `admin-ajax.php?action=compass_chat_nonce`
+  (admin-ajax so logged-in visitors get a nonce for their own user) and retries once
+  on 403. Chat chunk 2.3 KB gz.
+- **F7** Settings password fields are write-only: rendered blank with a "Saved"
+  placeholder; blank on save keeps the stored value; a "Remove saved value" box clears.
+  Verified a no-change save keeps the Gemini key.
+
+**Decisions**
+- Proxy header is opt-in (constant), not auto-detected: trusting `X-Forwarded-For`
+  without a proxy in front would let anyone dodge the rate limits.
+
+**Next / owner action**
+- Before launch: add **both** Turnstile keys; set `COMPASS_CLIENT_IP_HEADER` if
+  behind Cloudflare (see `GO-LIVE.md` → Security).
 
 ### Task 33 — Full audit + QA (2026-11-21)
 **Done** (task/33) — docs only, no code changed.

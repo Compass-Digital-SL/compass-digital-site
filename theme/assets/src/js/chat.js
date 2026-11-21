@@ -98,6 +98,31 @@ export function createChat(launcher, cfg) {
 
   // --- Networking ----------------------------------------------------------
 
+  // The nonce printed in the page can be stale when the HTML came from a page
+  // cache, so fetch a fresh one once per page view (falls back to the printed one).
+  let nonce = null;
+  async function getNonce(force = false) {
+    if (nonce && !force) return nonce;
+    if (cfg.nonceUrl) {
+      try {
+        const r = await fetch(cfg.nonceUrl, { credentials: "same-origin", cache: "no-store" });
+        const j = await r.json();
+        if (j && j.success && j.data && j.data.nonce) nonce = j.data.nonce;
+      } catch {
+        /* fall back below */
+      }
+    }
+    return nonce || cfg.nonce;
+  }
+
+  function post(text, n) {
+    return fetch(cfg.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-WP-Nonce": n },
+      body: JSON.stringify({ message: text, history: history.slice(0, -1) }),
+    });
+  }
+
   async function send(text) {
     bubble("user", text);
     history.push({ role: "user", text });
@@ -107,14 +132,9 @@ export function createChat(launcher, cfg) {
     const typing = showTyping();
 
     try {
-      const res = await fetch(cfg.endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-WP-Nonce": cfg.nonce,
-        },
-        body: JSON.stringify({ message: text, history: history.slice(0, -1) }),
-      });
+      let res = await post(text, await getNonce());
+      // 403 = nonce rejected (e.g. expired mid-visit): refresh once and retry.
+      if (res.status === 403) res = await post(text, await getNonce(true));
       const data = await res.json().catch(() => ({}));
       typing.remove();
       const reply =
