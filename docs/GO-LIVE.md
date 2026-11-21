@@ -102,6 +102,14 @@ need the real host, HTTPS and the production admin account:
   `define( 'COMPASS_CSP_ENFORCE', true );` to `wp-config.php`. Do not enforce
   before that observation run — the CSP still allows `'unsafe-inline'` and should
   be tightened to nonces first. _Full path: `docs/SECURITY.md` §2._
+- [ ] **If the site sits behind Cloudflare or another reverse proxy** — tell the
+  rate limits (quote form, chat) where the real visitor IP is, or every visitor
+  shares one limit. In `wp-config.php`:
+  `define( 'COMPASS_CLIENT_IP_HEADER', 'HTTP_CF_CONNECTING_IP' );` (Cloudflare) or
+  `'HTTP_X_FORWARDED_FOR'` (other proxies). Only set it when **all** traffic goes
+  through that proxy — otherwise the header can be faked.
+- [ ] **Spam check** — add **both** Turnstile keys (site + secret) in Site Settings.
+  With only one set, the check stays off.
 - [ ] **Right after go-live — enable two-factor authentication** on the production
   admin account and keep a single Administrator (Editors for everyone else).
   _`docs/SECURITY.md` §3._

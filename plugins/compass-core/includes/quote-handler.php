@@ -58,8 +58,8 @@ function compass_core_handle_quote() {
 		compass_core_quote_fail( $source, array( '_form' => __( 'Too many requests from your connection. Please try again in a few minutes.', 'compass-core' ) ), compass_core_quote_raw_input() );
 	}
 
-	// --- Turnstile (only if a secret is configured).
-	$secret = function_exists( 'compass_core_secret' ) ? compass_core_secret( 'turnstile_secret' ) : '';
+	// --- Turnstile (only when both keys are set, matching what the form renders).
+	$secret = compass_core_turnstile_enabled() ? compass_core_secret( 'turnstile_secret' ) : '';
 	if ( $secret ) {
 		$token = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ) : '';
 		if ( ! compass_core_verify_turnstile( $secret, $token ) ) {
@@ -73,6 +73,10 @@ function compass_core_handle_quote() {
 
 	$services = isset( $_POST['services'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['services'] ) ) : array();
 	$services = array_values( array_filter( $services ) );
+	// Keep only real options, so free text can't ride along in the emails.
+	if ( function_exists( 'compass_quote_services' ) ) {
+		$services = array_values( array_intersect( $services, array_keys( compass_quote_services() ) ) );
+	}
 	if ( ! $services ) {
 		$errors['services'] = __( 'Please pick at least one thing you need.', 'compass-core' );
 	}
@@ -327,9 +331,10 @@ function compass_core_quote_notify( $d ) {
 		'',
 		__( 'What happens next: we will reply within one business day, usually sooner, with any quick questions and the next step toward a clear, honest quote.', 'compass-core' ),
 		'',
-		__( 'For reference, here is what you sent us:', 'compass-core' ),
-		__( 'Services: ', 'compass-core' ) . $d['service_text'],
-		__( 'Message: ', 'compass-core' ) . $d['message'],
+		// The visitor's free text is deliberately NOT echoed: the address is
+		// unverified, so quoting it back would let anyone send arbitrary text to a
+		// third party from our domain. Service labels are our own fixed strings.
+		__( 'For reference, you asked about: ', 'compass-core' ) . $d['service_text'],
 		'',
 		__( 'If it is urgent, you can also message us on WhatsApp.', 'compass-core' ),
 		'',
@@ -352,6 +357,22 @@ function compass_core_quote_notify( $d ) {
 function compass_core_first_name( $name ) {
 	$parts = preg_split( '/\s+/', trim( $name ) );
 	return $parts ? $parts[0] : $name;
+}
+
+/**
+ * Is Turnstile fully configured?
+ *
+ * Both keys are required: the site key renders the widget, the secret verifies
+ * it. With only one set, enforcing would reject every visitor (no widget to
+ * tick), so the check is skipped until both are present.
+ *
+ * @return bool
+ */
+function compass_core_turnstile_enabled() {
+	if ( ! function_exists( 'compass_core_secret' ) ) {
+		return false;
+	}
+	return '' !== compass_core_secret( 'turnstile_site' ) && '' !== compass_core_secret( 'turnstile_secret' );
 }
 
 /**
@@ -386,9 +407,27 @@ function compass_core_verify_turnstile( $secret, $token ) {
 /**
  * Best-effort client IP (used only for rate limiting + Turnstile).
  *
+ * Behind Cloudflare or another reverse proxy REMOTE_ADDR is the proxy, so every
+ * visitor would share one rate-limit bucket. Set COMPASS_CLIENT_IP_HEADER in
+ * wp-config.php to the $_SERVER key the proxy fills (e.g. 'HTTP_CF_CONNECTING_IP'
+ * or 'HTTP_X_FORWARDED_FOR'). Only do that when ALL traffic passes through that
+ * proxy — otherwise the header is spoofable. Filterable via compass_client_ip_header.
+ *
  * @return string
  */
 function compass_core_client_ip() {
+	$header = defined( 'COMPASS_CLIENT_IP_HEADER' ) ? (string) COMPASS_CLIENT_IP_HEADER : '';
+	$header = (string) apply_filters( 'compass_client_ip_header', $header );
+
+	if ( '' !== $header && ! empty( $_SERVER[ $header ] ) ) {
+		// X-Forwarded-For may be a list; the first entry is the original client.
+		$list = explode( ',', sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ) );
+		$ip   = trim( $list[0] );
+		if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+			return $ip;
+		}
+	}
+
 	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 	return $ip ? $ip : '0.0.0.0';
 }

@@ -184,13 +184,17 @@ function compass_print_schema( $schema ) {
  * URL to the quote form, pre-filled with a service name via the `service`
  * query arg (matches the `_compass_service` field; the front-end form reads it).
  *
- * @param string $service_name Readable service name.
+ * @param string $service_name Service slug or readable name.
+ * @param string $industry     Optional industry slug (pre-selects the industry).
  * @return string
  */
-function compass_quote_url( $service_name = '' ) {
+function compass_quote_url( $service_name = '', $industry = '' ) {
 	$url = home_url( '/get-a-quote/' );
 	if ( $service_name ) {
 		$url = add_query_arg( 'service', rawurlencode( $service_name ), $url );
+	}
+	if ( $industry ) {
+		$url = add_query_arg( 'industry', rawurlencode( $industry ), $url );
 	}
 	return $url;
 }

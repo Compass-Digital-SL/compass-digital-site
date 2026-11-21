@@ -41,10 +41,11 @@ while ( have_posts() ) :
 	$result_items = $results ? array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', (string) $results ) ) ) : array();
 	$gallery_ids  = $gallery ? array_filter( array_map( 'absint', explode( ',', (string) $gallery ) ) ) : array();
 
-	// Quote pre-filled with a service name when the case study has one.
-	$svc_names = wp_get_post_terms( $work_id, 'service', array( 'fields' => 'names' ) );
-	$svc_name  = ( ! is_wp_error( $svc_names ) && $svc_names ) ? reset( $svc_names ) : '';
-	$quote_url = compass_quote_url( $svc_name );
+	// Quote pre-filled with the case study's service. Pass the term slug: it
+	// matches the form's option keys, whereas term names can differ from labels.
+	$svc_slugs = wp_get_post_terms( $work_id, 'service', array( 'fields' => 'slugs' ) );
+	$svc_slug  = ( ! is_wp_error( $svc_slugs ) && $svc_slugs ) ? reset( $svc_slugs ) : '';
+	$quote_url = compass_quote_url( $svc_slug );
 
 	// Next case study (newest-first order, wrapping to the first).
 	$next_post = get_adjacent_post( false, '', true );

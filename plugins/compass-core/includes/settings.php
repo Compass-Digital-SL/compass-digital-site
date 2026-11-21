@@ -343,8 +343,24 @@ function compass_core_render_setting_field( $args ) {
 			esc_attr( $name ),
 			esc_textarea( $value )
 		);
+	} elseif ( 'password' === $field['type'] ) {
+		// Write-only: never print a stored secret into the page source.
+		printf(
+			'<input type="password" id="%1$s" name="%2$s" value="" placeholder="%3$s" class="regular-text" autocomplete="new-password" />',
+			esc_attr( $id ),
+			esc_attr( $name ),
+			esc_attr( '' !== (string) $value ? __( 'Saved — leave blank to keep', 'compass-core' ) : '' )
+		);
+		if ( '' !== (string) $value ) {
+			printf(
+				' <label><input type="checkbox" name="%1$s[__clear][]" value="%2$s" /> %3$s</label>',
+				esc_attr( COMPASS_CORE_OPTION ),
+				esc_attr( $key ),
+				esc_html__( 'Remove saved value', 'compass-core' )
+			);
+		}
 	} else {
-		$input_type = in_array( $field['type'], array( 'url', 'email', 'tel', 'password' ), true ) ? $field['type'] : 'text';
+		$input_type = in_array( $field['type'], array( 'url', 'email', 'tel' ), true ) ? $field['type'] : 'text';
 		printf(
 			'<input type="%1$s" id="%2$s" name="%3$s" value="%4$s" class="regular-text" autocomplete="off" />',
 			esc_attr( $input_type ),
@@ -369,9 +385,23 @@ function compass_core_sanitize_settings( $input ) {
 	$clean  = array();
 	$fields = compass_core_setting_fields();
 	$input  = is_array( $input ) ? $input : array();
+	$stored = get_option( COMPASS_CORE_OPTION, array() );
+	$stored = is_array( $stored ) ? $stored : array();
+	$clear  = isset( $input['__clear'] ) ? array_map( 'sanitize_key', (array) $input['__clear'] ) : array();
 
 	foreach ( $fields as $key => $field ) {
 		$raw = isset( $input[ $key ] ) ? $input[ $key ] : '';
+		// Secrets are write-only: blank keeps the saved value unless "Remove" is ticked.
+		if ( 'password' === $field['type'] ) {
+			if ( in_array( $key, $clear, true ) ) {
+				$clean[ $key ] = '';
+			} elseif ( '' === trim( (string) $raw ) ) {
+				$clean[ $key ] = isset( $stored[ $key ] ) ? (string) $stored[ $key ] : '';
+			} else {
+				$clean[ $key ] = sanitize_text_field( $raw );
+			}
+			continue;
+		}
 		switch ( $field['type'] ) {
 			case 'textarea':
 				$clean[ $key ] = sanitize_textarea_field( $raw );

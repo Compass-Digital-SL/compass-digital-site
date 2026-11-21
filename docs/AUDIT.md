@@ -21,6 +21,8 @@ wizard validation all work.
 
 ### Findings
 
+> **Task 34 fixed F1, F2, F3, F4, F5 and F7** (see the PROGRESS log). F6, F8–F12 remain open.
+
 **F1 — High — Quote/contact form rejects every real submission (local config, no code guard).**
 Site Settings has a Turnstile **secret** but no **site key**. The form only renders
 the widget when the site key is set (`theme/template-parts/quote-form.php:39`), but

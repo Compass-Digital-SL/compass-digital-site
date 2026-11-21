@@ -287,6 +287,23 @@ function compass_chat_system_prompt() {
  */
 
 /**
+ * Hand the chat widget a fresh REST nonce (never cached).
+ *
+ * Served through admin-ajax so WordPress resolves the real cookie user: a REST
+ * route called without a nonce runs as user 0, and its nonce would then fail
+ * for a logged-in visitor. Nothing secret — the same value is in the page HTML.
+ */
+function compass_chat_ajax_nonce() {
+	nocache_headers();
+	if ( ! compass_chat_enabled() ) {
+		wp_send_json_error( null, 503 );
+	}
+	wp_send_json_success( array( 'nonce' => wp_create_nonce( 'wp_rest' ) ) );
+}
+add_action( 'wp_ajax_compass_chat_nonce', 'compass_chat_ajax_nonce' );
+add_action( 'wp_ajax_nopriv_compass_chat_nonce', 'compass_chat_ajax_nonce' );
+
+/**
  * Expose the config the theme's JS needs to open the chat.
  *
  * Printed as window.CompassChat. Enqueued against the theme's main entry so the
@@ -304,6 +321,9 @@ function compass_chat_front_config() {
 	$config = array(
 		'endpoint' => esc_url_raw( rest_url( 'compass/v1/chat' ) ),
 		'nonce'    => wp_create_nonce( 'wp_rest' ),
+		// Page HTML may be cached for longer than a nonce lives (12–24 h), so the
+		// widget asks for a fresh one from this uncached URL before sending.
+		'nonceUrl' => esc_url_raw( admin_url( 'admin-ajax.php?action=compass_chat_nonce' ) ),
 		'name'     => $persona['name'] ?? 'Assistant',
 		'company'  => $persona['company'] ?? 'Compass Digital',
 		'quoteUrl' => home_url( $k['handoff']['quote_path'] ?? '/get-a-quote/' ),
