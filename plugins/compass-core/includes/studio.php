@@ -374,14 +374,17 @@ function compass_studio_lockdown_menu() {
 		return;
 	}
 
+	// NB: top-level pages added with add_menu_page() are stored in $menu under
+	// their bare slug (e.g. "compass-projects"), not "admin.php?page=…". Core
+	// menus keep their file-based slug.
 	$allowed = array(
-		'admin.php?page=' . COMPASS_STUDIO_PAGE,
+		COMPASS_STUDIO_PAGE, // compass-projects.
 		'edit.php?post_type=testimonial',
 		'edit.php?post_type=quote_request',
 	);
 
 	if ( 'owner' === $role ) {
-		$allowed[] = 'admin.php?page=compass-team';
+		$allowed[] = 'compass-team';
 		$allowed[] = 'options-general.php';
 		$allowed[] = 'profile.php';
 	}
@@ -404,10 +407,16 @@ function compass_studio_lockdown_menu() {
 		}
 	}
 
-	// Trim the Settings submenu to just Site Settings (owner only).
+	// Trim the Settings submenu to just Site Settings (owner only). Done
+	// dynamically so core items AND any plugin-added settings pages are removed.
 	if ( 'owner' === $role ) {
-		foreach ( array( 'options-general.php', 'options-writing.php', 'options-reading.php', 'options-discussion.php', 'options-media.php', 'options-permalink.php', 'options-privacy.php' ) as $sub ) {
-			remove_submenu_page( 'options-general.php', $sub );
+		global $submenu;
+		if ( ! empty( $submenu['options-general.php'] ) && is_array( $submenu['options-general.php'] ) ) {
+			foreach ( $submenu['options-general.php'] as $item ) {
+				if ( isset( $item[2] ) && 'compass-site-settings' !== $item[2] ) {
+					remove_submenu_page( 'options-general.php', $item[2] );
+				}
+			}
 		}
 	}
 }
