@@ -14,10 +14,17 @@ export function initInsightsFilter(root = document) {
   const empty = root.querySelector("[data-post-empty]");
   const chips = Array.from(filter.querySelectorAll(".post-chip"));
 
+  // Polite live region: announces the result count after a topic change so the
+  // in-place grid update is conveyed to assistive tech.
+  const status = document.createElement("p");
+  status.className = "screen-reader-text";
+  status.setAttribute("aria-live", "polite");
+  filter.appendChild(status);
+
   const fromUrl = () => new URLSearchParams(location.search).get("topic") || "";
   let active = fromUrl();
 
-  const render = () => {
+  const render = (announce = false) => {
     chips.forEach((chip) => {
       const on = (chip.dataset.filterValue || "") === active;
       chip.classList.toggle("is-active", on);
@@ -33,6 +40,10 @@ export function initInsightsFilter(root = document) {
       if (show) visible += 1;
     });
     if (empty) empty.hidden = visible !== 0;
+    if (announce) {
+      status.textContent =
+        visible === 1 ? "1 article" : `${visible} articles`;
+    }
   };
 
   filter.addEventListener("click", (e) => {
@@ -44,12 +55,12 @@ export function initInsightsFilter(root = document) {
     if (active) params.set("topic", active);
     const qs = params.toString();
     history.pushState({ topic: active }, "", qs ? `${location.pathname}?${qs}` : location.pathname);
-    render();
+    render(true);
   });
 
   window.addEventListener("popstate", () => {
     active = fromUrl();
-    render();
+    render(true);
   });
 
   render();
