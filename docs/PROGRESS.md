@@ -32,8 +32,10 @@
 - [x] 34 Fix audit findings F1–F5 + F7 (spam-check guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
 - [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
-- [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
+- [x] 35 Remaining audit items F6, F8–F12 (chat cap + signed history, CSP endpoint throttle, logo eager, `.gitattributes`, meta-description lengths, a11y polish)
 - [x] 38 Worldwide positioning pass — `SEO.md` service-area/audience reframe + quote-budget currency hint (schema, home copy, local-area and chat were already worldwide)
+- [x] 40 Projects dashboard + Gemini AI drafting (custom admin surface for Work, "Draft with AI" on every copy field)
+- [x] 41 Branded Studio (`/studio`, reskinned projects-first admin) + Studio Owner/Staff roles + in-Studio Team management
 
 ## Pre-launch audit (2026-11-19)
 
@@ -85,6 +87,154 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - Budget currency left as LKR by design; if the owner later wants USD or
   multi-currency bands, that is a small follow-up (it re-prices, so it is their
   call).
+
+### Task 41 — Branded Studio + roles + Team management (2026-11-22)
+**Done** (task/41, stacked on task/40)
+- **Studio** (`plugins/compass-core/includes/studio.php`): a branded, projects-first
+  admin for the owner/staff. One URL **`/studio`** (rewrite) → branded login when
+  logged out, straight to the Projects dashboard when logged in. The WordPress login
+  screen is reskinned with the brand palette + custom logo. After login, Studio users
+  are redirected to Projects.
+  - **Lock-down:** for Studio users the admin bar and every menu are hidden except
+    **Projects, Testimonials, Quote Requests** (+ **Site Settings**, **Team**, **Account**
+    for the owner). The native "Work" menu and the WP dashboard are hidden/redirected.
+    **Administrators are never affected** — developers keep the full admin.
+- **Two roles** (synced via a versioned option, re-runs on bump):
+  - `studio_owner` — editor-level content caps + `manage_options`, user management and
+    a custom `compass_manage_team` cap.
+  - `studio_staff` — content caps only. **Cannot** change/reset any password
+    (`allow_password_reset` → false, profile screens blocked + password fields hidden,
+    and a guard strips any self password change) and cannot manage users.
+- **Team page** (`includes/studio-team.php`, owner only): list staff, **add a member**
+  (username + owner-chosen password), **set/reset** a staff password, **remove** (content
+  reassigned to the owner). Every create/set-password/remove action only ever targets a
+  `studio_staff` user, so it can never touch an owner or admin account. Nonce + capability
+  checked throughout.
+- **Bootstrap:** `wp compass studio_owner --login=… [--email=…] [--pass=…]`
+  (`--login`, not the reserved WP-CLI `--user` global)
+  (`class-compass-core-cli.php`) creates or promotes the Studio Owner and prints a
+  generated password + the `/studio` link.
+- **Owner guide:** `docs/STUDIO.md` (the link, first-time setup, changing your password,
+  adding staff, who-sees-what).
+
+**Decisions**
+- Not a second login system — it reuses WordPress's own secure auth; the roles just scope
+  what each person sees. Admins are excluded from the lock-down by design.
+- `/studio` is a branded front door, but the stock `wp-login.php` URL still exists; fully
+  hiding it is a separate, careful change (noted in `docs/STUDIO.md`).
+- The Team page hardcodes the `studio_staff` role on create, so a non-technical owner can
+  never accidentally mint an admin.
+
+**Verify**
+- `php -l` clean on all new PHP; **PHPCS clean** on `studio.php`, `studio-team.php`,
+  `class-compass-core-cli.php`; `npm run build` unchanged (no front-end assets).
+- Not run locally (Docker unavailable): bootstrap owner via CLI → visit `/studio` →
+  branded login → lands on Projects with only the allowed menus → add a staff member →
+  log in as staff and confirm no password-change/Team access.
+
+### Task 40 — Projects dashboard + Gemini AI drafting (2026-11-22)
+**Done** (task/40)
+- **Custom Projects dashboard** (`plugins/compass-core/includes/admin-projects.php`):
+  a top-level **Projects** admin menu (cap `edit_posts`) that sits *alongside* the
+  native Work editor (kept, so revisions/autosave/media still work).
+  - **List view:** every case study with thumbnail, client, year and **inline
+    Featured / Published toggles** (AJAX, nonce-guarded `compass_project_toggle`),
+    search + Service/Industry/Status filters, and Edit / View / Trash row actions.
+  - **Editor view:** one screen for title, slug, the structured case-study fields
+    (reusing `compass_core_field_defs()`), summary/excerpt, the body via
+    `wp_editor()`, featured image + gallery (the existing `gallery.js` picker),
+    Service/Industry term checkboxes and a new **SEO meta description** field.
+    Saves through `wp_insert_post`/`wp_update_post` + `update_post_meta` +
+    `wp_set_object_terms`, so data is identical to the native editor.
+- **Gemini "Draft with AI"** (`plugins/compass-core/includes/ai-assist.php`): a new
+  authenticated REST route `compass/v1/ai/draft` that drafts Problem / Approach /
+  Solution / Results / Summary / Body / SEO-meta from the values typed so far. It
+  **reuses the public chat's provider adapter** (`compass_chat_complete()` in
+  `chat-providers.php`) and the same server-side key — the key never reaches the
+  browser. Each field has its own brand-voice prompt (from `docs/BRAND.md`).
+  (`assets/projects.js` wires the buttons, featured-image picker and list toggles.)
+- **SEO:** registered `_compass_seo_desc` meta; `compass_meta_description()`
+  (`theme/inc/seo.php`) now prefers it over the excerpt for `work`, falling back to
+  the excerpt when empty.
+
+**Decisions**
+- The AI route is **capability-gated (`edit_posts`)** and therefore deliberately
+  **exempt from the public chat's per-IP / daily caps** (those protect the free
+  quota from anonymous abuse). A light per-user throttle (40 / 10 min) still guards
+  against a runaway loop.
+- Kept the native Work editor registered rather than replacing it, so nothing core
+  (revisions, autosave, the block editor) is lost — the custom dashboard is the
+  primary surface, not the only one.
+- Admin-only assets (`projects.js`, `admin.css`) — **no front-end impact**; the Vite
+  bundles are unchanged (main JS 5.35 KB gz, CSS 15.80 KB gz).
+
+**Verify**
+- `php -l` clean on all new/changed PHP; **PHPCS clean** on the two new plugin files;
+  ESLint clean on `projects.js`; `npm run build` OK (front-end bundles unchanged).
+- Not run locally (Docker unavailable): create a project via **Projects → Add
+  project**, click each "Draft with AI" (needs a Gemini key in Site Settings),
+  save, and confirm it renders at `/work/` + its single page and that the SEO
+  `<meta name="description">` reflects the new field.
+
+**Next / owner action**
+- Set the Gemini API key under **Settings → Site Settings** if not already set — the
+  drafting buttons return a clear "no key" message until it is.
+
+### Task 35 — Remaining audit items F6, F8–F12 (2026-11-22)
+**Done** (task/35)
+- **F6 — Chat abuse surface.** Two guards added to the chat proxy
+  (`plugins/compass-core/includes/chat.php`):
+  - **Signed history.** Each successful reply is HMAC-signed server-side
+    (`compass_chat_sign()`, keyed on a site salt) and the signature is returned
+    to the widget, which echoes it back with that turn. `sanitize_history()`
+    now drops any `assistant` turn without a valid signature, so a client can no
+    longer forge replies to steer the proxy into a general-purpose LLM.
+    (`theme/assets/src/js/chat.js` stores + returns `sig`.)
+  - **Whole-site daily cap.** `COMPASS_CHAT_DAILY_MAX` (600/day, filter
+    `compass_chat_daily_max`) counts every message across all IPs, so a
+    distributed caller can't drain the free quota under the per-IP limit.
+    Over the cap returns the graceful fallback.
+- **F8 — CSP report endpoint.** Added a per-IP throttle (60 reports / 10 min)
+  so the unauthenticated `compass/v1/csp-report` can't be used as an open log
+  writer; over the cap it still 204s but logs nothing. Also, for signed-in
+  front-end views, the CSP now allows `secure.gravatar.com` (img) and `data:`
+  (font) so an **enforced** CSP won't break the admin bar. (`mu-plugins/compass-security.php`)
+- **F9 — Logo eager.** The header wordmark for the default (dark) theme now
+  loads `eager` + `fetchpriority="high"`; the alternate stays lazy so only the
+  visible one is fetched. (`theme/template-parts/header/branding.php`)
+- **F10 — `.gitattributes`.** Added `* text=auto eol=lf` (+ binary rules) so
+  Windows working copies stop reporting every PHP file as CRLF "errors" under
+  PHPCS. (The other F10 items — permalink structure, WP version pin, Rank
+  Math/Novamira config drift, denying `*.log`/`readme.html` — are host/env
+  owner actions, tracked in `GO-LIVE.md`.)
+- **F11 — Meta-description lengths.** Lengthened the three case-study excerpts
+  (were 34–47 chars) and trimmed the two over-long insight excerpts (were
+  170–179) to ~120–155 — these feed the meta description
+  (`compass_meta_description()` reads the excerpt). (`class-compass-core-cli.php`)
+- **F12 — A11y polish.**
+  - Nav dropdowns now keep `aria-expanded` in step with keyboard focus (CSS
+    opens them on `:focus-within`; it read `false`). (`command-menu.js`)
+  - Work and Insights filters announce the result count through a polite
+    live region after a filter change. (`work-filter.js`, `insights.js`)
+  - Footer links get `padding-block` for a ~24px tap target on phones.
+    (`nav.css`)
+  - Dropped the `Link: …; rel=shortlink` **HTTP header** (only the `<head>`
+    tag was removed before). (`theme/inc/cleanup.php`)
+
+**Decisions**
+- **Insight posts stay Sri Lanka–focused.** F11 flags them as "still targeting
+  Sri Lanka", but they are deliberate local-SEO blog content and the decided
+  worldwide positioning pass (see `GO-LIVE.md`) scopes to company-level schema
+  and home/meta copy, not the blog. Only their lengths were trimmed. The
+  LKR-only quote budgets are handled in the worldwide pass.
+- Daily cap and per-IP limit both increment **before** the provider call, so a
+  slow/failed upstream still consumes the budget (can't be retried for free).
+
+**Verify**
+- Lint (JS/CSS) clean, Vite build OK (main JS 5.35 KB gz, CSS 15.80 KB gz —
+  inside budget), PHPCS clean on all changed PHP, PHP `-l` clean. Chat
+  signing/cap and live regions exercised by reading; no local WP run (Docker
+  unavailable) — the e2e/axe suite runs in CI.
 
 ### Task 37 — Chat always visible + hero "See True North" (2026-11-22)
 **Done** (task/37)

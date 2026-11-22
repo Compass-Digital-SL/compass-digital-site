@@ -131,24 +131,6 @@ $compass_spec = array(
 	get_template_part( 'template-parts/home/faq' );
 	get_template_part( 'template-parts/home/cta' );
 	?>
-
-	<?php
-	// If an editor has added content to the Home page, show it below the hero.
-	if ( have_posts() ) :
-		while ( have_posts() ) :
-			the_post();
-			if ( '' !== trim( get_the_content() ) ) :
-				?>
-				<section class="home-section front-page__content">
-					<div class="container entry-content">
-						<?php the_content(); ?>
-					</div>
-				</section>
-				<?php
-			endif;
-		endwhile;
-	endif;
-	?>
 </div>
 <?php
 get_footer();

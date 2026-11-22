@@ -56,6 +56,98 @@ class Compass_Core_CLI {
 	}
 
 	/**
+	 * Create or promote the Studio Owner account.
+	 *
+	 * Run this once per site to bootstrap the owner who manages the Studio
+	 * (/studio). If the user exists it is promoted to Studio Owner; otherwise it
+	 * is created. With no --pass a strong password is generated and printed.
+	 *
+	 * ## OPTIONS
+	 *
+	 * --login=<login>
+	 * : The username to create or promote. (Not --user: that is a reserved
+	 *   WP-CLI global flag.)
+	 *
+	 * [--email=<email>]
+	 * : Email address (required when creating a new user).
+	 *
+	 * [--pass=<password>]
+	 * : The password to set. Omit to auto-generate and print one.
+	 *
+	 * [--name=<display_name>]
+	 * : Full name shown in the Studio.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp compass studio_owner --login=anjula --email=you@example.com
+	 *     wp compass studio_owner --login=anjula --pass='Choose-A-Strong-One!'
+	 *
+	 * @param array $args       Positional args (unused).
+	 * @param array $assoc_args Flags.
+	 */
+	public function studio_owner( $args, $assoc_args ) {
+		// Make sure the roles exist before we assign one.
+		if ( function_exists( 'compass_studio_role_caps' ) ) {
+			$caps = compass_studio_role_caps();
+			remove_role( 'studio_owner' );
+			add_role( 'studio_owner', 'Studio Owner', $caps['studio_owner'] );
+		}
+
+		$login = isset( $assoc_args['login'] ) ? sanitize_user( $assoc_args['login'], true ) : '';
+		if ( '' === $login ) {
+			WP_CLI::error( 'Pass --login=<username>.' );
+		}
+
+		$pass      = isset( $assoc_args['pass'] ) ? (string) $assoc_args['pass'] : '';
+		$generated = false;
+		if ( '' === $pass ) {
+			$pass      = wp_generate_password( 18, true, false );
+			$generated = true;
+		}
+
+		$user = get_user_by( 'login', $login );
+
+		if ( $user ) {
+			$user->set_role( 'studio_owner' );
+			wp_set_password( $pass, $user->ID );
+			if ( ! empty( $assoc_args['name'] ) ) {
+				wp_update_user(
+					array(
+						'ID'           => $user->ID,
+						'display_name' => sanitize_text_field( $assoc_args['name'] ),
+					)
+				);
+			}
+			WP_CLI::success( sprintf( 'Promoted "%s" to Studio Owner.', $login ) );
+		} else {
+			$email = isset( $assoc_args['email'] ) ? sanitize_email( $assoc_args['email'] ) : '';
+			if ( '' === $email || ! is_email( $email ) ) {
+				WP_CLI::error( 'A new user needs a valid --email=<email>.' );
+			}
+			$name    = ! empty( $assoc_args['name'] ) ? sanitize_text_field( $assoc_args['name'] ) : $login;
+			$user_id = wp_insert_user(
+				array(
+					'user_login'   => $login,
+					'user_pass'    => $pass,
+					'user_email'   => $email,
+					'display_name' => $name,
+					'nickname'     => $name,
+					'role'         => 'studio_owner',
+				)
+			);
+			if ( is_wp_error( $user_id ) ) {
+				WP_CLI::error( $user_id->get_error_message() );
+			}
+			WP_CLI::success( sprintf( 'Created Studio Owner "%s".', $login ) );
+		}
+
+		if ( $generated ) {
+			WP_CLI::log( 'Generated password: ' . $pass );
+		}
+		WP_CLI::log( 'Sign in at: ' . home_url( '/studio' ) );
+	}
+
+	/**
 	 * Delete all placeholder items.
 	 */
 	private function purge() {
@@ -131,7 +223,7 @@ class Compass_Core_CLI {
 				'quote'        => 'Our new site is quick and easy, and bookings have climbed since launch. Compass just got it.',
 				'quote_author' => 'Nimali Perera, Owner — Ella Spice Café',
 				'featured'     => '1',
-				'excerpt'      => 'A fast bookings-first site for a hillside café.',
+				'excerpt'      => 'A fast, bookings-first website for a hillside café — clear menus, simple table reservations and pages that load quickly on any phone.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 			array(
@@ -149,7 +241,7 @@ class Compass_Core_CLI {
 				'quote'        => 'The POS finally gives us one clear view of every shop. Stock-takes that took all day now take an hour.',
 				'quote_author' => 'Rohan Fernando, Director — Pearl Retail',
 				'featured'     => '1',
-				'excerpt'      => 'One POS, shared stock, four shops.',
+				'excerpt'      => 'One POS tying four shops together: shared live stock, quick billing at every counter and clear sales reports the owner can read at a glance.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 			array(
@@ -167,7 +259,7 @@ class Compass_Core_CLI {
 				'quote'        => 'More travellers find us on Google now, and the enquiries keep coming. Clear work, no fuss.',
 				'quote_author' => 'Dilani Jayawardena, Manager — Serendib Tours',
 				'featured'     => '0',
-				'excerpt'      => 'An SEO-first rebuild for a tour operator.',
+				'excerpt'      => 'An SEO-first rebuild for a tour operator — faster pages, clearer trip details and a structure built to rank for the searches that matter.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 		);
@@ -399,14 +491,14 @@ class Compass_Core_CLI {
 			array(
 				'title'    => 'How much does a website cost in Sri Lanka?',
 				'slug'     => 'website-cost-sri-lanka',
-				'excerpt'  => 'A plain, honest look at what a business website really costs in Sri Lanka — what you are paying for, what drives the price up or down, and how to avoid the two expensive mistakes.',
+				'excerpt'  => 'A plain, honest look at what a business website really costs in Sri Lanka — what you pay for, what moves the price, and the two costly mistakes to avoid.',
 				'category' => $cats['Websites'],
 				'content'  => $this->article_website_cost(),
 			),
 			array(
 				'title'    => 'How to get your business found on Google in Sri Lanka',
 				'slug'     => 'get-found-on-google-sri-lanka',
-				'excerpt'  => 'No jargon, no magic. A practical guide to showing up on Google for Sri Lankan businesses — the handful of things that actually move the needle, in the order that matters.',
+				'excerpt'  => 'No jargon, no magic — a practical guide to showing up on Google for Sri Lankan businesses, and the handful of things that actually move the needle.',
 				'category' => $cats['SEO'],
 				'content'  => $this->article_get_found_google(),
 			),
