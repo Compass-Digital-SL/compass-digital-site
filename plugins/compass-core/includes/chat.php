@@ -339,28 +339,28 @@ function compass_chat_front_config() {
 		'consent'  => COMPASS_CONSENT_COOKIE,
 	);
 
-	// Attach to the theme's main script if present, else a tiny inline handle.
-	$handle = wp_script_is( 'compass-main', 'registered' ) || wp_script_is( 'compass-main', 'enqueued' ) ? 'compass-main' : '';
-	if ( $handle ) {
-		wp_add_inline_script( $handle, 'window.CompassChat=' . wp_json_encode( $config ) . ';', 'before' );
-	} else {
-		add_action(
-			'wp_footer',
-			function () use ( $config ) {
-				printf( '<script id="compass-chat-config">window.CompassChat=%s;</script>' . "\n", wp_json_encode( $config ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output, no user input.
-			},
-			4
-		);
-	}
+	// Print the config as its own inline <script> in the footer, before the main
+	// bundle runs (footer priority 4 < wp_print_footer_scripts at 20). We do NOT
+	// attach it to the `compass-main` handle: the theme rewrites that handle into
+	// a native ES module via `script_loader_tag`, which drops any inline "before"
+	// script WordPress would normally print — so `window.CompassChat` would be
+	// lost and the launcher could never open. main.js is a deferred module, so a
+	// classic inline script placed earlier in the DOM always runs first.
+	add_action(
+		'wp_footer',
+		function () use ( $config ) {
+			printf( '<script id="compass-chat-config">window.CompassChat=%s;</script>' . "\n", wp_json_encode( $config ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode output, no user input.
+		},
+		4
+	);
 }
 add_action( 'wp_enqueue_scripts', 'compass_chat_front_config', 20 );
 
 /**
  * Print the chat launcher button in the footer.
  *
- * Hidden until cookie consent is granted (the theme shows it). The heavy panel
- * UI is a lazy chunk fetched on first open, so this button is all that ships on
- * initial load. Styled from design tokens only.
+ * Always visible. The heavy panel UI is a lazy chunk fetched on first open, so
+ * this button is all that ships on initial load. Styled from design tokens only.
  */
 function compass_chat_launcher() {
 	if ( is_admin() || ! compass_chat_enabled() ) {
@@ -368,7 +368,7 @@ function compass_chat_launcher() {
 	}
 	$label = __( 'Chat with us', 'compass-core' );
 	?>
-	<button type="button" id="compass-chat-launcher" class="compass-chat-launcher" data-compass-chat aria-label="<?php echo esc_attr( $label ); ?>" aria-haspopup="dialog" hidden>
+	<button type="button" id="compass-chat-launcher" class="compass-chat-launcher" data-compass-chat aria-label="<?php echo esc_attr( $label ); ?>" aria-haspopup="dialog" aria-expanded="false">
 		<span class="compass-chat-launcher__icon" aria-hidden="true">
 			<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
 				<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
@@ -393,13 +393,13 @@ function compass_chat_launcher_styles() {
 	}
 	?>
 	<style id="compass-chat-launcher-css">
-		.compass-chat-launcher{position:fixed;z-index:995;right:clamp(1rem,2vw,1.5rem);bottom:clamp(1rem,2vw,1.5rem);display:inline-flex;align-items:center;gap:var(--space-2,.5rem);padding:var(--space-3,.75rem) var(--space-4,1rem);font:inherit;font-size:var(--fs-sm,.9rem);font-weight:500;color:var(--accent-text,#fff);background:var(--accent-fill,#1c8282);border:1px solid var(--accent-fill,#1c8282);border-radius:var(--radius-pill,999px);box-shadow:var(--shadow-2,0 10px 30px -10px rgba(5,12,20,.6));cursor:pointer}
+		.compass-chat-launcher{position:fixed;z-index:995;right:clamp(1rem,2vw,1.5rem);bottom:calc(clamp(1rem,2vw,1.5rem) + var(--compass-launcher-lift,0px));display:inline-flex;align-items:center;gap:var(--space-2,.5rem);padding:var(--space-3,.75rem) var(--space-4,1rem);font:inherit;font-size:var(--fs-sm,.9rem);font-weight:500;color:var(--accent-text,#fff);background:color-mix(in srgb,var(--accent-fill,#1c8282) 72%,transparent);-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(1.3);backdrop-filter:blur(var(--glass-blur,14px)) saturate(1.3);border:1px solid color-mix(in srgb,#fff 24%,transparent);border-radius:var(--radius-pill,999px);box-shadow:var(--shadow-2,0 10px 30px -10px rgba(5,12,20,.6)),inset 0 1px 0 color-mix(in srgb,#fff 22%,transparent);cursor:pointer}
 		.compass-chat-launcher[hidden]{display:none}
 		.compass-chat-launcher__icon{display:inline-flex}
-		.compass-chat-launcher:hover{background:var(--accent-fill-2,#187070);border-color:var(--accent-fill-2,#187070)}
+		.compass-chat-launcher:hover{background:color-mix(in srgb,var(--accent-fill-2,#187070) 82%,transparent);border-color:color-mix(in srgb,#fff 34%,transparent)}
 		.compass-chat-launcher:focus-visible{outline:2px solid var(--focus,#309393);outline-offset:3px}
-		@media (max-width:480px){.compass-chat-launcher{bottom:calc(env(safe-area-inset-bottom,0) + 4.5rem)}}
-		@media (prefers-reduced-motion:no-preference){.compass-chat-launcher{transition:background var(--dur-fast,150ms) var(--ease,ease),transform var(--dur-fast,150ms) var(--ease,ease)}.compass-chat-launcher:hover{transform:translateY(-1px)}}
+		@media (max-width:480px){.compass-chat-launcher{bottom:calc(env(safe-area-inset-bottom,0) + 4.5rem + var(--compass-launcher-lift,0px))}}
+		@media (prefers-reduced-motion:no-preference){.compass-chat-launcher{transition:background var(--dur-fast,150ms) var(--ease,ease),transform var(--dur-fast,150ms) var(--ease,ease),bottom var(--dur-mid,300ms) var(--ease,ease)}.compass-chat-launcher:hover{transform:translateY(-1px)}}
 	</style>
 	<?php
 }

@@ -62,7 +62,7 @@ $compass_links = compass_primary_links();
 	>
 		<svg class="header-actions__search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="9" cy="9" r="6"/><path d="m13.5 13.5 4 4"/></svg>
 		<span class="header-actions__navigate-label"><?php esc_html_e( 'Search', 'compass-digital' ); ?></span>
-		<kbd class="header-actions__key" aria-hidden="true" data-shortcut-label>Ctrl K</kbd>
+		<kbd class="header-actions__key" aria-hidden="true" data-shortcut-label>K</kbd>
 	</button>
 
 	<div class="tint" data-tint>

@@ -202,12 +202,10 @@ function initTint() {
   if (active !== DEFAULT_ACCENT && !document.getElementById("compass-accent")) applyAccent(active);
 }
 
-/** "⌘ K" on Apple devices, "Ctrl K" elsewhere. */
+/** Shows just "K" in the key badge; Ctrl/⌘ + K still opens search. */
 function initShortcutLabel() {
-  const platform = navigator.userAgentData?.platform || navigator.platform || "";
-  const mac = /Mac|iPhone|iPad/.test(platform);
   document.querySelectorAll("[data-shortcut-label]").forEach((el) => {
-    el.textContent = mac ? "⌘ K" : "Ctrl K";
+    el.textContent = "K";
   });
 }
 

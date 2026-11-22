@@ -31,6 +31,7 @@
 - [x] 33 Full audit + QA (findings F1–F12 in `docs/AUDIT.md` top section)
 - [x] 34 Fix audit findings F1–F5 + F7 (spam-check guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
 - [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
+- [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
 - [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
 
 ## Pre-launch audit (2026-11-19)
@@ -49,6 +50,54 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 37 — Chat always visible + hero "See True North" (2026-11-22)
+**Done** (task/37)
+- **Root-cause fix for the chat "no show":** `window.CompassChat` was never
+  defined, so `initChat()` bailed and the launcher stayed hidden even after the
+  visitor accepted cookies. The config was attached with
+  `wp_add_inline_script('compass-main', …, 'before')`, but the theme rewrites
+  `compass-main` into a native ES module via `script_loader_tag`, which drops the
+  inline "before" script. Now `compass_chat_front_config()` always prints the
+  config as its own `<script id="compass-chat-config">` in the footer (before the
+  module runs), like the consent config does. (`includes/chat.php`)
+- **Launcher always visible**, no longer gated on cookie consent: `initChat()`
+  reveals it unconditionally, and the PHP button renders without `hidden` so it
+  shows even before JS. The chat sets no cookies; sending a message is the
+  visitor's own choice, so accept / decline / undecided all see it.
+- **Clear of the consent bar:** while the cookie bar is on screen the launcher
+  sits just above it — main.js exposes the bar's live height (ResizeObserver +
+  MutationObserver) as `--compass-consent-clearance`, which the launcher's
+  `bottom` offsets by; it drops back to the corner once a choice is made. Fixes a
+  new axe `target-size`/`target-offset` overlap the always-on launcher created.
+- **Hero "See True North":** hovering (or focusing) the "Heading 000° N" readout
+  reveals a small button; clicking it spins the needle two full turns and eases
+  onto 0° N (easeOutCubic, ~2s), the readout counting down with it. Honours
+  `prefers-reduced-motion` (snaps to north, no sweep) and is a 24px touch target.
+  (`front-page.php`, `assets/src/js/hero.js`, `assets/src/css/hero.css`)
+
+**Follow-up (same day)**
+- **Chat gave only the "Sorry — I can't answer right now" fallback:** the
+  provider call failed because the default model `gemini-2.0-flash` has been
+  retired ("no longer available"). Updated the default to `gemini-3.5-flash`
+  (confirmed live: HTTP 200, ~3s; `gemini-3.8-flash`/`flash-latest` were
+  503/timeout). The key was always valid; still overridable via the
+  `gemini_model` secret. (`includes/chat-providers.php`) Verified end to end —
+  the widget now returns a real, grounded sales reply.
+- **Launcher no longer overlaps the WhatsApp chip:** the `--compass-launcher-lift`
+  variable (was `--compass-consent-clearance`) now measures the tallest of the
+  cookie bar *and* the desktop WhatsApp chip, so the launcher stacks just above
+  whichever is present and drops back when both are gone. (`main.js`, `chat.php`)
+- **Glassy launcher:** translucent accent fill + `backdrop-filter` blur, hairline
+  light border and an inset top highlight, matching the header/dropdown glass.
+  (`chat.php`)
+- **"See True North" removed** at the owner's request — reverted the hero markup,
+  CSS and JS to their pre-feature state. The needle still follows the pointer.
+
+**Decisions**
+- The chat launcher is independent of the GA4 cookie choice — it collects
+  nothing until the visitor types and sends a message. Privacy copy unchanged
+  (that section is about processing message data, not showing the button).
 
 ### Task 36 — Remove third-party vendor ties (2026-11-21)
 **Done** (task/36)

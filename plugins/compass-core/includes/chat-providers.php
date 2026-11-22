@@ -62,7 +62,7 @@ function compass_chat_provider_gemini( $system, $turns ) {
 	}
 
 	$model = function_exists( 'compass_core_secret' ) ? compass_core_secret( 'gemini_model' ) : '';
-	$model = $model ? $model : 'gemini-2.0-flash';
+	$model = $model ? $model : 'gemini-3.5-flash';
 	$model = preg_replace( '/[^a-zA-Z0-9.\-]/', '', $model );
 
 	$contents = array();
