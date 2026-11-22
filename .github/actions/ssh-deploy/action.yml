@@ -17,6 +17,13 @@ inputs:
   ssh_known_hosts:
     description: Contents for known_hosts (ssh-keyscan output) to pin the host key.
     required: true
+  ssh_port:
+    description: >
+      SSH port on the host. Default 22. Set to 21098 for Namecheap shared
+      hosting, or whatever non-standard port the host uses. When this is set,
+      generate SSH_KNOWN_HOSTS with the same port: `ssh-keyscan -p <port> <host>`.
+    required: false
+    default: "22"
   deploy_path:
     description: Base dir on the host that holds releases/ and the current symlink.
     required: true
@@ -54,9 +61,11 @@ runs:
         SITE_URL: ${{ inputs.site_url }}
         WP_PATH: ${{ inputs.wp_path }}
         KEEP_RELEASES: ${{ inputs.keep_releases }}
+        SSH_PORT: ${{ inputs.ssh_port }}
       run: |
         set -euo pipefail
-        SSH="ssh -i $HOME/.ssh/deploy_key -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o IdentitiesOnly=yes"
+        PORT="${SSH_PORT:-22}"
+        SSH="ssh -p $PORT -i $HOME/.ssh/deploy_key -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o IdentitiesOnly=yes"
         REMOTE="$SSH_USER@$SSH_HOST"
         RELEASE_ID="$(date -u +%Y%m%d%H%M%S)-$(echo "${GITHUB_SHA:-manual}" | cut -c1-7)"
         RELEASES="$DEPLOY_PATH/releases"

@@ -118,6 +118,7 @@ jobs:
           ssh_user: ${{ secrets.SSH_USER }}
           ssh_key: ${{ secrets.SSH_KEY }}
           ssh_known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          ssh_port: ${{ secrets.SSH_PORT }}
           deploy_path: ${{ secrets.STAGING_DEPLOY_PATH }}
           site_url: ${{ secrets.STAGING_URL }}
           wp_path: ${{ secrets.STAGING_WP_PATH }}
@@ -155,6 +156,7 @@ jobs:
           ssh_user: ${{ secrets.SSH_USER }}
           ssh_key: ${{ secrets.SSH_KEY }}
           ssh_known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          ssh_port: ${{ secrets.SSH_PORT }}
           deploy_path: ${{ secrets.PRODUCTION_DEPLOY_PATH }}
           site_url: ${{ secrets.PRODUCTION_URL }}
           wp_path: ${{ secrets.PRODUCTION_WP_PATH }}
