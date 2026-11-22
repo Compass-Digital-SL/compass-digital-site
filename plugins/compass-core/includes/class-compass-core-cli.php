@@ -56,6 +56,97 @@ class Compass_Core_CLI {
 	}
 
 	/**
+	 * Create or promote the Studio Owner account.
+	 *
+	 * Run this once per site to bootstrap the owner who manages the Studio
+	 * (/studio). If the user exists it is promoted to Studio Owner; otherwise it
+	 * is created. With no --pass a strong password is generated and printed.
+	 *
+	 * ## OPTIONS
+	 *
+	 * --user=<login>
+	 * : The username to create or promote.
+	 *
+	 * [--email=<email>]
+	 * : Email address (required when creating a new user).
+	 *
+	 * [--pass=<password>]
+	 * : The password to set. Omit to auto-generate and print one.
+	 *
+	 * [--name=<display_name>]
+	 * : Full name shown in the Studio.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp compass studio_owner --user=anjula --email=you@example.com
+	 *     wp compass studio_owner --user=anjula --pass='Choose-A-Strong-One!'
+	 *
+	 * @param array $args       Positional args (unused).
+	 * @param array $assoc_args Flags.
+	 */
+	public function studio_owner( $args, $assoc_args ) {
+		// Make sure the roles exist before we assign one.
+		if ( function_exists( 'compass_studio_role_caps' ) ) {
+			$caps = compass_studio_role_caps();
+			remove_role( 'studio_owner' );
+			add_role( 'studio_owner', 'Studio Owner', $caps['studio_owner'] );
+		}
+
+		$login = isset( $assoc_args['user'] ) ? sanitize_user( $assoc_args['user'], true ) : '';
+		if ( '' === $login ) {
+			WP_CLI::error( 'Pass --user=<login>.' );
+		}
+
+		$pass      = isset( $assoc_args['pass'] ) ? (string) $assoc_args['pass'] : '';
+		$generated = false;
+		if ( '' === $pass ) {
+			$pass      = wp_generate_password( 18, true, false );
+			$generated = true;
+		}
+
+		$user = get_user_by( 'login', $login );
+
+		if ( $user ) {
+			$user->set_role( 'studio_owner' );
+			wp_set_password( $pass, $user->ID );
+			if ( ! empty( $assoc_args['name'] ) ) {
+				wp_update_user(
+					array(
+						'ID'           => $user->ID,
+						'display_name' => sanitize_text_field( $assoc_args['name'] ),
+					)
+				);
+			}
+			WP_CLI::success( sprintf( 'Promoted "%s" to Studio Owner.', $login ) );
+		} else {
+			$email = isset( $assoc_args['email'] ) ? sanitize_email( $assoc_args['email'] ) : '';
+			if ( '' === $email || ! is_email( $email ) ) {
+				WP_CLI::error( 'A new user needs a valid --email=<email>.' );
+			}
+			$name    = ! empty( $assoc_args['name'] ) ? sanitize_text_field( $assoc_args['name'] ) : $login;
+			$user_id = wp_insert_user(
+				array(
+					'user_login'   => $login,
+					'user_pass'    => $pass,
+					'user_email'   => $email,
+					'display_name' => $name,
+					'nickname'     => $name,
+					'role'         => 'studio_owner',
+				)
+			);
+			if ( is_wp_error( $user_id ) ) {
+				WP_CLI::error( $user_id->get_error_message() );
+			}
+			WP_CLI::success( sprintf( 'Created Studio Owner "%s".', $login ) );
+		}
+
+		if ( $generated ) {
+			WP_CLI::log( 'Generated password: ' . $pass );
+		}
+		WP_CLI::log( 'Sign in at: ' . home_url( '/studio' ) );
+	}
+
+	/**
 	 * Delete all placeholder items.
 	 */
 	private function purge() {

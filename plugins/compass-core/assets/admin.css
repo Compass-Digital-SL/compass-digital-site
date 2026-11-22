@@ -198,3 +198,27 @@
 	display: flex;
 	gap: 8px;
 }
+
+/* ---- Team page -------------------------------------------------------- */
+
+.compass-team-setpass {
+	margin-bottom: 6px;
+}
+.compass-team-setpass summary {
+	cursor: pointer;
+}
+.compass-team-inline {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	margin-top: 6px;
+}
+.compass-team-inline .regular-text {
+	max-width: 180px;
+}
+.compass-team-remove {
+	display: inline;
+}
+.compass-team-remove .delete {
+	color: #b3261e;
+}
