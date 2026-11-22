@@ -54,3 +54,147 @@
 	background: #fde7e9;
 	color: #b3261e;
 }
+
+/* ---- Projects dashboard ------------------------------------------------ */
+
+.compass-projects-filters .search-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin: 12px 0;
+}
+
+.compass-projects-table .column-thumb {
+	width: 68px;
+}
+.compass-projects-table .column-thumb img {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 4px;
+	display: block;
+}
+.compass-thumb-empty {
+	display: block;
+	width: 60px;
+	height: 60px;
+	border-radius: 4px;
+	background: #f0f0f1;
+}
+
+/* Inline Featured / status toggles. */
+.compass-toggle {
+	cursor: pointer;
+	border: 1px solid #c3c4c7;
+	border-radius: 999px;
+	padding: 2px 10px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.6;
+	background: #f6f7f7;
+	color: #50575e;
+	text-decoration: none;
+}
+.compass-toggle:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+.compass-toggle .compass-toggle-yes {
+	display: none;
+}
+.compass-toggle .compass-toggle-no {
+	display: inline;
+}
+.compass-toggle.is-on {
+	background: #e6f4ea;
+	border-color: #1a7f37;
+	color: #1a7f37;
+}
+.compass-toggle.is-on .compass-toggle-yes {
+	display: inline;
+}
+.compass-toggle.is-on .compass-toggle-no {
+	display: none;
+}
+
+/* ---- Project editor --------------------------------------------------- */
+
+.compass-edit-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 300px;
+	gap: 24px;
+	align-items: start;
+	margin-top: 16px;
+}
+@media screen and (max-width: 960px) {
+	.compass-edit-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.compass-project-form .compass-field {
+	margin: 0 0 1.25em;
+}
+.compass-project-form .compass-field > label {
+	display: block;
+	margin-bottom: 0.25em;
+}
+
+.compass-box {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 12px 14px;
+	margin-bottom: 16px;
+}
+.compass-box h2 {
+	font-size: 13px;
+	margin: 0 0 10px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.compass-term-list {
+	margin: 0;
+	max-height: 200px;
+	overflow: auto;
+}
+.compass-term-list li {
+	margin: 0 0 4px;
+}
+
+.compass-thumb-preview img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	display: block;
+}
+
+/* AI assist. */
+.compass-field--ai .compass-ai-btn {
+	float: right;
+	margin-top: -2px;
+}
+.compass-ai-result {
+	clear: both;
+	margin-top: 8px;
+	border: 1px solid #c3c4c7;
+	border-left: 3px solid #1e8a8a;
+	border-radius: 4px;
+	background: #f6fbfb;
+	padding: 10px 12px;
+}
+.compass-ai-preview {
+	white-space: pre-wrap;
+	font-size: 13px;
+	line-height: 1.5;
+	margin-bottom: 10px;
+	max-height: 220px;
+	overflow: auto;
+}
+.compass-ai-actions {
+	display: flex;
+	gap: 8px;
+}
