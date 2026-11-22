@@ -309,7 +309,11 @@ html.has-overlay {
 .header-actions__key {
   font: 500 0.6875rem/1 var(--font-sans);
   color: var(--text-subtle);
-  padding: 0.3rem 0.4rem;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
   border-radius: 6px;
   border: 1px solid var(--border-strong);
   background: color-mix(in srgb, var(--text) 4%, transparent);

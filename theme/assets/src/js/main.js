@@ -59,27 +59,48 @@ function initQuote() {
 }
 
 // AI chat assistant. Only the launcher ships on load; the panel is a lazy chunk
-// fetched on first open. The launcher appears only after cookie consent.
+// fetched on first open. The launcher is always visible — opening it and sending
+// a message is the visitor's own choice, and it sets no cookies (the GA4 consent
+// bar is separate), so it does not depend on the cookie choice.
 function initChat() {
   const cfg = window.CompassChat;
   const launcher = document.querySelector("[data-compass-chat]");
   if (!cfg || !launcher) return;
 
-  function reveal() {
-    launcher.hidden = false;
-    launcher.setAttribute("aria-expanded", "false");
-  }
+  launcher.hidden = false;
+  launcher.setAttribute("aria-expanded", "false");
 
-  let consented = false;
-  try {
-    consented = localStorage.getItem(cfg.consent) === "granted";
-  } catch {
-    consented = false;
-  }
-  if (consented) {
-    reveal();
-  } else {
-    window.addEventListener("compass:consent-granted", reveal, { once: true });
+  // The launcher is pinned to the bottom-right corner, where it would sit on top
+  // of two other fixed elements: the cookie consent bar (while it's on screen)
+  // and the desktop WhatsApp chip. Lift the launcher clear of whichever is there
+  // by exposing the needed offset as a CSS variable it adds to its own `bottom`.
+  // A visible element reports a real height; a hidden/`display:none` one reports
+  // 0, so the lift is always just enough and drops back to 0 when both are gone.
+  const consentBar = document.getElementById("compass-consent");
+  const waChip = document.querySelector(".contact-chip");
+  const obstacles = [consentBar, waChip].filter(Boolean);
+  if (obstacles.length) {
+    const clearance = (el) => {
+      if (!el || el.hidden) return 0;
+      const r = el.getBoundingClientRect();
+      return r.height ? Math.ceil(r.height) + 12 : 0;
+    };
+    const syncLift = () => {
+      const lift = Math.max(0, ...obstacles.map(clearance));
+      launcher.style.setProperty("--compass-launcher-lift", lift + "px");
+    };
+    syncLift();
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver(syncLift);
+      obstacles.forEach((el) => ro.observe(el));
+    }
+    if ("MutationObserver" in window && consentBar) {
+      new MutationObserver(syncLift).observe(consentBar, {
+        attributes: true,
+        attributeFilter: ["hidden"],
+      });
+    }
+    window.addEventListener("resize", syncLift, { passive: true });
   }
 
   let controller = null;
