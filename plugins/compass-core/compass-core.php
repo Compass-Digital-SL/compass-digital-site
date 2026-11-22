@@ -31,6 +31,8 @@ require_once COMPASS_CORE_DIR . 'includes/settings.php';
 require_once COMPASS_CORE_DIR . 'includes/analytics.php';
 require_once COMPASS_CORE_DIR . 'includes/quote-handler.php';
 require_once COMPASS_CORE_DIR . 'includes/chat.php';
+require_once COMPASS_CORE_DIR . 'includes/ai-assist.php';
+require_once COMPASS_CORE_DIR . 'includes/admin-projects.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once COMPASS_CORE_DIR . 'includes/class-compass-core-cli.php';
