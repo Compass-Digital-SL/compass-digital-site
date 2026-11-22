@@ -131,7 +131,7 @@ class Compass_Core_CLI {
 				'quote'        => 'Our new site is quick and easy, and bookings have climbed since launch. Compass just got it.',
 				'quote_author' => 'Nimali Perera, Owner — Ella Spice Café',
 				'featured'     => '1',
-				'excerpt'      => 'A fast bookings-first site for a hillside café.',
+				'excerpt'      => 'A fast, bookings-first website for a hillside café — clear menus, simple table reservations and pages that load quickly on any phone.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 			array(
@@ -149,7 +149,7 @@ class Compass_Core_CLI {
 				'quote'        => 'The POS finally gives us one clear view of every shop. Stock-takes that took all day now take an hour.',
 				'quote_author' => 'Rohan Fernando, Director — Pearl Retail',
 				'featured'     => '1',
-				'excerpt'      => 'One POS, shared stock, four shops.',
+				'excerpt'      => 'One POS tying four shops together: shared live stock, quick billing at every counter and clear sales reports the owner can read at a glance.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 			array(
@@ -167,7 +167,7 @@ class Compass_Core_CLI {
 				'quote'        => 'More travellers find us on Google now, and the enquiries keep coming. Clear work, no fuss.',
 				'quote_author' => 'Dilani Jayawardena, Manager — Serendib Tours',
 				'featured'     => '0',
-				'excerpt'      => 'An SEO-first rebuild for a tour operator.',
+				'excerpt'      => 'An SEO-first rebuild for a tour operator — faster pages, clearer trip details and a structure built to rank for the searches that matter.',
 				'content'      => 'Placeholder case study. Replace the copy and images before launch.',
 			),
 		);
@@ -399,14 +399,14 @@ class Compass_Core_CLI {
 			array(
 				'title'    => 'How much does a website cost in Sri Lanka?',
 				'slug'     => 'website-cost-sri-lanka',
-				'excerpt'  => 'A plain, honest look at what a business website really costs in Sri Lanka — what you are paying for, what drives the price up or down, and how to avoid the two expensive mistakes.',
+				'excerpt'  => 'A plain, honest look at what a business website really costs in Sri Lanka — what you pay for, what moves the price, and the two costly mistakes to avoid.',
 				'category' => $cats['Websites'],
 				'content'  => $this->article_website_cost(),
 			),
 			array(
 				'title'    => 'How to get your business found on Google in Sri Lanka',
 				'slug'     => 'get-found-on-google-sri-lanka',
-				'excerpt'  => 'No jargon, no magic. A practical guide to showing up on Google for Sri Lankan businesses — the handful of things that actually move the needle, in the order that matters.',
+				'excerpt'  => 'No jargon, no magic — a practical guide to showing up on Google for Sri Lankan businesses, and the handful of things that actually move the needle.',
 				'category' => $cats['SEO'],
 				'content'  => $this->article_get_found_google(),
 			),

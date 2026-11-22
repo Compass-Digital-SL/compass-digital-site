@@ -32,7 +32,7 @@
 - [x] 34 Fix audit findings F1–F5 + F7 (spam-check guard, quote prefill, auto-reply, proxy IP, chat nonce, write-only secrets)
 - [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
-- [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
+- [x] 35 Remaining audit items F6, F8–F12 (chat cap + signed history, CSP endpoint throttle, logo eager, `.gitattributes`, meta-description lengths, a11y polish)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -50,6 +50,62 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 35 — Remaining audit items F6, F8–F12 (2026-11-22)
+**Done** (task/35)
+- **F6 — Chat abuse surface.** Two guards added to the chat proxy
+  (`plugins/compass-core/includes/chat.php`):
+  - **Signed history.** Each successful reply is HMAC-signed server-side
+    (`compass_chat_sign()`, keyed on a site salt) and the signature is returned
+    to the widget, which echoes it back with that turn. `sanitize_history()`
+    now drops any `assistant` turn without a valid signature, so a client can no
+    longer forge replies to steer the proxy into a general-purpose LLM.
+    (`theme/assets/src/js/chat.js` stores + returns `sig`.)
+  - **Whole-site daily cap.** `COMPASS_CHAT_DAILY_MAX` (600/day, filter
+    `compass_chat_daily_max`) counts every message across all IPs, so a
+    distributed caller can't drain the free quota under the per-IP limit.
+    Over the cap returns the graceful fallback.
+- **F8 — CSP report endpoint.** Added a per-IP throttle (60 reports / 10 min)
+  so the unauthenticated `compass/v1/csp-report` can't be used as an open log
+  writer; over the cap it still 204s but logs nothing. Also, for signed-in
+  front-end views, the CSP now allows `secure.gravatar.com` (img) and `data:`
+  (font) so an **enforced** CSP won't break the admin bar. (`mu-plugins/compass-security.php`)
+- **F9 — Logo eager.** The header wordmark for the default (dark) theme now
+  loads `eager` + `fetchpriority="high"`; the alternate stays lazy so only the
+  visible one is fetched. (`theme/template-parts/header/branding.php`)
+- **F10 — `.gitattributes`.** Added `* text=auto eol=lf` (+ binary rules) so
+  Windows working copies stop reporting every PHP file as CRLF "errors" under
+  PHPCS. (The other F10 items — permalink structure, WP version pin, Rank
+  Math/Novamira config drift, denying `*.log`/`readme.html` — are host/env
+  owner actions, tracked in `GO-LIVE.md`.)
+- **F11 — Meta-description lengths.** Lengthened the three case-study excerpts
+  (were 34–47 chars) and trimmed the two over-long insight excerpts (were
+  170–179) to ~120–155 — these feed the meta description
+  (`compass_meta_description()` reads the excerpt). (`class-compass-core-cli.php`)
+- **F12 — A11y polish.**
+  - Nav dropdowns now keep `aria-expanded` in step with keyboard focus (CSS
+    opens them on `:focus-within`; it read `false`). (`command-menu.js`)
+  - Work and Insights filters announce the result count through a polite
+    live region after a filter change. (`work-filter.js`, `insights.js`)
+  - Footer links get `padding-block` for a ~24px tap target on phones.
+    (`nav.css`)
+  - Dropped the `Link: …; rel=shortlink` **HTTP header** (only the `<head>`
+    tag was removed before). (`theme/inc/cleanup.php`)
+
+**Decisions**
+- **Insight posts stay Sri Lanka–focused.** F11 flags them as "still targeting
+  Sri Lanka", but they are deliberate local-SEO blog content and the decided
+  worldwide positioning pass (see `GO-LIVE.md`) scopes to company-level schema
+  and home/meta copy, not the blog. Only their lengths were trimmed. The
+  LKR-only quote budgets are handled in the worldwide pass.
+- Daily cap and per-IP limit both increment **before** the provider call, so a
+  slow/failed upstream still consumes the budget (can't be retried for free).
+
+**Verify**
+- Lint (JS/CSS) clean, Vite build OK (main JS 5.35 KB gz, CSS 15.80 KB gz —
+  inside budget), PHPCS clean on all changed PHP, PHP `-l` clean. Chat
+  signing/cap and live regions exercised by reading; no local WP run (Docker
+  unavailable) — the e2e/axe suite runs in CI.
 
 ### Task 37 — Chat always visible + hero "See True North" (2026-11-22)
 **Done** (task/37)

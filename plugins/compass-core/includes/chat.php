@@ -31,6 +31,9 @@ const COMPASS_CHAT_MAX_TURNS = 12;   // Max history turns we forward.
 const COMPASS_CHAT_RL_MAX    = 20;   // Messages per window, per IP.
 const COMPASS_CHAT_RL_WINDOW = 600;  // Rate-limit window, seconds (10 min).
 
+const COMPASS_CHAT_DAILY_MAX    = 600;                 // Whole-site messages per day (free-quota guard).
+const COMPASS_CHAT_DAILY_PREFIX = 'compass_chat_day_'; // Daily counter transient prefix.
+
 /**
  * Is the assistant configured and switched on?
  *
@@ -111,6 +114,15 @@ function compass_chat_handle( $request ) {
 		);
 	}
 
+	// --- Whole-site daily cap. Protects the provider's free quota from a
+	// distributed caller (many IPs, each under the per-IP limit). Filterable.
+	$daily_key = COMPASS_CHAT_DAILY_PREFIX . gmdate( 'Ymd' );
+	$daily_max = (int) apply_filters( 'compass_chat_daily_max', COMPASS_CHAT_DAILY_MAX );
+	$daily     = (int) get_transient( $daily_key );
+	if ( $daily_max > 0 && $daily >= $daily_max ) {
+		return compass_chat_response( compass_chat_fallback_text(), 429, 'busy' );
+	}
+
 	// --- Validate the incoming message (reject non-chat payloads).
 	$message = (string) $request->get_param( 'message' );
 	$message = trim( wp_strip_all_tags( $message ) );
@@ -129,8 +141,10 @@ function compass_chat_handle( $request ) {
 		'text' => $message,
 	);
 
-	// Count this message toward the window before calling out.
+	// Count this message toward the per-IP window and the whole-site day before
+	// calling out, so a failed/slow provider call still consumes the budget.
 	set_transient( $ip_key, $hits + 1, COMPASS_CHAT_RL_WINDOW );
+	set_transient( $daily_key, $daily + 1, DAY_IN_SECONDS );
 
 	// --- Call the provider.
 	$result = compass_chat_complete( compass_chat_system_prompt(), $turns );
@@ -144,7 +158,8 @@ function compass_chat_handle( $request ) {
 		return compass_chat_response( compass_chat_fallback_text(), $status, $code );
 	}
 
-	return compass_chat_response( (string) $result['text'], 200, 'ok' );
+	$reply = (string) $result['text'];
+	return compass_chat_response( $reply, 200, 'ok', compass_chat_sign( compass_chat_normalize_text( $reply ) ) );
 }
 
 /**
@@ -153,16 +168,49 @@ function compass_chat_handle( $request ) {
  * @param string $reply  Assistant reply / message.
  * @param int    $status HTTP status.
  * @param string $state  Short machine state for the client.
+ * @param string $sig    Optional HMAC signature the client echoes back.
  * @return WP_REST_Response
  */
-function compass_chat_response( $reply, $status, $state ) {
-	return new WP_REST_Response(
-		array(
-			'reply' => $reply,
-			'state' => $state,
-		),
-		$status
+function compass_chat_response( $reply, $status, $state, $sig = '' ) {
+	$data = array(
+		'reply' => $reply,
+		'state' => $state,
 	);
+	// On a successful reply, hand the client a signature it must echo back with
+	// that turn (see compass_chat_sanitize_history) so forged assistant turns
+	// cannot be injected into later requests.
+	if ( '' !== $sig ) {
+		$data['sig'] = $sig;
+	}
+	return new WP_REST_Response( $data, $status );
+}
+
+/**
+ * Normalise a message/turn to the canonical form used for storage and signing.
+ *
+ * @param string $text Raw text.
+ * @return string Stripped, trimmed, length-capped text.
+ */
+function compass_chat_normalize_text( $text ) {
+	$text = trim( wp_strip_all_tags( (string) $text ) );
+	if ( mb_strlen( $text ) > COMPASS_CHAT_MAX_LEN ) {
+		$text = mb_substr( $text, 0, COMPASS_CHAT_MAX_LEN );
+	}
+	return $text;
+}
+
+/**
+ * HMAC-sign an assistant reply so the client cannot forge one.
+ *
+ * Keyed on a site salt (never leaves the server). The signature travels to the
+ * browser with the reply and must come back unchanged for the turn to be
+ * trusted as prior context.
+ *
+ * @param string $text Normalised assistant text.
+ * @return string Hex signature.
+ */
+function compass_chat_sign( $text ) {
+	return hash_hmac( 'sha256', $text, wp_salt( 'compass_chat_sig' ) );
 }
 
 /**
@@ -178,12 +226,18 @@ function compass_chat_sanitize_history( $history ) {
 			continue;
 		}
 		$role = isset( $item['role'] ) && 'assistant' === $item['role'] ? 'assistant' : 'user';
-		$text = isset( $item['text'] ) ? trim( wp_strip_all_tags( (string) $item['text'] ) ) : '';
+		$text = compass_chat_normalize_text( isset( $item['text'] ) ? $item['text'] : '' );
 		if ( '' === $text ) {
 			continue;
 		}
-		if ( mb_strlen( $text ) > COMPASS_CHAT_MAX_LEN ) {
-			$text = mb_substr( $text, 0, COMPASS_CHAT_MAX_LEN );
+		// An assistant turn is only trusted as context if it carries the server
+		// signature we issued for that exact text. Unsigned or tampered assistant
+		// turns are dropped, so the proxy cannot be steered with fabricated replies.
+		if ( 'assistant' === $role ) {
+			$sig = isset( $item['sig'] ) ? (string) $item['sig'] : '';
+			if ( '' === $sig || ! hash_equals( compass_chat_sign( $text ), $sig ) ) {
+				continue;
+			}
 		}
 		$turns[] = array(
 			'role' => $role,

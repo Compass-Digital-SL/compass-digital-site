@@ -142,7 +142,9 @@ export function createChat(launcher, cfg) {
         "Sorry — something went wrong. Please try the quote form.";
       if (res.ok && data && data.state === "ok") {
         bubble("bot", reply);
-        history.push({ role: "assistant", text: reply });
+        // Keep the server's signature with the turn; it must be echoed back on
+        // the next request or the server drops this turn as unverified context.
+        history.push({ role: "assistant", text: reply, sig: data.sig });
       } else {
         bubble("error", reply);
       }
