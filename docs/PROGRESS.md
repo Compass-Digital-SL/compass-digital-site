@@ -56,6 +56,18 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 
 ## Log
 
+### Deploy enablement docs — `NAMECHEAP-DEPLOY.md` (2026-11-22)
+**Done** (task/42)
+- Documented, in the runbook, exactly what turns the (currently skipped) deploy on:
+  the repository secrets (incl. the new `SSH_PORT=21098`), the `staging`/`production`
+  Environments with the production approval reviewer, and the `STAGING_URL` /
+  `PRODUCTION_URL` **variables** that are the literal on-switch (`vars.…_URL != ''`).
+- Verified the repo currently has **no** secrets/variables/environments, so merges
+  to `main` and the `v1.0.0` tag build but **skip** every deploy job. Added the
+  re-run instruction (Actions → Deploy → re-run the `v1.0.0` run once configured).
+- Corrected the SSH-port guidance: it is now handled in code (Task 39) via the
+  optional `SSH_PORT` secret — no code change needed.
+
 ### Task 39 — Deploy action custom SSH port (2026-11-22)
 **Done** (task/39)
 - `.github/actions/ssh-deploy/action.yml`: new optional `ssh_port` input
