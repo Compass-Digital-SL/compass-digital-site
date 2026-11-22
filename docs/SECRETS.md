@@ -25,7 +25,8 @@ of them here without touching code.
 | `SSH_HOST` | Hostname/IP of the server the site runs on (e.g. `server123.webhost.com`). |
 | `SSH_USER` | SSH/SFTP username for that host. |
 | `SSH_KEY` | **Private** SSH key (full PEM, incl. the BEGIN/END lines) whose public half is in the host's `~/.ssh/authorized_keys`. Use a deploy-only key, not your personal one. |
-| `SSH_KNOWN_HOSTS` | Output of `ssh-keyscan <SSH_HOST>` — pins the host key so the deploy can't be MITM'd. Run `ssh-keyscan server123.webhost.com` and paste all lines. |
+| `SSH_KNOWN_HOSTS` | Output of `ssh-keyscan <SSH_HOST>` — pins the host key so the deploy can't be MITM'd. Run `ssh-keyscan server123.webhost.com` and paste all lines. For a non-standard port, use `ssh-keyscan -p <port> <host>` (see `SSH_PORT`). |
+| `SSH_PORT` | _Optional._ SSH port on the host. Leave unset for the default `22`. Set to `21098` for **Namecheap shared hosting**, or whatever port the host uses. Must match the port used to generate `SSH_KNOWN_HOSTS`. |
 
 ## Deploy — paths & URLs (environment secrets)
 

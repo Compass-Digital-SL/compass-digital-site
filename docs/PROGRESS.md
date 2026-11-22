@@ -33,6 +33,7 @@
 - [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
 - [x] 35 Remaining audit items F6, F8–F12 (chat cap + signed history, CSP endpoint throttle, logo eager, `.gitattributes`, meta-description lengths, a11y polish)
+- [x] 39 Deploy action: custom SSH port support (`SSH_PORT`, e.g. 21098 for Namecheap shared hosting) + owner runbook `docs/NAMECHEAP-DEPLOY.md`
 
 ## Pre-launch audit (2026-11-19)
 
@@ -50,6 +51,31 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 39 — Deploy action custom SSH port (2026-11-22)
+**Done** (task/39)
+- `.github/actions/ssh-deploy/action.yml`: new optional `ssh_port` input
+  (default `22`). The SSH command now uses `ssh -p "$PORT" …` with a
+  `${SSH_PORT:-22}` fallback, so an empty/unset value still behaves as before.
+  `rsync -e "$SSH"` and every remote command inherit the port.
+- `.github/workflows/deploy.yml`: both staging and production jobs pass
+  `ssh_port: ${{ secrets.SSH_PORT }}`. Unset = default 22, so existing
+  (port-22) setups are unaffected.
+- `docs/SECRETS.md`: documented the optional `SSH_PORT` repository secret and
+  the matching `ssh-keyscan -p <port>` note for `SSH_KNOWN_HOSTS`.
+- Owner-facing go-live runbook added at `docs/NAMECHEAP-DEPLOY.md` (buy
+  hosting → cPanel/SSH setup → GitHub secrets/environments → tag `v1.0.0`
+  release flow), with the Namecheap shared-hosting caveats called out.
+
+**Why:** Namecheap shared hosting exposes SSH on port `21098`, not `22`; the
+deploy action previously hard-coded the default and could not connect.
+
+**Next**
+- Shared-hosting fit: the pipeline ships only `wp-content` code and flips a
+  whole-docroot `current` symlink — on shared hosting the docroot must be wired
+  to reuse a persistent WP core + `wp-config.php` + `uploads`. A follow-up can
+  adapt the deploy to update an existing WP install's `wp-content` directly.
+  Tracked in `docs/NAMECHEAP-DEPLOY.md` (Recommendation).
 
 ### Task 35 — Remaining audit items F6, F8–F12 (2026-11-22)
 **Done** (task/35)
