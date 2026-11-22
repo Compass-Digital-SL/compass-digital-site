@@ -4,17 +4,22 @@
 > Task 17 (Local SEO and analytics). Voice follows `docs/BRAND.md`: plain, confident, warm.
 > Every page's goal is the same conversion — **Request a quote**.
 
-**Base city:** Colombo. **Service area:** all of Sri Lanka, with named-city pushes for
-Colombo, Kandy, Galle and Jaffna. Delivery is remote-friendly, so overseas Sri Lankan-owned
-businesses are a secondary audience we do not exclude.
+**Base city:** Colombo — our registered base. NAP, address and the Google Business
+Profile all point here, because local search still needs a real place.
+**Service area: worldwide.** Compass delivers remotely to clients in any time zone,
+and that global reach is the **primary** audience, not a secondary one. On top of
+that we run a **Sri Lanka local layer** — named-city pushes for Colombo, Kandy,
+Galle and Jaffna — so we also rank for local searches. Reach is worldwide; the
+office stays in Colombo.
 
 ---
 
 ## 1. Target audience and their pain points
 
-We sell to owners and managers of small-to-mid Sri Lankan businesses — retail shops,
-restaurants and cafes, tour operators, ecommerce brands, and corporates/SMEs. They are
-busy, not technical, and have usually been burned once before. In their own words:
+We sell to owners and managers of small-to-mid businesses **worldwide** — retail shops,
+restaurants and cafes, tour operators, ecommerce brands, and corporates/SMEs — delivered
+remotely, with a strong local base in Sri Lanka. They are busy, not technical, and have
+usually been burned once before. In their own words:
 
 1. "Nobody finds us on Google."
 2. "Our website looks old and I'm embarrassed to share it."
@@ -70,9 +75,15 @@ plainly, show proof (real work, real results), and make the next step obviously
 
 ## 3. Keyword map, search intent, titles and meta descriptions
 
-One primary + 3–5 secondary keywords per page. Sri Lanka focus: *service + Sri Lanka*,
-*service + city*, *industry + service*. Titles are under 60 characters; meta descriptions
-under 155. Character counts shown as `(title / meta)`.
+One primary + 3–5 secondary keywords per page. Titles are under 60 characters; meta
+descriptions under 155. Character counts shown as `(title / meta)`.
+
+**Two layers.** The geo-modified keywords below (*service + Sri Lanka*, *service + city*,
+*industry + service*) are the **local layer** that wins Sri Lankan search. Worldwide reach
+is won on **brand and non-geo service terms** (e.g. *web design company*, *POS system for
+restaurants*, *Compass Digital*) plus portfolio and quality signals that rank globally — so
+the rendered home title/meta are deliberately worldwide-neutral (no "Sri Lanka" hard-coded).
+The Sri Lanka variants below are the local target, not the only one.
 
 ### Home
 - **Intent:** commercial / branded — "who can build and grow my digital presence in Sri Lanka".

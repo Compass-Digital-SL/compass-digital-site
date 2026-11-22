@@ -71,7 +71,10 @@ function compass_quote_timelines() {
 }
 
 /**
- * Optional budget ranges (LKR). Kept broad and pressure-free.
+ * Optional budget ranges, in LKR (our billing currency). Kept broad and
+ * pressure-free. International visitors are told in the form hint they can give
+ * a figure in any currency in their message, so we do not force a conversion
+ * or re-price for a worldwide audience.
  *
  * @return array<string,string>
  */

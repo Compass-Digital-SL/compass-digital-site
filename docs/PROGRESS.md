@@ -33,6 +33,7 @@
 - [x] 36 Remove all Cloudflare / Namecheap / Vercel ties (code, docs, GitHub apps)
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
 - [ ] 35 Remaining audit items F6, F8–F12 (chat cap, CSP endpoint throttle, logo eager, env drift, SEO copy, a11y polish)
+- [x] 38 Worldwide positioning pass — `SEO.md` service-area/audience reframe + quote-budget currency hint (schema, home copy, local-area and chat were already worldwide)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -41,15 +42,49 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
 - ~~Blocks launch: Task 20 (Security & legal) is not started~~ **Done** — security
   headers + CSP (Report-Only), WP hardening, `security.txt`, and drafted
   Privacy/Terms/Cookie pages. See the Task 20 log entry and `docs/SECURITY.md`.
-- Also outstanding: Task 22 (go-live), Task 23 (`docs/GROWTH.md`), the decided
-  **worldwide positioning** copy/schema pass, and real Lighthouse numbers
-  (never measured locally — Docker unavailable; capture on staging).
+- Also outstanding: Task 22 (go-live), Task 23 (`docs/GROWTH.md`), and real
+  Lighthouse numbers (never measured locally — Docker unavailable; capture on
+  staging). The decided **worldwide positioning** copy/schema pass is now done
+  (Task 38).
 - Owner "You do" actions (hosting/domain, GitHub secrets + environments, backup
   bucket, `WP_ENVIRONMENT_TYPE=production`, Site Settings, replace sample
   content, confirm legal pages) are collected in `docs/AUDIT.md` §10 and
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 38 — Worldwide positioning pass (2026-11-22)
+**Done** (task/38)
+- The decided "work **from Sri Lanka, for the whole world**" positioning
+  (Task 17 owner decision; `GO-LIVE.md`). Most of it was already in the code —
+  this pass finished the stragglers and confirmed the rest.
+- **Already worldwide (verified, unchanged):** `compass_localbusiness_schema()`
+  and the Organization `contactPoint` both carry `areaServed: "Worldwide"` while
+  the address stays Colombo/`LK`; the home "Where we work" block
+  (`template-parts/home/local-area.php`) lists global regions and "Anywhere
+  online"; the chat knowledge base says "clients worldwide"; and the rendered
+  home title/meta carry no "Sri Lanka".
+- **`docs/SEO.md` reframed:** service area is now **worldwide-primary** with a
+  **Sri Lanka local layer** (not "all of Sri Lanka, overseas Sri Lankans
+  secondary"); the audience line broadened to "small-to-mid businesses
+  worldwide, with a strong local base in Sri Lanka"; added a "two layers" note
+  to the keyword map so the geo-modified keywords read as the local layer, not
+  the whole strategy.
+- **Quote budgets:** kept the real LKR bands (no silent re-pricing / invented
+  FX) but added a form hint — "a rough guide in LKR; working from abroad, give
+  any figure or currency in your message" — with `aria-describedby`.
+  (`quote-form.php`, `theme/inc/quote.php`)
+
+**Decisions**
+- **Colombo stays the base.** NAP, address and the Google Business Profile
+  remain Colombo/Sri Lanka — this is about *reach*, not moving the office, and
+  local SEO still needs a real place.
+- **Legal pages untouched:** the "outside Sri Lanka" / "laws of Sri Lanka" lines
+  in Privacy/Terms are owner/jurisdiction decisions (already flagged `[…]`),
+  not marketing copy.
+- Budget currency left as LKR by design; if the owner later wants USD or
+  multi-currency bands, that is a small follow-up (it re-prices, so it is their
+  call).
 
 ### Task 37 — Chat always visible + hero "See True North" (2026-11-22)
 **Done** (task/37)
