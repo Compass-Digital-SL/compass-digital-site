@@ -154,7 +154,7 @@ $steps = array(
 
 			<div class="field">
 				<label class="field__label" for="quote-budget"><?php esc_html_e( 'Budget (optional)', 'compass-digital' ); ?></label>
-				<select class="field__control" id="quote-budget" name="budget">
+				<select class="field__control" id="quote-budget" name="budget" aria-describedby="quote-budget-hint">
 					<?php
 					$current_budget = compass_quote_value( 'budget' );
 					foreach ( $budgets as $slug => $label ) :
@@ -162,6 +162,7 @@ $steps = array(
 						<option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $current_budget, $slug ); ?>><?php echo esc_html( $label ); ?></option>
 					<?php endforeach; ?>
 				</select>
+				<span class="field__hint" id="quote-budget-hint"><?php esc_html_e( 'A rough guide, in Sri Lankan rupees (LKR). Working from abroad? Give any figure or currency in your message — we work with clients worldwide.', 'compass-digital' ); ?></span>
 			</div>
 		</div>
 	</fieldset>

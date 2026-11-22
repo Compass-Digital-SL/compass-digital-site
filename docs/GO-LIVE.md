@@ -55,7 +55,7 @@ approval). Full secret inventory in **`docs/SECRETS.md`**; restore steps in
   values; **the Facebook/Instagram/LinkedIn URLs are placeholders — swap for the
   real pages before launch.** Feeds the footer, contact page and the
   Organization / LocalBusiness schema.
-- [ ] **Widen positioning to worldwide before deploy (decided — do not forget).**
+- [x] **Widen positioning to worldwide (done — Task 38, 2026-11-22).**
   Compass works **from Sri Lanka for the whole world**, not Sri Lanka only. The
   site currently reads Sri Lanka–first in several places; broaden the wording and
   the structured data (keep Colombo as the base, add global reach). Touch points:
