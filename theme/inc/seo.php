@@ -130,8 +130,13 @@ function compass_meta_description() {
 	} elseif ( is_post_type_archive( 'work' ) ) {
 		$description = __( 'Real case studies from Compass Digital — websites, SEO, POS and software for businesses worldwide, with the problem, the work and the results.', 'compass-digital' );
 	} elseif ( is_singular( array( 'post', 'work' ) ) ) {
-		$id          = get_queried_object_id();
-		$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $id ) ), 30 );
+		$id       = get_queried_object_id();
+		$seo_desc = (string) get_post_meta( $id, '_compass_seo_desc', true );
+		if ( '' !== $seo_desc ) {
+			$description = $seo_desc;
+		} else {
+			$description = has_excerpt( $id ) ? get_the_excerpt( $id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $id ) ), 30 );
+		}
 	} elseif ( is_page_template( 'page-get-a-quote.php' ) ) {
 		$description = __( 'Tell us what you need and get a free, no-obligation quote from Compass Digital — websites, SEO, POS systems, apps and custom software for businesses worldwide.', 'compass-digital' );
 	} elseif ( is_page_template( 'page-privacy.php' ) ) {

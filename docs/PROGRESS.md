@@ -34,6 +34,8 @@
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
 - [x] 35 Remaining audit items F6, F8–F12 (chat cap + signed history, CSP endpoint throttle, logo eager, `.gitattributes`, meta-description lengths, a11y polish)
 - [x] 39 Deploy action: custom SSH port support (`SSH_PORT`, e.g. 21098 for Namecheap shared hosting) + owner runbook `docs/NAMECHEAP-DEPLOY.md`
+- [x] 40 Projects dashboard + Gemini AI drafting (custom admin surface for Work, "Draft with AI" on every copy field)
+- [x] 41 Branded Studio (`/studio`, reskinned projects-first admin) + Studio Owner/Staff roles + in-Studio Team management
 
 ## Pre-launch audit (2026-11-19)
 
@@ -76,6 +78,98 @@ deploy action previously hard-coded the default and could not connect.
   to reuse a persistent WP core + `wp-config.php` + `uploads`. A follow-up can
   adapt the deploy to update an existing WP install's `wp-content` directly.
   Tracked in `docs/NAMECHEAP-DEPLOY.md` (Recommendation).
+
+### Task 41 — Branded Studio + roles + Team management (2026-11-22)
+**Done** (task/41, stacked on task/40)
+- **Studio** (`plugins/compass-core/includes/studio.php`): a branded, projects-first
+  admin for the owner/staff. One URL **`/studio`** (rewrite) → branded login when
+  logged out, straight to the Projects dashboard when logged in. The WordPress login
+  screen is reskinned with the brand palette + custom logo. After login, Studio users
+  are redirected to Projects.
+  - **Lock-down:** for Studio users the admin bar and every menu are hidden except
+    **Projects, Testimonials, Quote Requests** (+ **Site Settings**, **Team**, **Account**
+    for the owner). The native "Work" menu and the WP dashboard are hidden/redirected.
+    **Administrators are never affected** — developers keep the full admin.
+- **Two roles** (synced via a versioned option, re-runs on bump):
+  - `studio_owner` — editor-level content caps + `manage_options`, user management and
+    a custom `compass_manage_team` cap.
+  - `studio_staff` — content caps only. **Cannot** change/reset any password
+    (`allow_password_reset` → false, profile screens blocked + password fields hidden,
+    and a guard strips any self password change) and cannot manage users.
+- **Team page** (`includes/studio-team.php`, owner only): list staff, **add a member**
+  (username + owner-chosen password), **set/reset** a staff password, **remove** (content
+  reassigned to the owner). Every create/set-password/remove action only ever targets a
+  `studio_staff` user, so it can never touch an owner or admin account. Nonce + capability
+  checked throughout.
+- **Bootstrap:** `wp compass studio_owner --login=… [--email=…] [--pass=…]`
+  (`--login`, not the reserved WP-CLI `--user` global)
+  (`class-compass-core-cli.php`) creates or promotes the Studio Owner and prints a
+  generated password + the `/studio` link.
+- **Owner guide:** `docs/STUDIO.md` (the link, first-time setup, changing your password,
+  adding staff, who-sees-what).
+
+**Decisions**
+- Not a second login system — it reuses WordPress's own secure auth; the roles just scope
+  what each person sees. Admins are excluded from the lock-down by design.
+- `/studio` is a branded front door, but the stock `wp-login.php` URL still exists; fully
+  hiding it is a separate, careful change (noted in `docs/STUDIO.md`).
+- The Team page hardcodes the `studio_staff` role on create, so a non-technical owner can
+  never accidentally mint an admin.
+
+**Verify**
+- `php -l` clean on all new PHP; **PHPCS clean** on `studio.php`, `studio-team.php`,
+  `class-compass-core-cli.php`; `npm run build` unchanged (no front-end assets).
+- Not run locally (Docker unavailable): bootstrap owner via CLI → visit `/studio` →
+  branded login → lands on Projects with only the allowed menus → add a staff member →
+  log in as staff and confirm no password-change/Team access.
+
+### Task 40 — Projects dashboard + Gemini AI drafting (2026-11-22)
+**Done** (task/40)
+- **Custom Projects dashboard** (`plugins/compass-core/includes/admin-projects.php`):
+  a top-level **Projects** admin menu (cap `edit_posts`) that sits *alongside* the
+  native Work editor (kept, so revisions/autosave/media still work).
+  - **List view:** every case study with thumbnail, client, year and **inline
+    Featured / Published toggles** (AJAX, nonce-guarded `compass_project_toggle`),
+    search + Service/Industry/Status filters, and Edit / View / Trash row actions.
+  - **Editor view:** one screen for title, slug, the structured case-study fields
+    (reusing `compass_core_field_defs()`), summary/excerpt, the body via
+    `wp_editor()`, featured image + gallery (the existing `gallery.js` picker),
+    Service/Industry term checkboxes and a new **SEO meta description** field.
+    Saves through `wp_insert_post`/`wp_update_post` + `update_post_meta` +
+    `wp_set_object_terms`, so data is identical to the native editor.
+- **Gemini "Draft with AI"** (`plugins/compass-core/includes/ai-assist.php`): a new
+  authenticated REST route `compass/v1/ai/draft` that drafts Problem / Approach /
+  Solution / Results / Summary / Body / SEO-meta from the values typed so far. It
+  **reuses the public chat's provider adapter** (`compass_chat_complete()` in
+  `chat-providers.php`) and the same server-side key — the key never reaches the
+  browser. Each field has its own brand-voice prompt (from `docs/BRAND.md`).
+  (`assets/projects.js` wires the buttons, featured-image picker and list toggles.)
+- **SEO:** registered `_compass_seo_desc` meta; `compass_meta_description()`
+  (`theme/inc/seo.php`) now prefers it over the excerpt for `work`, falling back to
+  the excerpt when empty.
+
+**Decisions**
+- The AI route is **capability-gated (`edit_posts`)** and therefore deliberately
+  **exempt from the public chat's per-IP / daily caps** (those protect the free
+  quota from anonymous abuse). A light per-user throttle (40 / 10 min) still guards
+  against a runaway loop.
+- Kept the native Work editor registered rather than replacing it, so nothing core
+  (revisions, autosave, the block editor) is lost — the custom dashboard is the
+  primary surface, not the only one.
+- Admin-only assets (`projects.js`, `admin.css`) — **no front-end impact**; the Vite
+  bundles are unchanged (main JS 5.35 KB gz, CSS 15.80 KB gz).
+
+**Verify**
+- `php -l` clean on all new/changed PHP; **PHPCS clean** on the two new plugin files;
+  ESLint clean on `projects.js`; `npm run build` OK (front-end bundles unchanged).
+- Not run locally (Docker unavailable): create a project via **Projects → Add
+  project**, click each "Draft with AI" (needs a Gemini key in Site Settings),
+  save, and confirm it renders at `/work/` + its single page and that the SEO
+  `<meta name="description">` reflects the new field.
+
+**Next / owner action**
+- Set the Gemini API key under **Settings → Site Settings** if not already set — the
+  drafting buttons return a clear "no key" message until it is.
 
 ### Task 35 — Remaining audit items F6, F8–F12 (2026-11-22)
 **Done** (task/35)
