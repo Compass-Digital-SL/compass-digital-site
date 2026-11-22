@@ -19,6 +19,13 @@ export function initWorkFilter(root = document) {
   const empty = root.querySelector("[data-work-empty]");
   const groups = Array.from(filter.querySelectorAll("[data-filter-group]"));
 
+  // Polite live region: announces the result count after a filter change so
+  // non-sighted users hear the grid update (it changes without a page reload).
+  const status = document.createElement("p");
+  status.className = "screen-reader-text";
+  status.setAttribute("aria-live", "polite");
+  filter.appendChild(status);
+
   // Current selection, keyed by group (e.g. { service: "seo", industry: "" }).
   const state = {};
   groups.forEach((g) => (state[g.dataset.filterGroup] = fromUrl(g.dataset.filterGroup)));
@@ -34,7 +41,7 @@ export function initWorkFilter(root = document) {
       return have.includes(value);
     });
 
-  const render = () => {
+  const render = (announce = false) => {
     // Reflect the active chip per group.
     groups.forEach((g) => {
       const name = g.dataset.filterGroup;
@@ -54,6 +61,10 @@ export function initWorkFilter(root = document) {
       if (show) visible += 1;
     });
     if (empty) empty.hidden = visible !== 0;
+    if (announce) {
+      status.textContent =
+        visible === 1 ? "1 case study" : `${visible} case studies`;
+    }
   };
 
   const syncUrl = () => {
@@ -72,13 +83,13 @@ export function initWorkFilter(root = document) {
     if (!group) return;
     e.preventDefault();
     state[group.dataset.filterGroup] = chip.dataset.filterValue || "";
-    render();
+    render(true);
     syncUrl();
   });
 
   window.addEventListener("popstate", () => {
     groups.forEach((g) => (state[g.dataset.filterGroup] = fromUrl(g.dataset.filterGroup)));
-    render();
+    render(true);
   });
 
   render();

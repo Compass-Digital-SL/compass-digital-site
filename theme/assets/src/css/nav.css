@@ -1053,6 +1053,8 @@ html.has-overlay {
 }
 
 .site-footer__contact a {
+  display: inline-block;
+  padding-block: 0.3rem; /* ~24px tap target on phones (WCAG 2.5.8). */
   color: var(--text-body);
   text-decoration: none;
 }
@@ -1134,6 +1136,7 @@ html.has-overlay {
 .site-footer__col a,
 .site-footer__consent-btn {
   display: inline-block;
+  padding-block: 0.3rem; /* ~24px tap target on phones (WCAG 2.5.8). */
   color: var(--text-body);
   font-size: var(--fs-sm);
   line-height: 1.4;
@@ -1142,7 +1145,7 @@ html.has-overlay {
 }
 
 .site-footer__consent-btn {
-  padding: 0;
+  padding-inline: 0;
   border: 0;
   background: none;
   font-family: inherit;

@@ -35,6 +35,9 @@ add_action(
 		remove_action( 'wp_head', 'rsd_link' );
 		remove_action( 'wp_head', 'wlwmanifest_link' );
 		remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+		// Also drop the `Link: <…?p=N>; rel=shortlink` HTTP response header
+		// (sent separately from the <head> tag above).
+		remove_action( 'template_redirect', 'wp_shortlink_header', 11 );
 		remove_action( 'wp_head', 'feed_links_extra', 3 );
 		// Comments are off site-wide, so do not advertise an empty comments feed.
 		add_filter( 'feed_links_show_comments_feed', '__return_false' );

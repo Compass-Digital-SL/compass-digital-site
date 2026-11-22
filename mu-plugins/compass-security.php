@@ -201,6 +201,11 @@ add_filter(
 
 // ==== Security headers ====
 
+// CSP violation-report throttle: most reports per IP per window. The endpoint
+// is unauthenticated and writes to the log, so this caps the write rate.
+const COMPASS_CSP_REPORT_MAX    = 60;
+const COMPASS_CSP_REPORT_WINDOW = 600; // 10 minutes.
+
 /**
  * The Content-Security-Policy directives, as an ordered map.
  *
@@ -217,6 +222,12 @@ function compass_security_csp_directives() {
 	$ga      = 'https://*.googletagmanager.com https://*.google-analytics.com';
 	$ga_conn = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com';
 
+	// Logged-in front-end views render the admin bar, which pulls the user's
+	// Gravatar (img) and dashicons fonts as data: URIs. Allow just those two for
+	// signed-in users so an enforced CSP never breaks the bar for admins.
+	$img_extra  = is_user_logged_in() ? ' https://secure.gravatar.com' : '';
+	$font_extra = is_user_logged_in() ? ' data:' : '';
+
 	$directives = array(
 		'default-src'     => "'self'",
 		'base-uri'        => "'self'",
@@ -225,8 +236,8 @@ function compass_security_csp_directives() {
 		'form-action'     => "'self'",
 		'script-src'      => "'self' 'unsafe-inline' {$ga}",
 		'style-src'       => "'self' 'unsafe-inline'",
-		'img-src'         => "'self' data: {$ga}",
-		'font-src'        => "'self'",
+		'img-src'         => "'self' data: {$ga}{$img_extra}",
+		'font-src'        => "'self'{$font_extra}",
 		'connect-src'     => "'self' {$ga_conn}",
 		'frame-src'       => "'none'",
 		'manifest-src'    => "'self'",
@@ -273,6 +284,17 @@ add_action(
 				'methods'             => 'POST',
 				'permission_callback' => '__return_true',
 				'callback'            => function ( WP_REST_Request $request ) {
+					// Per-IP throttle: this endpoint is unauthenticated and writes
+					// to the log, so cap how many reports one source can log per
+					// window. Over the cap we still return 204 but write nothing.
+					$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : 'unknown';
+					$key = 'compass_csp_rl_' . md5( $ip );
+					$n   = (int) get_transient( $key );
+					if ( $n >= COMPASS_CSP_REPORT_MAX ) {
+						return new WP_REST_Response( null, 204 );
+					}
+					set_transient( $key, $n + 1, COMPASS_CSP_REPORT_WINDOW );
+
 					$body = substr( (string) $request->get_body(), 0, 2000 );
 					if ( '' !== $body ) {
 						error_log( 'CSP report: ' . preg_replace( '/\s+/', ' ', $body ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional violation log.

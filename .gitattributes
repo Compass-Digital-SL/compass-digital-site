@@ -1,0 +1,18 @@
+# Normalise line endings: the repo is LF. This stops Windows working copies
+# (core.autocrlf=true) from showing every PHP file as CRLF "errors" under PHPCS.
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.webp binary
+*.avif binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.pdf binary

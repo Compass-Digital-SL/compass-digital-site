@@ -254,6 +254,19 @@ function initDropdowns() {
       link.setAttribute("aria-expanded", String(open));
       closeAll(item);
     });
+
+    // CSS opens the panel on :focus-within, so keep aria-expanded in step with
+    // keyboard focus — otherwise the panel shows open while it still reads
+    // collapsed to assistive tech.
+    item.addEventListener("focusin", () => {
+      link.setAttribute("aria-expanded", "true");
+    });
+    item.addEventListener("focusout", (e) => {
+      if (!item.contains(e.relatedTarget)) {
+        item.classList.remove("is-open");
+        link.setAttribute("aria-expanded", "false");
+      }
+    });
   });
 
   document.addEventListener("click", (e) => {
