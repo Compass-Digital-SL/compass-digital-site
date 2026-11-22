@@ -75,7 +75,8 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   reassigned to the owner). Every create/set-password/remove action only ever targets a
   `studio_staff` user, so it can never touch an owner or admin account. Nonce + capability
   checked throughout.
-- **Bootstrap:** `wp compass studio_owner --user=… [--email=…] [--pass=…]`
+- **Bootstrap:** `wp compass studio_owner --login=… [--email=…] [--pass=…]`
+  (`--login`, not the reserved WP-CLI `--user` global)
   (`class-compass-core-cli.php`) creates or promotes the Studio Owner and prints a
   generated password + the `/studio` link.
 - **Owner guide:** `docs/STUDIO.md` (the link, first-time setup, changing your password,

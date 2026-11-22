@@ -64,8 +64,9 @@ class Compass_Core_CLI {
 	 *
 	 * ## OPTIONS
 	 *
-	 * --user=<login>
-	 * : The username to create or promote.
+	 * --login=<login>
+	 * : The username to create or promote. (Not --user: that is a reserved
+	 *   WP-CLI global flag.)
 	 *
 	 * [--email=<email>]
 	 * : Email address (required when creating a new user).
@@ -78,8 +79,8 @@ class Compass_Core_CLI {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp compass studio_owner --user=anjula --email=you@example.com
-	 *     wp compass studio_owner --user=anjula --pass='Choose-A-Strong-One!'
+	 *     wp compass studio_owner --login=anjula --email=you@example.com
+	 *     wp compass studio_owner --login=anjula --pass='Choose-A-Strong-One!'
 	 *
 	 * @param array $args       Positional args (unused).
 	 * @param array $assoc_args Flags.
@@ -92,9 +93,9 @@ class Compass_Core_CLI {
 			add_role( 'studio_owner', 'Studio Owner', $caps['studio_owner'] );
 		}
 
-		$login = isset( $assoc_args['user'] ) ? sanitize_user( $assoc_args['user'], true ) : '';
+		$login = isset( $assoc_args['login'] ) ? sanitize_user( $assoc_args['login'], true ) : '';
 		if ( '' === $login ) {
-			WP_CLI::error( 'Pass --user=<login>.' );
+			WP_CLI::error( 'Pass --login=<username>.' );
 		}
 
 		$pass      = isset( $assoc_args['pass'] ) ? (string) $assoc_args['pass'] : '';

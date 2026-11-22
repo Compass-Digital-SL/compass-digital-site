@@ -22,8 +22,10 @@ Your Studio Owner account is created once with WP-CLI on the server (cPanel →
 Terminal, or SSH):
 
 ```
-wp compass studio_owner --user=YOUR_USERNAME --email=you@example.com
+wp compass studio_owner --login=YOUR_USERNAME --email=you@example.com
 ```
+
+> Use `--login`, not `--user` — `--user` is a reserved WP-CLI global flag.
 
 - This prints a **generated password** — copy it, that's your first login.
 - Or choose your own: add `--pass='A-Strong-Password'`.
