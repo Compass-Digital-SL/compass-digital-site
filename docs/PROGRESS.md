@@ -34,6 +34,7 @@
 - [x] 37 Chat launcher always visible (fix dropped config) + hero "See True North"
 - [x] 35 Remaining audit items F6, F8–F12 (chat cap + signed history, CSP endpoint throttle, logo eager, `.gitattributes`, meta-description lengths, a11y polish)
 - [x] 40 Projects dashboard + Gemini AI drafting (custom admin surface for Work, "Draft with AI" on every copy field)
+- [x] 41 Branded Studio (`/studio`, reskinned projects-first admin) + Studio Owner/Staff roles + in-Studio Team management
 
 ## Pre-launch audit (2026-11-19)
 
@@ -51,6 +52,50 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 41 — Branded Studio + roles + Team management (2026-11-22)
+**Done** (task/41, stacked on task/40)
+- **Studio** (`plugins/compass-core/includes/studio.php`): a branded, projects-first
+  admin for the owner/staff. One URL **`/studio`** (rewrite) → branded login when
+  logged out, straight to the Projects dashboard when logged in. The WordPress login
+  screen is reskinned with the brand palette + custom logo. After login, Studio users
+  are redirected to Projects.
+  - **Lock-down:** for Studio users the admin bar and every menu are hidden except
+    **Projects, Testimonials, Quote Requests** (+ **Site Settings**, **Team**, **Account**
+    for the owner). The native "Work" menu and the WP dashboard are hidden/redirected.
+    **Administrators are never affected** — developers keep the full admin.
+- **Two roles** (synced via a versioned option, re-runs on bump):
+  - `studio_owner` — editor-level content caps + `manage_options`, user management and
+    a custom `compass_manage_team` cap.
+  - `studio_staff` — content caps only. **Cannot** change/reset any password
+    (`allow_password_reset` → false, profile screens blocked + password fields hidden,
+    and a guard strips any self password change) and cannot manage users.
+- **Team page** (`includes/studio-team.php`, owner only): list staff, **add a member**
+  (username + owner-chosen password), **set/reset** a staff password, **remove** (content
+  reassigned to the owner). Every create/set-password/remove action only ever targets a
+  `studio_staff` user, so it can never touch an owner or admin account. Nonce + capability
+  checked throughout.
+- **Bootstrap:** `wp compass studio_owner --login=… [--email=…] [--pass=…]`
+  (`--login`, not the reserved WP-CLI `--user` global)
+  (`class-compass-core-cli.php`) creates or promotes the Studio Owner and prints a
+  generated password + the `/studio` link.
+- **Owner guide:** `docs/STUDIO.md` (the link, first-time setup, changing your password,
+  adding staff, who-sees-what).
+
+**Decisions**
+- Not a second login system — it reuses WordPress's own secure auth; the roles just scope
+  what each person sees. Admins are excluded from the lock-down by design.
+- `/studio` is a branded front door, but the stock `wp-login.php` URL still exists; fully
+  hiding it is a separate, careful change (noted in `docs/STUDIO.md`).
+- The Team page hardcodes the `studio_staff` role on create, so a non-technical owner can
+  never accidentally mint an admin.
+
+**Verify**
+- `php -l` clean on all new PHP; **PHPCS clean** on `studio.php`, `studio-team.php`,
+  `class-compass-core-cli.php`; `npm run build` unchanged (no front-end assets).
+- Not run locally (Docker unavailable): bootstrap owner via CLI → visit `/studio` →
+  branded login → lands on Projects with only the allowed menus → add a staff member →
+  log in as staff and confirm no password-change/Team access.
 
 ### Task 40 — Projects dashboard + Gemini AI drafting (2026-11-22)
 **Done** (task/40)
