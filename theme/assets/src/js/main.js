@@ -118,11 +118,34 @@ function initChat() {
   });
 }
 
+// Dynamic "Where we work" map. The heavy chunk (outlines + logic) is fetched
+// only when the section nears the viewport, so it never costs the initial load.
+function initLocalMap() {
+  const host = document.querySelector("[data-local-map]");
+  if (!host) return;
+  const load = () => import("./map/local-map.js").then((m) => m.initLocalMap());
+  if (!("IntersectionObserver" in window)) {
+    load();
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries, obs) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        obs.disconnect();
+        load();
+      }
+    },
+    { rootMargin: "250px" }
+  );
+  io.observe(host);
+}
+
 function boot() {
   initThemeMode();
   initNavigation();
   initUI();
   initMotion();
+  initLocalMap();
   initCompass();
   initWork();
   initInsights();

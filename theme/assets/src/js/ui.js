@@ -116,8 +116,16 @@ export function initLocalTime(root = document) {
   } catch {
     /* older browsers: keep the plain label */
   }
+  // Use the resolved zone explicitly so the clock follows the visitor's city,
+  // not the runtime default (e.g. America/Chicago vs America/Los_Angeles differ).
+  const opts = { hour: "2-digit", minute: "2-digit" };
+  if (zone) opts.timeZone = zone;
   const draw = () => {
-    time.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    try {
+      time.textContent = new Date().toLocaleTimeString([], opts);
+    } catch {
+      time.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
   };
   draw();
   window.setInterval(draw, 30000);
