@@ -40,13 +40,28 @@ $regions = array(
 
 		<div class="local-area__grid">
 			<div class="local-area__card" data-reveal>
-				<div class="local-area__grid-lines" aria-hidden="true"></div>
-				<span class="local-area__pin" aria-hidden="true"></span>
-				<p class="local-area__time">
-					<small><?php esc_html_e( 'Your local time', 'compass-digital' ); ?></small>
-					<span data-local-time>--:--</span>
-					<span class="local-area__zone" data-local-zone><?php esc_html_e( 'We plan calls around it.', 'compass-digital' ); ?></span>
-				</p>
+				<div class="local-area__head">
+					<p class="local-area__time">
+						<small><?php esc_html_e( 'Your local time', 'compass-digital' ); ?></small>
+						<span data-local-time>--:--</span>
+						<span class="local-area__zone" data-local-zone><?php esc_html_e( 'We plan calls around it.', 'compass-digital' ); ?></span>
+					</p>
+					<span class="local-area__chip" data-map-place><?php esc_html_e( 'Across every time zone', 'compass-digital' ); ?></span>
+				</div>
+
+				<div class="local-area__map" data-local-map aria-busy="true"></div>
+
+				<div class="local-area__meta" data-map-meta hidden>
+					<p class="local-area__coords">
+						<span data-map-coords>&mdash;</span>
+						<span class="local-area__source"><?php esc_html_e( 'from', 'compass-digital' ); ?> <span data-map-source><?php esc_html_e( 'your time zone', 'compass-digital' ); ?></span></span>
+					</p>
+					<p class="local-area__locate">
+						<a href="#" class="link" data-map-locate><?php esc_html_e( 'Use my exact location', 'compass-digital' ); ?></a>
+						<span class="local-area__msg" data-map-msg role="status" aria-live="polite"></span>
+					</p>
+				</div>
+
 				<ul class="pills local-area__regions" aria-label="<?php esc_attr_e( 'Regions we work with', 'compass-digital' ); ?>">
 					<?php foreach ( $regions as $region ) : ?>
 						<li><?php echo esc_html( $region ); ?></li>

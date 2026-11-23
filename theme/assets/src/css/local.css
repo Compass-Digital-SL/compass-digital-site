@@ -14,15 +14,14 @@
   }
 }
 
-/* Coordinate card: hairline grid, a pulsing pin and the local time. */
+/* Location card: the visitor's local time, a dynamic map zoomed to their
+   country, a pulsing pin and the coordinates + source below. */
 .local-area__card {
   position: relative;
   overflow: hidden;
-  min-height: 22rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-8);
+  gap: var(--space-6);
   padding: clamp(1.75rem, 1rem + 2vw, 2.75rem);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -31,44 +30,169 @@
     var(--surface-2);
 }
 
-.local-area__grid-lines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(70% 80% at 70% 35%, #000, transparent);
+/* Header: local time on the left, the resolved place chip on the right. */
+.local-area__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
-.local-area__pin {
+.local-area__chip {
+  align-self: center;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
+  font: 500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* --- Map --- */
+.local-area__map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 680;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background:
+    radial-gradient(80% 90% at 50% 40%, var(--glow-b), transparent 70%),
+    var(--surface-sunken);
+}
+
+.local-map__figure {
   position: absolute;
-  top: 34%;
-  left: 68%;
-  width: 10px;
-  height: 10px;
+  inset: 0;
+}
+
+.local-map__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The camera group we animate; origin at 0,0 so the JS transform is exact. */
+.local-map__cam {
+  transform-origin: 0 0;
+}
+
+/* Every country is a dim outline; the visitor's one gets fill + glow + accent. */
+.local-map__country {
+  fill: color-mix(in srgb, var(--text) 9%, transparent);
+  stroke: var(--border-strong);
+  stroke-width: 0.75;
+}
+
+.local-map__country--active {
+  fill: color-mix(in srgb, var(--accent) 26%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.local-map__glow {
+  fill: var(--accent);
+  filter: blur(var(--map-glow, 26px));
+  opacity: 0.4;
+}
+
+/* Light mode needs a stronger fill + glow to read on the pale ground. */
+:root[data-theme="light"] .local-map__glow {
+  opacity: 0.55;
+}
+
+:root[data-theme="light"] .local-map__country--active {
+  fill: color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+/* Pin (HTML overlay): a high-contrast dot with a double ring and a label. */
+.local-map__pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 1px 6px rgb(0 0 0 / 0.4);
+  z-index: 2;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .local-area__pin::after {
+  .local-map__pin::before {
     content: "";
     position: absolute;
-    inset: -6px;
+    inset: 0;
     border-radius: 50%;
-    border: 1px solid var(--accent);
+    border: 1.5px solid var(--accent);
     animation: local-ping 2.6s var(--ease-out) infinite;
   }
 }
 
 @keyframes local-ping {
   to {
-    transform: scale(3.2);
+    transform: scale(3.4);
     opacity: 0;
   }
+}
+
+.local-map__pin-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 7px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: 600 var(--fs-xs)/1.2 var(--font-sans);
+  box-shadow: var(--shadow-2);
+}
+
+/* --- Coordinates + source + opt-in --- */
+.local-area__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  flex-wrap: wrap;
+}
+
+.local-area__coords {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0;
+  font: 400 var(--fs-sm)/1.3 var(--font-sans);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.local-area__source {
+  color: var(--text-muted);
+}
+
+.local-area__locate {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0;
+  font: 400 var(--fs-sm)/1.3 var(--font-sans);
+}
+
+.local-area__msg {
+  color: var(--text-muted);
 }
 
 .local-area__time {
