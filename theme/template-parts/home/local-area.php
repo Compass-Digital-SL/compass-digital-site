@@ -49,9 +49,6 @@ $regions = array(
 					<span class="local-area__chip" data-map-place><?php esc_html_e( 'Across every time zone', 'compass-digital' ); ?></span>
 				</div>
 
-				<?php /* The map (inline SVG + pin) is drawn here by local-map.js when this
-				         section scrolls into view. Without JS the card keeps the time label,
-				         coordinates note and region pills below. */ ?>
 				<div class="local-area__map" data-local-map aria-busy="true"></div>
 
 				<div class="local-area__meta" data-map-meta hidden>
