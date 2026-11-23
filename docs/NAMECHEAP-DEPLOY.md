@@ -38,10 +38,10 @@ The pipeline was designed for a server you fully control (a VPS or managed
 WordPress host). On Namecheap **shared** hosting it *can* work, but two things in
 the committed code will not "just run":
 
-1. **Namecheap SSH uses port `21098`, not the default `22`.** The deploy action
-   (`.github/actions/ssh-deploy/action.yml`) hardcodes the default port. It will
-   fail to connect until the action is taught the custom port. *This is a small
-   code change.*
+1. **Namecheap SSH uses port `21098`, not the default `22`.** This is now handled
+   in code (Task 39): the deploy action takes an optional `SSH_PORT` secret. Just
+   set the `SSH_PORT` repository secret to `21098` in Phase 3 — **no code change
+   needed**. (Leave it unset on a host that uses port 22.)
 2. **The pipeline only ships your custom code** (`wp-content/themes/...`), not full
    WordPress. So a normal WordPress install must already exist on the server, and
    the `current`-symlink docroot has to be wired to reuse that install's core +
@@ -136,6 +136,25 @@ whole-docroot symlink (see "Recommendation" at the end).
 
 ## Phase 3 — Give GitHub the secrets (nothing secret goes in chat)
 
+> ### ⚠️ This is the on-switch — deploys are OFF until it's done
+>
+> Right now the repository has **no secrets, no variables, and no environments**,
+> so **every deploy job is skipped**. That is by design: a merge to `main` or a
+> `v1.0.0` tag will build successfully but **ship nothing** until the items below
+> exist. (`v1.0.0` is already tagged and built — it just skipped the deploy.)
+>
+> You need **all three**, or the deploy stays skipped:
+> 1. **Repository secrets** — the SSH connection (table below).
+> 2. **Two Environments** (`staging`, `production`) with their **environment
+>    secrets** — the paths/URLs, plus the production *approval reviewer*.
+> 3. **Repository variables** `STAGING_URL` and `PRODUCTION_URL` — the literal
+>    on-switch. The jobs check `vars.…_URL != ''`; miss these and nothing runs
+>    even with every secret set.
+>
+> After setting all three, **re-run the Deploy workflow on the `v1.0.0` tag**
+> (GitHub → Actions → Deploy → the v1.0.0 run → *Re-run all jobs*), or push the
+> next tag (e.g. `v1.0.1`). A re-run with the config in place no longer skips.
+
 Repo on GitHub → **Settings → Secrets and variables → Actions**.
 
 **Repository secrets** (Secrets tab):
@@ -146,6 +165,7 @@ Repo on GitHub → **Settings → Secrets and variables → Actions**.
 | `SSH_USER` | your cPanel username |
 | `SSH_KEY` | full contents of the **private** `compass_deploy` file |
 | `SSH_KNOWN_HOSTS` | the `ssh-keyscan` output from 2e |
+| `SSH_PORT` | `21098` (Namecheap's SSH port; omit entirely on a host that uses `22`) |
 
 **Create two Environments** — Settings → **Environments** → New:
 
@@ -221,12 +241,13 @@ Full post-launch checklist: [`GO-LIVE.md`](GO-LIVE.md).
 
 ## Recommendation
 
-On Namecheap **shared** hosting the two things that will trip you are Phase 2f
-(docroot ↔ `current` symlink wiring) and the custom SSH port. Both go away if the
-deploy action is patched to (a) support port `21098` and (b) update the existing
-WordPress install's `wp-content` directly instead of the whole-docroot symlink
-flip — the natural fit for shared hosting. Consider doing that as its own task
-before the first production deploy.
+The custom SSH port is **already solved** in code (set `SSH_PORT=21098`, Task 39).
+The one remaining shared-hosting trip-up is Phase 2f — the docroot ↔ `current`
+symlink wiring. It goes away if the deploy action is adapted to update the existing
+WordPress install's `wp-content` directly instead of flipping a whole-docroot
+symlink — the natural fit for shared hosting. Consider doing that as its own task
+before the first production deploy (or use a VPS / managed WP host, where the
+pipeline works exactly as written).
 
 ---
 
