@@ -37,6 +37,7 @@
 - [x] 39 Deploy action: custom SSH port support (`SSH_PORT`, e.g. 21098 for Namecheap shared hosting) + owner runbook `docs/NAMECHEAP-DEPLOY.md`
 - [x] 40 Projects dashboard + Gemini AI drafting (custom admin surface for Work, "Draft with AI" on every copy field)
 - [x] 41 Branded Studio (`/studio`, reskinned projects-first admin) + Studio Owner/Staff roles + in-Studio Team management
+- [x] 45 Dynamic "Where we work" map (time zone → country/city, zoomed SVG, pulsing pin, opt-in geolocation; 50m outlines bundled via a dev generator)
 
 ## Pre-launch audit (2026-11-19)
 
@@ -55,6 +56,46 @@ outstanding owner actions: **`docs/AUDIT.md`**. Headlines:
   `docs/GO-LIVE.md`.
 
 ## Log
+
+### Task 45 — Dynamic "Where we work" map (2026-11-23)
+**Done** (task/45)
+
+Replaced the grid-lines local-time card (`#worldwide`, `local-area.php`) with a
+dynamic map that zooms to the visitor's country, glows it in the live accent
+colour and pins their city.
+
+- **Position, no network / no prompt:** browser time zone →
+  `{country, city, lat, lon}` from a bundled table
+  (`assets/src/js/map/tz-data.js`). Generic / unmapped zones (e.g. `Etc/GMT`)
+  show the world and invite the opt-in link instead.
+- **Opt-in exact location:** a link that calls `navigator.geolocation` on click
+  only — never on load; coords stay in memory and are never stored or sent.
+  No third-party IP-geolocation script, so the Cookie Policy promise holds. (A
+  server-side CDN country header could pre-place an approximate pin later.)
+- **Outlines:** Natural Earth 50m via the `world-atlas` dev dependency,
+  simplified + Antarctica-dropped by `tools/generate-geo.mjs` (`npm run geo`)
+  into the committed `assets/src/js/map/geo-50m.js` (~80 KB gzipped). Per-country
+  fit boxes so the US shows the lower 48 and Canada/Australia/UK fit sensibly.
+- **Render:** inline SVG + Mercator; the camera is one `<g>` we transform
+  (~900ms ease zoom), `vector-effect: non-scaling-stroke`, glow blur scaled
+  1/zoom, all colours from `--accent*` so the accent picker updates it live.
+  `prefers-reduced-motion` drops the zoom + pulse; `role="img"` + a dynamic
+  `aria-label`; responsive to 375px; high-contrast pin.
+- **Perf:** the chunk (outlines + logic) is a lazy `import()` fired by an
+  `IntersectionObserver` only when `#worldwide` nears the viewport, so the
+  initial load is untouched. Local time now uses the resolved zone explicitly,
+  so Chicago ≠ Seattle.
+- **Tested** with time-zone overrides (Colombo, London, New York, LA, Perth,
+  Dubai, Tokyo, and an unmapped zone) in dark + light, plus live accent change
+  and mobile 375px. No console errors.
+
+**Decisions:** dev-only `world-atlas` + `mapshaper` with a committed generator
+and committed output, so the front-end build never needs the geo tooling. The
+two npm-audit "high" advisories are inside mapshaper's dev dependency tree
+(`geographiclib`) and ship nothing to visitors.
+
+**Next:** optional — widen the time-zone table, or add the server-side country
+header for an approximate pin before the zone resolves.
 
 ### Deploy enablement docs — `NAMECHEAP-DEPLOY.md` (2026-11-22)
 **Done** (task/42)
