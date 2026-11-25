@@ -33,6 +33,10 @@ inputs:
   wp_path:
     description: WordPress root on the host (where wp-cli runs). Usually the docroot.
     required: true
+  basic_auth:
+    description: Optional HTTP Basic Auth (user:pass) used by the smoke test, e.g. for password-protected staging.
+    required: false
+    default: ""
   keep_releases:
     description: How many releases to keep.
     required: false
@@ -62,6 +66,7 @@ runs:
         WP_PATH: ${{ inputs.wp_path }}
         KEEP_RELEASES: ${{ inputs.keep_releases }}
         SSH_PORT: ${{ inputs.ssh_port }}
+        BASIC_AUTH: ${{ inputs.basic_auth }}
       run: |
         set -euo pipefail
         PORT="${SSH_PORT:-22}"
@@ -91,8 +96,10 @@ runs:
 
         echo "::group::Smoke test"
         smoke_ok=1
+        AUTH_ARGS=()
+        if [ -n "${BASIC_AUTH:-}" ]; then AUTH_ARGS=(-u "$BASIC_AUTH"); fi
         for path in "/" "/get-a-quote/"; do
-          code="$(curl -fsS -o /dev/null -w '%{http_code}' --max-time 30 --retry 3 --retry-delay 5 "${SITE_URL%/}$path" || echo 000)"
+          code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 --retry 3 --retry-delay 5 "${AUTH_ARGS[@]}" "${SITE_URL%/}$path" || echo 000)"
           echo "GET $path -> $code"
           case "$code" in 200|301|302) ;; *) smoke_ok=0 ;; esac
         done
