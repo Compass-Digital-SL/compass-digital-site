@@ -66,7 +66,7 @@ jobs:
           rsync -a --delete \
             --exclude='node_modules' \
             --exclude='assets/src' \
-            --exclude='.vite' \
+            --exclude='/.vite' \
             theme/ release/wp-content/themes/compass/
           # First-party plugin and must-use plugins.
           rsync -a --delete plugins/compass-core/ release/wp-content/plugins/compass-core/
@@ -122,6 +122,7 @@ jobs:
           deploy_path: ${{ secrets.STAGING_DEPLOY_PATH }}
           site_url: ${{ secrets.STAGING_URL }}
           wp_path: ${{ secrets.STAGING_WP_PATH }}
+          basic_auth: ${{ secrets.STAGING_BASIC_AUTH }}
           keep_releases: ${{ env.KEEP_RELEASES }}
 
   # ---------------------------------------------------------------------------

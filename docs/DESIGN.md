@@ -81,7 +81,7 @@ Self-hosted variable fonts: **Fraunces** (display, `wght 300..700`, no italic fa
 
 ## Spacing, layout, radii
 ```
---space-1 … --space-24 (4px base);  --section: clamp(5rem, 3rem + 8vw, 9rem)
+--space-1 … --space-24 (4px base);  --section: clamp(3rem, 2rem + 4vw, 5.5rem)
 --wide-width: 1200px;  --content-width: 720px;  --gutter: clamp(1.25rem, .5rem + 2.5vw, 2rem)
 --radius-sm .375rem  --radius .75rem  --radius-lg 1.25rem  --radius-pill 999px
 ```

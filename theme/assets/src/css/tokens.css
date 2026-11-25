@@ -97,7 +97,7 @@
   --space-12: 3rem;
   --space-16: 4rem;
   --space-24: 6rem;
-  --section: clamp(5rem, 3rem + 8vw, 9rem);
+  --section: clamp(3rem, 2rem + 4vw, 5.5rem);
 
   /* --- Layout --- */
   --content-width: 720px;

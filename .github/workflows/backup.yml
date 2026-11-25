@@ -38,9 +38,10 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USER: ${{ secrets.SSH_USER }}
           WP_PATH: ${{ secrets.PRODUCTION_WP_PATH }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
           set -euo pipefail
-          SSH="ssh -i $HOME/.ssh/deploy_key -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o IdentitiesOnly=yes"
+          SSH="ssh -p ${SSH_PORT:-22} -i $HOME/.ssh/deploy_key -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o IdentitiesOnly=yes"
           REMOTE="$SSH_USER@$SSH_HOST"
           STAMP="$(date -u +%Y%m%d-%H%M%S)"
           mkdir -p backup
